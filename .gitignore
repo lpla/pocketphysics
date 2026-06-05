@@ -1,0 +1,11 @@
+.codex-artifacts/
+build/
+*.arm7
+*.arm9
+*.ds.gba
+*.elf
+*.gba.nds
+*.map
+*.nds
+*.o
+
