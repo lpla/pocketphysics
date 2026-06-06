@@ -10,6 +10,7 @@ ASSETS="$BUILD/assets"
 LOGDIR="$OUT/logs"
 ROM="$OUT/pocketphysics-v0.6-blocksds.nds"
 MAP="$OUT/pocketphysics-v0.6-blocksds.map"
+BUILD_PROFILE="${BUILD_PROFILE:-repro}"
 
 export BLOCKSDS="${BLOCKSDS:-/opt/wonderful/thirdparty/blocksds/core}"
 export BLOCKSDSEXT="${BLOCKSDSEXT:-/opt/wonderful/thirdparty/blocksds/external}"
@@ -34,14 +35,56 @@ BIN2C="$BLOCKSDS/tools/bin2c/bin2c"
 NDSTOOL="$BLOCKSDS/tools/ndstool/ndstool"
 OBJCOPY=arm-none-eabi-objcopy
 
-ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
 SPECS9="$BLOCKSDS/sys/crts/ds_arm9.specs"
 LIBNDS="$BLOCKSDS/libs/libnds"
 ULIB="$BLOCKSDSEXT/ulibrary"
 SYSROOT="$WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/arm-none-eabi"
 
 COMMON_WARN=(-Wall -Wno-deprecated-declarations -Wno-write-strings -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-function)
-COMMON_DEFS=(-D__NDS__ -D__BLOCKSDS__ -DARM9 -DNDEBUG)
+case "$BUILD_PROFILE" in
+    repro)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=()
+        PROFILE_OPT=(-O3)
+        BOX2D_MODE="float/thumb"
+        ;;
+    perf)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O2 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/thumb/O2"
+        ;;
+    perf-o2)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O2 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/thumb/O2"
+        ;;
+    perf-o3)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/thumb/O3"
+        ;;
+    perf-os)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-Os -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/thumb/Os"
+        ;;
+    perf-arm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/arm"
+        ;;
+    *)
+        echo "Unknown BUILD_PROFILE: $BUILD_PROFILE" >&2
+        exit 1
+        ;;
+esac
+
+COMMON_DEFS=(-D__NDS__ -D__BLOCKSDS__ -DARM9 -DNDEBUG "${PROFILE_DEFS[@]}")
 REPRO_MAPS=(
     -ffile-prefix-map="$OUT=/pocketphysics-build"
     -fmacro-prefix-map="$OUT=/pocketphysics-build"
@@ -64,11 +107,11 @@ COMMON_INC=(
     -I"$SYSROOT/include/libpng16"
 )
 
-CFLAGS9=("${COMMON_WARN[@]}" "${COMMON_INC[@]}" "${COMMON_DEFS[@]}" "${ARCH9[@]}" -O3 "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -specs="$SPECS9" -include "$ROOT/tools/repro/compat/pp_blocksds_compat.h")
+CFLAGS9=("${COMMON_WARN[@]}" "${COMMON_INC[@]}" "${COMMON_DEFS[@]}" "${ARCH9[@]}" "${PROFILE_OPT[@]}" "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -specs="$SPECS9" -include "$ROOT/tools/repro/compat/pp_blocksds_compat.h")
 CXXFLAGS9=("${CFLAGS9[@]}" -fno-exceptions -fno-rtti -include string.h -include float.h)
 
-BOX2D_CXXFLAGS=("${COMMON_WARN[@]}" -I"$DEPS/box2d-2.0.1/Include" -I"$DEPS/box2d-2.0.1/Source" -I"$LIBNDS/include" "${COMMON_DEFS[@]}" "${ARCH9[@]}" -O3 "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -specs="$SPECS9" -include string.h -include float.h)
-TINYXML_CXXFLAGS=("${COMMON_WARN[@]}" -I"$DEPS/tinyxml-2.6.2" -DNDEBUG "${ARCH9[@]}" -O3 "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -specs="$SPECS9")
+BOX2D_CXXFLAGS=("${COMMON_WARN[@]}" -I"$DEPS/box2d-2.0.1/Include" -I"$DEPS/box2d-2.0.1/Source" -I"$LIBNDS/include" "${COMMON_DEFS[@]}" "${ARCH9[@]}" "${PROFILE_OPT[@]}" "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -specs="$SPECS9" -include string.h -include float.h)
+TINYXML_CXXFLAGS=("${COMMON_WARN[@]}" -I"$DEPS/tinyxml-2.6.2" -DNDEBUG "${ARCH9[@]}" "${PROFILE_OPT[@]}" "${REPRO_MAPS[@]}" -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -specs="$SPECS9")
 
 compile_c() {
     local src="$1"
@@ -97,7 +140,7 @@ find "$SRC/arm9/data" -type f | sort | while read -r asset; do
     "$BIN2C" "$asset" "$ASSETS"
 done
 
-echo "Building Box2D 2.0.1 float library"
+echo "Building Box2D 2.0.1 $BOX2D_MODE library"
 BOX2D_OBJS=()
 while read -r src; do
     rel="${src#$DEPS/box2d-2.0.1/}"

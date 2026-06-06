@@ -1,9 +1,12 @@
 #ifndef PP_BLOCKSDS_COMPAT_H
 #define PP_BLOCKSDS_COMPAT_H
 
+#ifdef PP_BOX2D_FIXED
+#define float32 LibndsFloat32
+#endif
+
 #define Keyboard LibndsKeyboard
 #include <nds.h>
-#undef Keyboard
 
 #include <dirent.h>
 #include <limits.h>
@@ -16,6 +19,11 @@
 #include <nds/arm9/sound.h>
 #include <nds/arm9/trig_lut.h>
 #include <ulib/ulib.h>
+
+#undef Keyboard
+#ifdef PP_BOX2D_FIXED
+#undef float32
+#endif
 
 #ifdef __cplusplus
 #include <algorithm>

@@ -85,6 +85,7 @@ python3 "$ROOT/tools/repro/patch_v06_source.py" "$SRC"
 echo "Building in Docker image: $IMAGE"
 OUT_REL="${OUT#$ROOT/}"
 docker run --rm \
+    -e BUILD_PROFILE="${BUILD_PROFILE:-repro}" \
     -v "$ROOT":/workspace \
     -w /workspace \
     "$IMAGE" \

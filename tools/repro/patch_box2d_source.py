@@ -19,7 +19,7 @@ def main() -> int:
     replace_exact(
         settings,
         """// need to include NDS jtypes.h instead of \n// usual typedefs because NDS jtypes defines\n// them slightly differently, oh well.\n#ifdef TARGET_IS_NDS\n\n#include \"jtypes.h\"\n\n#else\n\ntypedef signed char\tint8;\ntypedef signed short int16;\ntypedef signed int int32;\ntypedef unsigned char uint8;\ntypedef unsigned short uint16;\ntypedef unsigned int uint32;\n\n#endif\n""",
-        """#if defined(__NDS__)\n#include <nds/ndstypes.h>\n#else\ntypedef signed char\tint8;\ntypedef signed short int16;\ntypedef signed int int32;\ntypedef unsigned char uint8;\ntypedef unsigned short uint16;\ntypedef unsigned int uint32;\n#endif\n""",
+        """#if defined(__NDS__)\n#if defined(TARGET_FLOAT32_IS_FIXED)\n#define float32 LibndsFloat32\n#include <nds/ndstypes.h>\n#undef float32\n#else\n#include <nds/ndstypes.h>\n#endif\n#else\ntypedef signed char\tint8;\ntypedef signed short int16;\ntypedef signed int int32;\ntypedef unsigned char uint8;\ntypedef unsigned short uint16;\ntypedef unsigned int uint32;\n#endif\n""",
     )
 
     replace_exact(

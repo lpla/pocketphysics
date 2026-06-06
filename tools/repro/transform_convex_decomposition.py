@@ -65,6 +65,7 @@ def main() -> int:
     poly_cpp = poly_cpp.replace("float32* newx = new float[nVertices + 1];", "float32* newx = new float32[nVertices + 1];")
     poly_cpp = poly_cpp.replace("float32* newy = new float[nVertices + 1];", "float32* newy = new float32[nVertices + 1];")
     poly_cpp = poly_cpp.replace("void ReversePolygon(float* x, float* y, int n)", "void ReversePolygon(float32* x, float32* y, int n)")
+    poly_cpp = poly_cpp.replace("? 1.0f : nrm", "? float32(1.0f) : nrm")
     poly_cpp = poly_cpp.replace('printf("%ff,",x[i]);', 'printf("%ff,", (float)x[i]);')
     poly_cpp = poly_cpp.replace('printf("%ff,",y[i]);', 'printf("%ff,", (float)y[i]);')
 
@@ -185,4 +186,3 @@ Skip:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
