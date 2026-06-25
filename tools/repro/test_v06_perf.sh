@@ -25,8 +25,3 @@ if [ "$sha_a" != "$sha_b" ]; then
 fi
 
 echo "Byte-identical perf rebuilds verified: $sha_a"
-
-REPEATS=2 DURATION=8 OUT="$ROOT/.codex-artifacts/benchmarks/perf-smoke" \
-    "$ROOT/tools/repro/benchmark_roms.sh" \
-    "perf-check-a=$rom_a" \
-    "perf-check-b=$rom_b"

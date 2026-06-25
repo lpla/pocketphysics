@@ -2,7 +2,13 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-OUT="${OUT:-$ROOT/.codex-artifacts/build/v06-blocksds}"
+PROFILE="${BUILD_PROFILE:-repro}"
+if [ -z "${OUT:-}" ]; then
+    case "$PROFILE" in
+        repro) OUT="$ROOT/.codex-artifacts/build/v06-blocksds" ;;
+        *) OUT="$ROOT/.codex-artifacts/build/$PROFILE" ;;
+    esac
+fi
 DOWNLOADS="${DOWNLOADS:-$ROOT/.codex-artifacts/downloads}"
 DEPS_CACHE="${DEPS_CACHE:-$ROOT/.codex-artifacts/deps}"
 IMAGE="${BLOCKSDS_IMAGE:-skylyrac/blocksds:slim-v1.20.0}"
@@ -50,6 +56,13 @@ for icon in icon_back icon_delete_file icon_load icon_move icon_save; do
     git -C "$ROOT" show "3e538e0:arm9/data/${icon}.raw" > "$SRC/arm9/data/${icon}.raw"
 done
 
+case "$PROFILE" in
+    bench-*)
+        echo "Adding in-ROM benchmark source for profile: $PROFILE"
+        cp "$ROOT/tools/repro/benchmark_source/pp_benchmark."* "$SRC/arm9/source/"
+        ;;
+esac
+
 echo "Fetching pinned third-party source archives"
 fetch \
     "https://snapshot.debian.org/file/868397d39d1a842b252454ba44c475cd2eb14d49" \
@@ -85,7 +98,7 @@ python3 "$ROOT/tools/repro/patch_v06_source.py" "$SRC"
 echo "Building in Docker image: $IMAGE"
 OUT_REL="${OUT#$ROOT/}"
 docker run --rm \
-    -e BUILD_PROFILE="${BUILD_PROFILE:-repro}" \
+    -e BUILD_PROFILE="$PROFILE" \
     -v "$ROOT":/workspace \
     -w /workspace \
     "$IMAGE" \

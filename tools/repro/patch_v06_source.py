@@ -130,6 +130,26 @@ def main() -> int:
         "void World::initPhysics(bool allow_sleep)\n{\n",
         "void World::initPhysics(bool allow_sleep)\n{\n\tallow_sleep_enabled = allow_sleep;\n",
     )
+    replace_exact(
+        world,
+        "\tb2AABB *touchAABB = new b2AABB();\n\ttouchAABB->lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB->upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n\tb2Vec2 point = b2Vec2(x/PIXELS_PER_UNIT, y/PIXELS_PER_UNIT);\n",
+        "#ifdef PP_RUNTIME_FIXES\n\tb2AABB touchAABB;\n\ttouchAABB.lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB.upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#else\n\tb2AABB *touchAABB = new b2AABB();\n\ttouchAABB->lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB->upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#endif\n\tb2Vec2 point = b2Vec2(x/PIXELS_PER_UNIT, y/PIXELS_PER_UNIT);\n",
+    )
+    replace_exact(
+        world,
+        "\tint count = b2world->Query(*touchAABB, shape, 16);\n",
+        "#ifdef PP_RUNTIME_FIXES\n\tint count = b2world->Query(touchAABB, shape, 16);\n#else\n\tint count = b2world->Query(*touchAABB, shape, 16);\n#endif\n",
+    )
+    replace_exact(
+        world,
+        "\t\t\tdelete id_table;\n",
+        "#ifdef PP_RUNTIME_FIXES\n\t\t\tfree(id_table);\n#else\n\t\t\tdelete id_table;\n#endif\n",
+    )
+    replace_exact(
+        world,
+        "\tdelete id_table;\n",
+        "#ifdef PP_RUNTIME_FIXES\n\tfree(id_table);\n#else\n\tdelete id_table;\n#endif\n",
+    )
 
     replace_exact(
         main_cpp,
@@ -138,8 +158,23 @@ def main() -> int:
     )
     replace_exact(
         main_cpp,
+        '#include "canvas.h"\n\n#include "state.h"\n',
+        '#include "canvas.h"\n#ifdef PP_BENCHMARK\n#include "pp_benchmark.h"\n#endif\n\n#include "state.h"\n',
+    )
+    replace_exact(
+        main_cpp,
         "\tconsoleInitDefault((u16*)SCREEN_BASE_BLOCK_SUB(4), (u16*)CHAR_BASE_BLOCK_SUB(0), 16);\n",
         "\tconsoleInit(NULL, 0, BgType_Text4bpp, BgSize_T_256x256, 4, 0, false, true);\n",
+    )
+    replace_exact(
+        main_cpp,
+        "#ifndef DEBUG\n\tshowSplash();\n#endif\n",
+        "#if !defined(DEBUG) && !defined(PP_BENCHMARK)\n\tshowSplash();\n#endif\n",
+    )
+    replace_exact(
+        main_cpp,
+        "#endif\n\t\n\tdrawMainBg();\n",
+        "#endif\n\t\n#ifdef PP_BENCHMARK\n\tppRunBenchmark(world, canvas, fat_ok);\n#endif\n\t\n\tdrawMainBg();\n",
     )
 
     canvas = src / "arm9/source/canvas.cpp"

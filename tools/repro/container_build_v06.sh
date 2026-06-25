@@ -49,34 +49,70 @@ case "$BUILD_PROFILE" in
         BOX2D_MODE="float/thumb"
         ;;
     perf)
-        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
-        PROFILE_OPT=(-O2 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
-        BOX2D_MODE="fixed-point/thumb/O2"
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/arm/O3"
         ;;
     perf-o2)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O2 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/thumb/O2"
         ;;
     perf-o3)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/thumb/O3"
         ;;
     perf-os)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-Os -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/thumb/Os"
         ;;
     perf-arm)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm"
+        ;;
+    bench-repro)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-repro"')
+        PROFILE_OPT=(-O3)
+        BOX2D_MODE="float/thumb benchmark"
+        ;;
+    bench-perf)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-perf"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/arm/O3 benchmark"
+        ;;
+    bench-runtime)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-runtime"')
+        PROFILE_OPT=(-O3)
+        BOX2D_MODE="float/thumb/O3 runtime-fixes benchmark"
+        ;;
+    bench-runtime-o2)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-runtime-o2"')
+        PROFILE_OPT=(-O2 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="float/thumb/O2 runtime-fixes benchmark"
+        ;;
+    bench-runtime-arm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-runtime-arm"')
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="float/arm/O3 runtime-fixes benchmark"
+        ;;
+    bench-fixed-arm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-fixed-arm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/arm/O3 benchmark"
         ;;
     *)
         echo "Unknown BUILD_PROFILE: $BUILD_PROFILE" >&2
@@ -185,6 +221,10 @@ for src in \
         *.cpp) compile_cpp "$src" ;;
     esac
 done
+
+if [ -f "$SRC/arm9/source/pp_benchmark.cpp" ]; then
+    compile_cpp "$SRC/arm9/source/pp_benchmark.cpp"
+fi
 
 while read -r src; do
     compile_cpp "$src"

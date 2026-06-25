@@ -54,32 +54,44 @@ package versions in `.codex-artifacts/build/v06-blocksds/logs/toolchain-packages
 The verified package set for the current build is:
 
 ```text
-blocksds-toolchain 1.20.0-1
+blocksds-toolchain 1.21.1-1
 blocksds-ulibrary 1.14-1
-toolchain-gcc-arm-none-eabi-gcc 1:16.0.1.r228438.d284b73a9b4-1
+runtime-zlib 1.3.2-1
 toolchain-gcc-arm-none-eabi-binutils 2.46.0-1
+toolchain-gcc-arm-none-eabi-gcc 1:16.0.1.r228438.d284b73a9b4-1
+toolchain-gcc-arm-none-eabi-gcc-libs 1:16.0.1.r228438.d284b73a9b4-1
+toolchain-gcc-arm-none-eabi-libpng16 1.6.58-1
 toolchain-gcc-arm-none-eabi-libstdcxx-picolibc 16.0.1.r228438.d284b73a9b4-1
 toolchain-gcc-arm-none-eabi-picolibc-generic 1.8.11.r26127.2a7b920f5-1
-toolchain-gcc-arm-none-eabi-libpng16 1.6.58-1
 toolchain-gcc-arm-none-eabi-zlib 1.3.2-1
-runtime-zlib 1.3.2-1
 ```
 
 ## Build Profiles
 
 The default profile is the reproduced modern-dependency baseline. The proposed
-performance profile restores Box2D's fixed-point `float32` mode for the DS and
-uses the best-performing optimization setting from the local matrix.
+performance profile uses the best in-ROM benchmark result from the profile
+matrix: Box2D fixed-point math, ARM mode, `-O3`, and targeted runtime bug fixes.
 
 | Profile | Box2D numeric mode | ARM9 mode | Optimization | Purpose |
 | --- | --- | --- | --- | --- |
 | `repro` | `float` | Thumb | `-O3` | Deterministic updated-dependency rebuild |
-| `perf`, `perf-o2` | fixed-point | Thumb | `-O2` | Proposed improved build |
-| `perf-o3` | fixed-point | Thumb | `-O3` | Larger comparison build |
-| `perf-os` | fixed-point | Thumb | `-Os` | Smallest comparison build |
-| `perf-arm` | fixed-point | ARM | `-O3` | ARM-mode comparison build |
+| `perf` | fixed-point | ARM | `-O3` | Proposed improved build |
+| `perf-o2` | fixed-point | Thumb | `-O2` | Rejected matrix candidate |
+| `perf-o3` | fixed-point | Thumb | `-O3` | Matrix candidate |
+| `perf-os` | fixed-point | Thumb | `-Os` | Matrix candidate |
+| `perf-arm` | fixed-point | ARM | `-O3` | Same code-generation strategy as `perf` |
+| `bench-*` | varies | varies | varies | Instrumented ROMs that emit in-ROM CSV rows |
+
+The runtime fixes currently covered by the in-ROM benchmark are:
+
+- Replace the per-hit-test heap `new b2AABB` allocation in `World::getThingsAt`
+  with a stack `b2AABB`.
+- Replace `delete id_table` with `free(id_table)` for the `calloc`-allocated
+  load table in `World::load`.
 
 ## Build
+
+Build the reproduced updated-dependency baseline:
 
 ```sh
 tools/repro/build_v06_blocksds.sh
@@ -89,9 +101,9 @@ Current rebuilt ROM with updated dependencies:
 
 ```text
 .codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds
-SHA256 1fd396ead6954c83ff59e5698f3b91187d99ca6ae054b61e6c048fc445563211
+SHA256 e82787396c2fc96630951dda980d15bb85a684a80fa73776356acc6acb921190
 Size 739328 bytes
-ARM9 ELF size: text=630128 data=1424 bss=11340
+ARM9 ELF size: text=630128 data=1432 bss=11340
 ```
 
 Build the proposed improved profile:
@@ -104,130 +116,123 @@ Current improved ROM:
 
 ```text
 .codex-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds
-SHA256 4fb2d4c9aac4307f0146456ad23baeaaa2ab8bef6bf3db9faec187049730da2d
-Size 772096 bytes
-ARM9 ELF size: text=662616 data=1480 bss=11484
+SHA256 d7d652e3275cd7a394ccda0f83ce3946bec21795a46e9e0f27f6a72c4e86fc85
+Size 897024 bytes
+ARM9 ELF size: text=787536 data=1488 bss=11484
 ```
 
 ## Test And Benchmark
 
-Full baseline reproducibility smoke test:
+Byte-reproducibility tests:
 
 ```sh
 tools/repro/test_v06_repro.sh
-```
-
-The test builds two fresh output directories and byte-compares the resulting
-ROMs. The current verified reproducible SHA256 is
-`1fd396ead6954c83ff59e5698f3b91187d99ca6ae054b61e6c048fc445563211`.
-
-Full improved-profile reproducibility smoke test:
-
-```sh
 tools/repro/test_v06_perf.sh
 ```
 
-The test builds two fresh improved output directories and byte-compares the
-resulting ROMs. The current verified improved SHA256 is
-`4fb2d4c9aac4307f0146456ad23baeaaa2ab8bef6bf3db9faec187049730da2d`.
+Those tests build two fresh output directories per profile and byte-compare the
+resulting ROMs. They intentionally do not use host wall-clock emulator timing.
 
-Benchmark the 2008 release, rebuilt ROM, and improved ROM:
+End-to-end in-ROM benchmark test:
 
 ```sh
-tools/repro/benchmark_roms.sh
+tools/repro/test_v06_inrom.sh
 ```
 
-The DeSmuME CLI used here does not expose an exact "run N frames and report FPS"
-mode. The benchmark therefore records repeatable host-side emulator proxy metrics
-over a fixed wall-clock duration, with raw emulator logs preserved for audit.
-Use it for comparative regression detection, not as a direct Nintendo DS FPS
-measurement.
+The benchmark ROM creates a deterministic touch workload through the real
+`Canvas` pen APIs: solid floor/platform strokes, dynamic boxes, circles,
+polygons, a pin, repeated hit tests, a simulated drag, 240 physics steps, and
+240 object-render frames. The ROM emits `PPBENCH` CSV rows containing DS CPU
+timer ticks, counts, min/max, checksums, and pass/fail fields.
 
-The benchmark intentionally stops DeSmuME with `timeout`, so status `124` is
-the expected successful benchmark status.
+The harness can collect rows from a FAT `ppbench.csv` file when available, or
+from the emulator debug stream. `timeout` status `124` is expected because the
+ROM deliberately idles after emitting benchmark rows; timeout duration is not a
+performance metric.
+
+The 2008 release binary is verified by SHA256 below, but it cannot emit in-ROM
+timing rows without modifying or binary-patching it. The empirical timing
+comparison therefore uses the source-equivalent instrumented `bench-repro` ROM
+against the instrumented proposed `bench-perf` ROM. The uninstrumented 2008
+release remains the binary baseline for artifact verification and boot testing.
 
 ## Verified Artifacts
 
 | Role | Path | SHA256 | Size |
 | --- | --- | --- | --- |
 | 2008 v0.6 release | `.codex-artifacts/release-v0.6/gamebrew/PocketPhysics-v0.6/pocketphysics.nds` | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` | 894016 |
-| Rebuilt updated-dependency ROM | `.codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds` | `1fd396ead6954c83ff59e5698f3b91187d99ca6ae054b61e6c048fc445563211` | 739328 |
-| Improved fixed-point ROM | `.codex-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds` | `4fb2d4c9aac4307f0146456ad23baeaaa2ab8bef6bf3db9faec187049730da2d` | 772096 |
+| Rebuilt updated-dependency ROM | `.codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds` | `e82787396c2fc96630951dda980d15bb85a684a80fa73776356acc6acb921190` | 739328 |
+| Improved fixed-point ARM/O3 ROM | `.codex-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds` | `d7d652e3275cd7a394ccda0f83ce3946bec21795a46e9e0f27f6a72c4e86fc85` | 897024 |
+| Instrumented reproduced baseline | `.codex-artifacts/build/bench-repro/pocketphysics-v0.6-blocksds.nds` | `57e2b43c6cd3a66c7b7dd49c98fd34d518d6614a465a5663f30bdd4aaae41f4d` | 703488 |
+| Instrumented improved build | `.codex-artifacts/build/bench-perf/pocketphysics-v0.6-blocksds.nds` | `08319b5c4afae10cc2de0e6b303a3125100cf0de09ea1da7e3cf244fbbbda665` | 862208 |
 
-## Final Comparison
+## Final In-ROM Comparison
 
-Run on 2026-06-05:
-
-```sh
-REPEATS=10 DURATION=15 OUT=.codex-artifacts/benchmarks/final-comparison-o2 \
-    tools/repro/benchmark_roms.sh
-```
-
-Summary from `.codex-artifacts/benchmarks/final-comparison-o2/results.csv`:
-
-| ROM | Repeats | Status | Mean CPU seconds | CPU stddev | Mean RSS KB |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 2008 release | 10 | 124 | 28.19 | 0.361 | 210729 |
-| Rebuilt updated deps | 10 | 124 | 32.24 | 0.425 | 209481 |
-| Improved fixed-point `-O2` | 10 | 124 | 32.29 | 0.450 | 210455 |
-
-Lower CPU seconds are better for this host-side DeSmuME proxy. The rebuilt ROM
-is 17.3% smaller than the 2008 release ROM, and the improved fixed-point ROM is
-13.6% smaller than the 2008 release ROM. The proxy does not show a meaningful
-speed win for the fixed-point build over the float rebuild, and the original
-2008 release remains the cheapest binary in this emulator measurement.
-
-## Optimization Matrix
-
-The `perf` profile was selected from this shorter matrix:
+Run on 2026-06-25:
 
 ```sh
-BUILD_PROFILE=perf-o3 OUT=.codex-artifacts/build/perf-o3 \
-    tools/repro/build_v06_blocksds.sh
-BUILD_PROFILE=perf-o2 OUT=.codex-artifacts/build/perf-o2 \
-    tools/repro/build_v06_blocksds.sh
-BUILD_PROFILE=perf-os OUT=.codex-artifacts/build/perf-os \
-    tools/repro/build_v06_blocksds.sh
-
-REPEATS=5 DURATION=8 OUT=.codex-artifacts/benchmarks/optimization-matrix \
-    tools/repro/benchmark_roms.sh \
-    release-2008=.codex-artifacts/release-v0.6/gamebrew/PocketPhysics-v0.6/pocketphysics.nds \
-    rebuilt-float-o3=.codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds \
-    fixed-o3=.codex-artifacts/build/perf-o3/pocketphysics-v0.6-blocksds.nds \
-    fixed-o2=.codex-artifacts/build/perf-o2/pocketphysics-v0.6-blocksds.nds \
-    fixed-os=.codex-artifacts/build/perf-os/pocketphysics-v0.6-blocksds.nds
+REPEATS=3 DURATION=20 OUT=.codex-artifacts/benchmarks/inrom-final \
+    tools/repro/benchmark_inrom.sh
 ```
 
-| ROM | Size | Mean CPU seconds | CPU stddev | Mean RSS KB |
-| --- | ---: | ---: | ---: | ---: |
-| 2008 release | 894016 | 14.99 | 0.155 | 208546 |
-| Rebuilt float `-O3` | 739328 | 17.14 | 0.141 | 209438 |
-| Fixed-point `-O3` | 842752 | 17.12 | 0.118 | 210678 |
-| Fixed-point `-O2` | 772096 | 17.10 | 0.157 | 209247 |
-| Fixed-point `-Os` | 696320 | 17.26 | 0.086 | 209017 |
+Assertions from `.codex-artifacts/benchmarks/inrom-final/assertions.txt`:
 
-The `-O2` fixed-point profile was chosen because it was the best fixed-point
-candidate in this matrix while avoiding the ROM-size bloat of `-O3`.
+```text
+bench-perf overall_pass=1
+bench-repro overall_pass=0 as expected for unfixed baseline
+bench-perf mean ticks lower than bench-repro for touch, hit-test, physics, render, and frame-total metrics
+bench-perf hit-test heap delta fixed from positive bytes to 0
+```
 
-## Interpretation
+Summary from `.codex-artifacts/benchmarks/inrom-final/summary.csv`:
 
-The reproducible rebuild is successful: it reconstructs v0.6 from the 2008 git
-commit plus pinned third-party source archives, builds under a pinned BlocksDS
-container, and produces byte-identical ROMs across fresh output directories.
+| Metric | Reproduced baseline mean ticks | Improved mean ticks | Delta |
+| --- | ---: | ---: | ---: |
+| Touch create and drag | 15575 | 13006 | -16.49% |
+| Hit test | 3634 | 2036 | -43.97% |
+| Physics step | 617736 | 536888 | -13.09% |
+| Render frame | 301418 | 201819 | -33.04% |
+| Frame total | 919710 | 739343 | -19.61% |
+| Hit-test heap delta bytes | 14416 | 0 | -100.00% |
+| Overall pass | 0 | 1 | fixed |
 
-The proposed improvement is intentionally conservative. Pocket Physics was
-written for Nintendo DS hardware without an FPU, and the original project had
-Box2D fixed-point work in its history. This branch restores that mode in the
-modern build and adds profile-specific test coverage. The current DeSmuME CLI
-benchmark does not prove a real speedup over the float rebuild, so the fixed
-profile should be treated as the best DS-appropriate candidate from this pass,
-not as a verified gameplay FPS win.
+The repeated runs were deterministic in DeSmuME interpreter mode: each metric's
+min and max were identical across the three repeats, and checksums were stable
+within each build.
 
-Recommended next measurements:
+The frame metric is still over a nominal 60 Hz budget for much of this stress
+scene (`over_budget_total=606` across 720 optimized frames). The claim here is a
+measured improvement and fixed leak under a reproducible touch/physics workload,
+not a guarantee that this scene now holds 60 Hz on every DS frame.
 
-- Add an in-ROM deterministic physics benchmark that reports simulation ticks
-  or frame timing through emulator stdout, memory, or a known save/debug channel.
-- Repeat the final comparison on real DS hardware or an emulator with a reliable
-  frame counter.
-- Triage modern compiler warnings in the old UI and allocation code before doing
-  broader behavior changes.
+## Profile Selection
+
+The selected profile came from a one-repeat in-ROM matrix in
+`.codex-artifacts/benchmarks/profile-selection`:
+
+| Candidate | Frame total delta vs `bench-repro` | Physics delta | Hit-test delta | Result |
+| --- | ---: | ---: | ---: | --- |
+| Float Thumb/O3 runtime fixes | -0.34% | -0.60% | -15.44% | Fixes leak, small speedup |
+| Float Thumb/O2 runtime fixes | -1.38% | -2.33% | -12.03% | Fixes leak, small speedup |
+| Float ARM/O3 runtime fixes | +1.46% | +3.23% | -15.38% | Rejected |
+| Fixed Thumb/O2 runtime fixes | +2.70% | +19.15% | +9.03% | Rejected |
+| Fixed ARM/O3 runtime fixes | -19.63% | -13.08% | -44.11% | Selected |
+
+This matters because the first fixed-point attempt was slower for physics. The
+final proposal is not "fixed-point because the DS has no FPU"; it is the
+specific fixed-point ARM/O3 profile that won the in-ROM workload.
+
+## Real Hardware Notes
+
+For flashcart or real-hardware runs, build the benchmark ROMs and run:
+
+```sh
+REPEATS=1 DURATION=20 OUT=.codex-artifacts/benchmarks/inrom-hw-prep \
+    tools/repro/benchmark_inrom.sh
+```
+
+Then copy `.codex-artifacts/build/bench-repro/pocketphysics-v0.6-blocksds.nds`
+and `.codex-artifacts/build/bench-perf/pocketphysics-v0.6-blocksds.nds` to the
+device. When FAT is available, the ROM writes `ppbench.csv`; otherwise use a
+debug console path that captures `PPBENCH` rows. Do not compare wall-clock time
+spent sitting in the post-benchmark idle loop.
