@@ -7,15 +7,17 @@ IMAGE="${BENCH_IMAGE:-devkitpro/devkitarm:20260221}"
 REPEATS="${REPEATS:-3}"
 DURATION="${DURATION:-45}"
 
-default_repro="$ROOT/.codex-artifacts/build/bench-repro/pocketphysics-v0.6-blocksds.nds"
-default_perf="$ROOT/.codex-artifacts/build/bench-perf/pocketphysics-v0.6-blocksds.nds"
+default_historical="$ROOT/.codex-artifacts/build/bench-historical/pocketphysics-bench-historical.nds"
+default_modern="$ROOT/.codex-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds"
+default_improved="$ROOT/.codex-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds"
 
 rom_specs=()
 if [ "$#" -gt 0 ]; then
     rom_specs=("$@")
 else
-    rom_specs+=("bench-repro=$default_repro")
-    rom_specs+=("bench-perf=$default_perf")
+    rom_specs+=("bench-historical=$default_historical")
+    rom_specs+=("bench-modern=$default_modern")
+    rom_specs+=("bench-improved=$default_improved")
 fi
 
 mkdir -p "$OUT/logs" "$OUT/runs"
@@ -128,8 +130,9 @@ for spec in "$@"; do
         set -e
 
         : > "$extracted"
-        if [ -f "$cflash/ppbench.csv" ]; then
-            extract_ppbench_rows "$cflash/ppbench.csv" "$extracted"
+        bench_file="$(find "$cflash" -maxdepth 1 -type f -name 'ppbench-*.csv' -print -quit)"
+        if [ -n "$bench_file" ]; then
+            extract_ppbench_rows "$bench_file" "$extracted"
         else
             extract_ppbench_rows "$stdout" "$extracted"
             extract_ppbench_rows "$stderr" "$extracted"
@@ -148,13 +151,14 @@ for spec in "$@"; do
 done
 EOF
 
-python3 - "$OUT/results.csv" "$OUT/summary.csv" "$OUT/assertions.txt" <<'EOF'
+python3 - "$OUT/results.csv" "$OUT/summary.csv" "$OUT/assertions.txt" "$REPEATS" <<'EOF'
 import csv
 import statistics
 import sys
 from collections import defaultdict
 
-results_path, summary_path, assertions_path = sys.argv[1:]
+results_path, summary_path, assertions_path = sys.argv[1:4]
+expected_repeats = int(sys.argv[4])
 
 rows = []
 with open(results_path, newline="") as f:
@@ -212,61 +216,124 @@ def require_metric(label, metric):
 
 labels = {row["label"] for row in rows}
 assertions = []
-if "bench-perf" in labels:
-    try:
-        perf_overall = require_metric("bench-perf", "overall_pass")
-        if not all(r["total_ticks"] == "1" and r["pass"] == "1" for r in perf_overall):
-            raise AssertionError("bench-perf did not pass the in-ROM acceptance check")
-        assertions.append("bench-perf overall_pass=1")
-    except AssertionError as exc:
-        assertions.append(str(exc))
-        raise
+role_labels = {"bench-historical", "bench-modern", "bench-improved"}
+required_metrics = {
+    "benchmark_started", "file_output_ready", "timer_read_overhead_ticks",
+    "scene_things_created", "scene_position_sum_x", "scene_position_sum_y",
+    "hit_test_heap_delta_bytes",
+    "touch_create_and_drag", "hit_test", "physics_step", "render_frame",
+    "render_begin", "render_canvas", "render_end", "frame_total",
+    "visible_things_rendered", "line_quads_rendered", "things_final",
+    "behavior_pass", "hit_test_heap_fixed_pass", "overall_pass",
+}
 
-if "bench-repro" in labels:
-    try:
-        repro_overall = require_metric("bench-repro", "overall_pass")
-        if not all(r["total_ticks"] == "0" and r["pass"] == "0" for r in repro_overall):
-            raise AssertionError("bench-repro unexpectedly passed; expected the leak probe to fail")
-        assertions.append("bench-repro overall_pass=0 as expected for unfixed baseline")
-    except AssertionError as exc:
-        assertions.append(str(exc))
-        raise
-
-if {"bench-repro", "bench-perf"} <= labels:
-    try:
-        def mean_ticks(label, metric):
-            metric_rows = require_metric(label, metric)
-            return statistics.mean(int(r["mean_ticks"]) for r in metric_rows)
-
-        faster_metrics = [
-            "touch_create_and_drag",
-            "hit_test",
-            "physics_step",
-            "render_frame",
-            "frame_total",
-        ]
-        for metric in faster_metrics:
-            repro_mean = mean_ticks("bench-repro", metric)
-            perf_mean = mean_ticks("bench-perf", metric)
-            if perf_mean >= repro_mean:
-                raise AssertionError(
-                    f"bench-perf {metric} mean ticks {perf_mean:.2f} "
-                    f"is not lower than bench-repro {repro_mean:.2f}"
-                )
-
-        repro_heap = mean_ticks("bench-repro", "hit_test_heap_delta_bytes")
-        perf_heap = mean_ticks("bench-perf", "hit_test_heap_delta_bytes")
-        if not (repro_heap > 0 and perf_heap == 0):
+for label in sorted(labels & role_labels):
+    for metric in sorted(required_metrics):
+        metric_rows = require_metric(label, metric)
+        if len(metric_rows) != expected_repeats:
             raise AssertionError(
-                f"unexpected heap delta proof: bench-repro={repro_heap:.2f}, "
-                f"bench-perf={perf_heap:.2f}"
+                f"{label} {metric} has {len(metric_rows)} rows; "
+                f"expected {expected_repeats}"
+            )
+        if {int(r["iteration"]) for r in metric_rows} != set(range(1, expected_repeats + 1)):
+            raise AssertionError(f"{label} {metric} has incomplete repetition indexes")
+        if {r["status"] for r in metric_rows} != {"124"}:
+            raise AssertionError(f"{label} {metric} has unexpected emulator status")
+        if len({r["checksum"] for r in metric_rows}) != 1:
+            raise AssertionError(f"{label} {metric} checksum changed across repetitions")
+        if len({r["total_ticks"] for r in metric_rows}) != 1:
+            raise AssertionError(f"{label} {metric} result changed across repetitions")
+
+    expected_counts = {
+        "touch_create_and_drag": 225,
+        "hit_test": 600,
+        "physics_step": 240,
+        "render_frame": 240,
+        "render_begin": 240,
+        "render_canvas": 240,
+        "render_end": 240,
+        "frame_total": 240,
+    }
+    for metric, count in expected_counts.items():
+        if not all(int(r["count"]) == count for r in require_metric(label, metric)):
+            raise AssertionError(f"{label} {metric} did not execute {count} samples")
+
+    if not all(int(r["total_ticks"]) == 27 and r["pass"] == "1"
+               for r in require_metric(label, "scene_things_created")):
+        raise AssertionError(f"{label} did not create the exact 27-object touch scene")
+    if not all(int(r["total_ticks"]) == 27
+               for r in require_metric(label, "things_final")):
+        raise AssertionError(f"{label} did not retain all 27 scene objects")
+    if not all(int(r["total_ticks"]) == 1 and r["pass"] == "1"
+               for r in require_metric(label, "behavior_pass")):
+        raise AssertionError(f"{label} failed behavior validation")
+    if not all(0 < int(r["total_ticks"]) < 1000
+               for r in require_metric(label, "timer_read_overhead_ticks")):
+        raise AssertionError(f"{label} timer calibration is implausible")
+    if not all(int(r["total_ticks"]) > 0
+               for metric in ("visible_things_rendered", "line_quads_rendered")
+               for r in require_metric(label, metric)):
+        raise AssertionError(f"{label} rendered no measurable scene work")
+    assertions.append(f"{label}: deterministic complete touch/physics/render workload")
+
+def mean_ticks(label, metric):
+    return statistics.mean(int(r["mean_ticks"]) for r in require_metric(label, metric))
+
+def scalar(label, metric):
+    return statistics.mean(int(r["total_ticks"]) for r in require_metric(label, metric))
+
+if role_labels <= labels:
+    topology = {
+        label: {r["checksum"] for r in require_metric(label, "scene_things_created")}
+        for label in role_labels
+    }
+    if len(set.union(*topology.values())) != 1:
+        raise AssertionError(f"initial scene topology differs across builds: {topology}")
+
+    position_sums = {
+        metric: {label: scalar(label, metric) for label in role_labels}
+        for metric in ("scene_position_sum_x", "scene_position_sum_y")
+    }
+    for metric, values in position_sums.items():
+        if abs(values["bench-improved"] - values["bench-historical"]) > 1:
+            raise AssertionError(
+                f"improved scene position sum differs from historical for {metric}: {values}"
+            )
+        if max(values.values()) - min(values.values()) > 27:
+            raise AssertionError(
+                f"scene position sums exceed one pixel per object for {metric}: {values}"
             )
 
-        assertions.append("bench-perf mean ticks lower than bench-repro for touch, hit-test, physics, render, and frame-total metrics")
-        assertions.append("bench-perf hit-test heap delta fixed from positive bytes to 0")
-    except AssertionError as exc:
-        assertions.append(str(exc))
-        raise
+    for label in ("bench-historical", "bench-modern"):
+        if scalar(label, "hit_test_heap_delta_bytes") <= 0:
+            raise AssertionError(f"{label} did not reproduce the hit-test leak")
+        if scalar(label, "overall_pass") != 0:
+            raise AssertionError(f"{label} unexpectedly passed the leak acceptance check")
+    if scalar("bench-improved", "hit_test_heap_delta_bytes") != 0:
+        raise AssertionError("bench-improved retained hit-test heap growth")
+    if scalar("bench-improved", "overall_pass") != 1:
+        raise AssertionError("bench-improved failed the in-ROM acceptance check")
+
+    for metric in ("touch_create_and_drag", "hit_test", "physics_step", "render_frame", "frame_total"):
+        improved = mean_ticks("bench-improved", metric)
+        modern = mean_ticks("bench-modern", metric)
+        if improved >= modern:
+            raise AssertionError(
+                f"bench-improved {metric} {improved:.2f} is not faster than modern {modern:.2f}"
+            )
+
+    for metric in ("hit_test", "physics_step", "frame_total"):
+        improved = mean_ticks("bench-improved", metric)
+        historical = mean_ticks("bench-historical", metric)
+        if improved >= historical:
+            raise AssertionError(
+                f"bench-improved {metric} {improved:.2f} is not faster than historical {historical:.2f}"
+            )
+
+    assertions.append("all builds created an identical 27-object scene through touch dispatch")
+    assertions.append("improved build removed the reproduced hit-test leak")
+    assertions.append("improved build beat modern in every primary timed workload")
+    assertions.append("improved build beat historical hit-test, physics, and full-frame totals")
 
 with open(assertions_path, "w") as f:
     for line in assertions:

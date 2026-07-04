@@ -50,7 +50,7 @@ case "$BUILD_PROFILE" in
         ;;
     perf)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm/O3"
         ;;
@@ -84,11 +84,23 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3)
         BOX2D_MODE="float/thumb benchmark"
         ;;
+    bench-modern)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-modern"')
+        PROFILE_OPT=(-O3)
+        BOX2D_MODE="float/thumb modern-dependency benchmark"
+        ;;
     bench-perf)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-perf"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-perf"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm/O3 benchmark"
+        ;;
+    bench-improved)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-improved"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        BOX2D_MODE="fixed-point/arm/O3 batched-render benchmark"
         ;;
     bench-runtime)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
@@ -110,7 +122,7 @@ case "$BUILD_PROFILE" in
         ;;
     bench-fixed-arm)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-fixed-arm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-fixed-arm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED)
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm/O3 benchmark"
         ;;

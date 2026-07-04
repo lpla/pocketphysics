@@ -18,6 +18,7 @@
 #endif
 
 extern State state;
+extern void ppDispatchTouchSample(int px, int py, bool pen_down);
 
 static const u32 kFnvOffset = 2166136261u;
 static const u32 kFnvPrime = 16777619u;
@@ -54,9 +55,29 @@ static void statAdd(BenchStat *stat, u32 ticks, u32 budget)
 		stat->over_budget++;
 }
 
+static void startTiming(void)
+{
+	TIMER_CR(0) = 0;
+	TIMER_CR(1) = 0;
+	TIMER_DATA(0) = 0;
+	TIMER_DATA(1) = 0;
+	TIMER_CR(1) = TIMER_ENABLE | TIMER_CASCADE;
+	TIMER_CR(0) = TIMER_ENABLE;
+}
+
 static u32 tickNow(void)
 {
-	return cpuGetTiming();
+	u16 high1;
+	u16 low;
+	u16 high2;
+	do
+	{
+		high1 = TIMER_DATA(1);
+		low = TIMER_DATA(0);
+		high2 = TIMER_DATA(1);
+	}
+	while(high1 != high2);
+	return ((u32)high1 << 16) | low;
 }
 
 static u32 tickDelta(u32 start)
@@ -68,6 +89,19 @@ static u32 hashU32(u32 hash, u32 value)
 {
 	hash ^= value;
 	return hash * kFnvPrime;
+}
+
+static u32 timerReadOverhead(void)
+{
+	u32 minimum = 0xFFFFFFFFu;
+	for(int i=0; i<256; ++i)
+	{
+		u32 start = tickNow();
+		u32 elapsed = tickNow() - start;
+		if(elapsed < minimum)
+			minimum = elapsed;
+	}
+	return minimum;
 }
 
 static void debugWriteLine(const char *line)
@@ -125,6 +159,61 @@ static u32 hashWorld(World *world)
 	return hash;
 }
 
+static u32 hashSceneTopology(World *world)
+{
+	u32 hash = hashU32(kFnvOffset, (u32)world->getNThings());
+	for(int i=0; i<world->getNThings(); ++i)
+	{
+		Thing *thing = world->getThing(i);
+		hash = hashU32(hash, (u32)thing->getShape());
+		hash = hashU32(hash, (u32)thing->getType());
+	}
+	return hash;
+}
+
+static void scenePositionSums(World *world, int *sum_x, int *sum_y)
+{
+	*sum_x = 0;
+	*sum_y = 0;
+	for(int i=0; i<world->getNThings(); ++i)
+	{
+		int x = 0;
+		int y = 0;
+		world->getThing(i)->getPosition(&x, &y);
+		*sum_x += x;
+		*sum_y += y;
+	}
+}
+
+static void countRenderWork(World *world, u32 *visible_things, u32 *line_quads)
+{
+	for(int i=0; i<world->getNThings(); ++i)
+	{
+		Thing *thing = world->getThing(i);
+		if(thing->isInvisible())
+			continue;
+		if(thing->getShape() == Thing::Polygon)
+		{
+			Polygon *polygon = (Polygon *)thing;
+			(*visible_things)++;
+			int vertices = polygon->getNVertices();
+			*line_quads += polygon->getClosed() ? vertices : vertices - 1;
+		}
+		else if(thing->getShape() == Thing::Circle)
+		{
+			Circle *circle = (Circle *)thing;
+			(*visible_things)++;
+			int radius = circle->getRadius();
+			int segments = radius * radius / 20;
+			if(segments < 5)
+				segments = 5;
+			if(segments > 16)
+				segments = 16;
+			*line_quads += segments;
+		}
+	}
+}
+
 static void drawBox(Canvas *canvas, BenchStat *input, Canvas::ObjectMode object_mode,
 		int x1, int y1, int x2, int y2)
 {
@@ -132,16 +221,19 @@ static void drawBox(Canvas *canvas, BenchStat *input, Canvas::ObjectMode object_
 	canvas->setObjectMode(object_mode);
 	canvas->setPenMode(Canvas::pmBox);
 	start = tickNow();
-	canvas->penDown(x1, y1);
+	ppDispatchTouchSample(x1, y1, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penMove((x1 + x2) / 2, (y1 + y2) / 2);
+	ppDispatchTouchSample(x1, y1, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penMove(x2, y2);
+	ppDispatchTouchSample((x1 + x2) / 2, (y1 + y2) / 2, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penUp(x2, y2);
+	ppDispatchTouchSample(x2, y2, true);
+	statAdd(input, tickDelta(start), 0);
+	start = tickNow();
+	ppDispatchTouchSample(x2, y2, false);
 	statAdd(input, tickDelta(start), 0);
 }
 
@@ -151,16 +243,19 @@ static void drawCircle(Canvas *canvas, BenchStat *input, int x, int y, int radiu
 	canvas->setObjectMode(Canvas::omDynamic);
 	canvas->setPenMode(Canvas::pmCircle);
 	start = tickNow();
-	canvas->penDown(x, y);
+	ppDispatchTouchSample(x, y, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penMove(x + radius / 2, y);
+	ppDispatchTouchSample(x, y, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penMove(x + radius, y);
+	ppDispatchTouchSample(x + radius / 2, y, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penUp(x + radius, y);
+	ppDispatchTouchSample(x + radius, y, true);
+	statAdd(input, tickDelta(start), 0);
+	start = tickNow();
+	ppDispatchTouchSample(x + radius, y, false);
 	statAdd(input, tickDelta(start), 0);
 }
 
@@ -170,16 +265,19 @@ static void drawPolygon(Canvas *canvas, BenchStat *input, const int points[][2],
 	canvas->setObjectMode(Canvas::omDynamic);
 	canvas->setPenMode(Canvas::pmPolygon);
 	start = tickNow();
-	canvas->penDown(points[0][0], points[0][1]);
+	ppDispatchTouchSample(points[0][0], points[0][1], true);
+	statAdd(input, tickDelta(start), 0);
+	start = tickNow();
+	ppDispatchTouchSample(points[0][0], points[0][1], true);
 	statAdd(input, tickDelta(start), 0);
 	for(int i=1; i<count; ++i)
 	{
 		start = tickNow();
-		canvas->penMove(points[i][0], points[i][1]);
+		ppDispatchTouchSample(points[i][0], points[i][1], true);
 		statAdd(input, tickDelta(start), 0);
 	}
 	start = tickNow();
-	canvas->penUp(points[count-1][0], points[count-1][1]);
+	ppDispatchTouchSample(points[count-1][0], points[count-1][1], false);
 	statAdd(input, tickDelta(start), 0);
 }
 
@@ -188,13 +286,13 @@ static void addPin(Canvas *canvas, BenchStat *input, int x, int y)
 	u32 start;
 	canvas->setPenMode(Canvas::pmPin);
 	start = tickNow();
-	canvas->penDown(x, y);
+	ppDispatchTouchSample(x, y, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penMove(x, y);
+	ppDispatchTouchSample(x, y, true);
 	statAdd(input, tickDelta(start), 0);
 	start = tickNow();
-	canvas->penUp(x, y);
+	ppDispatchTouchSample(x, y, false);
 	statAdd(input, tickDelta(start), 0);
 }
 
@@ -309,23 +407,31 @@ static void emitValue(FILE *file, const char *metric, long value, u32 checksum, 
 void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 {
 	consoleDebugInit((DebugDevice)(DebugDevice_NOCASH | DebugDevice_CONSOLE));
-	cpuStartTiming(0);
+	startTiming();
 
 	BenchStat input;
 	BenchStat hit_test;
 	BenchStat physics;
 	BenchStat render;
+	BenchStat render_begin;
+	BenchStat render_canvas;
+	BenchStat render_end;
 	BenchStat frame;
 	statInit(&input);
 	statInit(&hit_test);
 	statInit(&physics);
 	statInit(&render);
+	statInit(&render_begin);
+	statInit(&render_canvas);
+	statInit(&render_end);
 	statInit(&frame);
 
 	u32 frame_budget = BUS_CLOCK / 60;
+	u32 visible_things = 0;
+	u32 line_quads = 0;
 	FILE *file = 0;
 	if(fat_ok)
-		file = fopen("ppbench.csv", "w");
+		file = fopen("ppbench-" PP_BENCHMARK_LABEL ".csv", "w");
 
 	if(file)
 	{
@@ -339,9 +445,17 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	fflush(stderr);
 
 	emitValue(file, "benchmark_started", 1, 0, 1);
+	emitValue(file, "file_output_ready", file ? 1 : 0, 0, 1);
+	emitValue(file, "timer_read_overhead_ticks", timerReadOverhead(), 0, 1);
 	buildScene(canvas, &input);
-	u32 scene_checksum = hashWorld(world);
-	emitValue(file, "scene_things_created", world->getNThings(), scene_checksum, world->getNThings() >= 20);
+	u32 scene_checksum = hashSceneTopology(world);
+	int scene_pass = world->getNThings() == 27;
+	emitValue(file, "scene_things_created", world->getNThings(), scene_checksum, scene_pass);
+	int scene_sum_x = 0;
+	int scene_sum_y = 0;
+	scenePositionSums(world, &scene_sum_x, &scene_sum_y);
+	emitValue(file, "scene_position_sum_x", scene_sum_x, scene_checksum, scene_pass);
+	emitValue(file, "scene_position_sum_y", scene_sum_y, scene_checksum, scene_pass);
 
 	u32 hit_checksum = 0;
 	int leak_bytes = runHitTestLeakProbe(world, &hit_test, &hit_checksum);
@@ -352,7 +466,10 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	canvas->startSimulationMode();
 	canvas->setPenMode(Canvas::pmMove);
 	u32 drag_start = tickNow();
-	canvas->penDown(33, 37);
+	ppDispatchTouchSample(33, 37, true);
+	statAdd(&input, tickDelta(drag_start), 0);
+	drag_start = tickNow();
+	ppDispatchTouchSample(33, 37, true);
 	statAdd(&input, tickDelta(drag_start), 0);
 
 	for(int i=0; i<kSimulationFrames; ++i)
@@ -361,7 +478,7 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 		if(i >= 20 && i < 100)
 		{
 			u32 input_start = tickNow();
-			canvas->penMove(33 + ((i - 20) / 2), 37 + ((i - 20) / 3));
+			ppDispatchTouchSample(33 + ((i - 20) / 2), 37 + ((i - 20) / 3), true);
 			statAdd(&input, tickDelta(input_start), 0);
 		}
 
@@ -370,29 +487,42 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 		statAdd(&physics, tickDelta(physics_start), frame_budget);
 
 		u32 render_start = tickNow();
+		u32 phase_start = render_start;
 		ulStartDrawing2D();
+		statAdd(&render_begin, tickDelta(phase_start), frame_budget);
+		phase_start = tickNow();
 		canvas->draw();
+		statAdd(&render_canvas, tickDelta(phase_start), frame_budget);
+		phase_start = tickNow();
 		ulEndDrawing();
+		statAdd(&render_end, tickDelta(phase_start), frame_budget);
 		statAdd(&render, tickDelta(render_start), frame_budget);
 
 		statAdd(&frame, tickDelta(frame_start), frame_budget);
+		countRenderWork(world, &visible_things, &line_quads);
 	}
 
 	u32 input_start = tickNow();
-	canvas->penUp(73, 63);
+	ppDispatchTouchSample(73, 63, false);
 	statAdd(&input, tickDelta(input_start), 0);
 	canvas->stopSimulationMode();
 	state.simulating = false;
 
 	u32 final_checksum = hashWorld(world);
-	int behavior_pass = world->getNThings() >= 20;
+	int behavior_pass = scene_pass && world->getNThings() == 27 &&
+		final_checksum != 0 && visible_things > 0 && line_quads > 0;
 	int pass = behavior_pass && leak_fixed_pass;
 
 	emitRow(file, "touch_create_and_drag", &input, 0, scene_checksum, pass);
 	emitRow(file, "hit_test", &hit_test, 0, hit_checksum, pass);
 	emitRow(file, "physics_step", &physics, frame_budget, final_checksum, pass);
 	emitRow(file, "render_frame", &render, frame_budget, final_checksum, pass);
+	emitRow(file, "render_begin", &render_begin, frame_budget, final_checksum, pass);
+	emitRow(file, "render_canvas", &render_canvas, frame_budget, final_checksum, pass);
+	emitRow(file, "render_end", &render_end, frame_budget, final_checksum, pass);
 	emitRow(file, "frame_total", &frame, frame_budget, final_checksum, pass);
+	emitValue(file, "visible_things_rendered", visible_things, final_checksum, behavior_pass);
+	emitValue(file, "line_quads_rendered", line_quads, final_checksum, behavior_pass);
 	emitValue(file, "things_final", world->getNThings(), final_checksum, pass);
 	emitValue(file, "behavior_pass", behavior_pass, final_checksum, behavior_pass);
 	emitValue(file, "hit_test_heap_fixed_pass", leak_fixed_pass, hit_checksum, leak_fixed_pass);

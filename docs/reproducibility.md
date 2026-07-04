@@ -1,238 +1,210 @@
-# Pocket Physics v0.6 Reproducibility
+# Pocket Physics v0.6 Reproduction And Benchmark
 
-This branch reconstructs the Pocket Physics v0.6 Nintendo DS build from the
-repository history plus pinned third-party source archives.
+This repository now supports three independently identified Pocket Physics v0.6
+builds:
 
-## Release Baseline
+1. `historical`: a byte-exact reconstruction of the public 2008 ROM.
+2. `modern`: the v0.6 C++ source ported to current BlocksDS dependencies and tools.
+3. `improved`: the modern port plus measured runtime fixes and optimizations.
 
-GameBrew lists Pocket Physics version 0.6, last updated 2008-03-16. Its v0.6
-changelog includes "Massive speed optimizations" and a move to Box2D 2.0.
+No host wall-clock timing is used for performance claims. Instrumented ROMs read
+the Nintendo DS ARM9 TIMER0+TIMER1 cascade at the 33.513982 MHz bus clock.
 
-Verified release archive:
+## Exact 2008 Reconstruction
 
-| Artifact | SHA256 |
-| --- | --- |
-| `pocketphysics-gamebrew.zip` | `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6` |
-| `pocketphysics.nds` | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
-| `pocketphysics_nothumb.nds` | `64a15ff6c0e0e7235dd716833d68f8adaa9043afc867f5b6523d9c73750e586a` |
+The public release is:
 
-To verify/extract a local copy of the release zip:
+```text
+SHA256 9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
+Size   894016 bytes
+```
+
+Build and verify it with:
 
 ```sh
-tools/repro/extract_release_v06.sh .codex-artifacts/downloads/pocketphysics-gamebrew.zip
+tools/repro/build_v06_exact.sh
+tools/repro/test_v06_exact.sh
 ```
 
-## Rebuilt Source Inputs
+`test_v06_exact.sh` performs two clean builds and byte-compares ARM9, ARM7, and
+the final NDS ROM. Both clean final verification builds produced the public hash.
 
-The build starts from git commit `e9b621e` (`2008-03-15 Version 0.6`) and
-backfills files that were missing from that historical commit but later restored
-in `3e538e0`:
-
-- `arm9/source/PPBoundaryListener.{h,cpp}`
-- `arm9/data/icon_back.raw`
-- `arm9/data/icon_delete_file.raw`
-- `arm9/data/icon_load.raw`
-- `arm9/data/icon_move.raw`
-- `arm9/data/icon_save.raw`
-
-Pinned third-party sources:
-
-| Dependency | Source | SHA256 |
-| --- | --- | --- |
-| Box2D 2.0.1 | Debian snapshot `box2d_2.0.1+dfsg1.orig.tar.gz` | `ff35fa514b6a7bcdfd1d83c499d57cdd4dfec7adb1b42aeaeb8dbedfb069fdb0` |
-| TinyXML 2.6.2 | Debian snapshot `tinyxml_2.6.2.orig.tar.gz` | `15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593` |
-| Convex decomposition helpers | `91Act/box2d_fixed` commit `893e0d71a0fbffdbb3ccbd61c166311525be5ada` | Per-file hashes in `tools/repro/build_v06_blocksds.sh` |
-
-Toolchain container:
+The historical toolchain is devkitARM r21 (GCC 4.1.2, binutils 2.17) with archive
+SHA256:
 
 ```text
-skylyrac/blocksds:slim-v1.20.0
+7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203
 ```
 
-The build installs BlocksDS packages inside the container and records the exact
-package versions in `.codex-artifacts/build/v06-blocksds/logs/toolchain-packages.txt`.
-The verified package set for the current build is:
+The build downloads that checksum-pinned archive when it is not cached, runs it
+in a digest-pinned Debian container, assembles ARM9 and ARM7, and packages with
+the historical ndstool 1.36.
 
-```text
-blocksds-toolchain 1.21.1-1
-blocksds-ulibrary 1.14-1
-runtime-zlib 1.3.2-1
-toolchain-gcc-arm-none-eabi-binutils 2.46.0-1
-toolchain-gcc-arm-none-eabi-gcc 1:16.0.1.r228438.d284b73a9b4-1
-toolchain-gcc-arm-none-eabi-gcc-libs 1:16.0.1.r228438.d284b73a9b4-1
-toolchain-gcc-arm-none-eabi-libpng16 1.6.58-1
-toolchain-gcc-arm-none-eabi-libstdcxx-picolibc 16.0.1.r228438.d284b73a9b4-1
-toolchain-gcc-arm-none-eabi-picolibc-generic 1.8.11.r26127.2a7b920f5-1
-toolchain-gcc-arm-none-eabi-zlib 1.3.2-1
-```
+Important provenance limitation: `tools/repro/exact_source/recovered_arm*.S` is
+a disassembly-derived archival assembly reconstruction. It is source accepted by
+the historical assembler and does not read or embed the release ROM during a
+normal build, but it is not a recovery of the author's original C++ translation
+units. The modern build is the maintainable C++ reconstruction.
 
-## Build Profiles
+## Modern Dependencies
 
-The default profile is the reproduced modern-dependency baseline. The proposed
-performance profile uses the best in-ROM benchmark result from the profile
-matrix: Box2D fixed-point math, ARM mode, `-O3`, and targeted runtime bug fixes.
+The modern build starts at git commit `e9b621e` and backfills files restored in
+`3e538e0`. Third-party source inputs are checksum-pinned:
 
-| Profile | Box2D numeric mode | ARM9 mode | Optimization | Purpose |
-| --- | --- | --- | --- | --- |
-| `repro` | `float` | Thumb | `-O3` | Deterministic updated-dependency rebuild |
-| `perf` | fixed-point | ARM | `-O3` | Proposed improved build |
-| `perf-o2` | fixed-point | Thumb | `-O2` | Rejected matrix candidate |
-| `perf-o3` | fixed-point | Thumb | `-O3` | Matrix candidate |
-| `perf-os` | fixed-point | Thumb | `-Os` | Matrix candidate |
-| `perf-arm` | fixed-point | ARM | `-O3` | Same code-generation strategy as `perf` |
-| `bench-*` | varies | varies | varies | Instrumented ROMs that emit in-ROM CSV rows |
+| Input | Version |
+| --- | --- |
+| Box2D | 2.0.1 |
+| TinyXML | 2.6.2 |
+| Convex decomposition helpers | commit `893e0d71a0fbffdbb3ccbd61c166311525be5ada` |
+| BlocksDS toolchain | 1.21.1-1 |
+| BlocksDS uLibrary | 1.14-1 |
+| GCC ARM | 16.0.1 snapshot package |
+| binutils | 2.46.0-1 |
+| zlib | 1.3.2-1 |
+| libpng | 1.6.58-1 |
 
-The runtime fixes currently covered by the in-ROM benchmark are:
-
-- Replace the per-hit-test heap `new b2AABB` allocation in `World::getThingsAt`
-  with a stack `b2AABB`.
-- Replace `delete id_table` with `free(id_table)` for the `calloc`-allocated
-  load table in `World::load`.
-
-## Build
-
-Build the reproduced updated-dependency baseline:
+Build the uninstrumented ROMs with:
 
 ```sh
 tools/repro/build_v06_blocksds.sh
-```
-
-Current rebuilt ROM with updated dependencies:
-
-```text
-.codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds
-SHA256 e82787396c2fc96630951dda980d15bb85a684a80fa73776356acc6acb921190
-Size 739328 bytes
-ARM9 ELF size: text=630128 data=1432 bss=11340
-```
-
-Build the proposed improved profile:
-
-```sh
 tools/repro/build_v06_perf.sh
 ```
 
-Current improved ROM:
-
-```text
-.codex-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds
-SHA256 d7d652e3275cd7a394ccda0f83ce3946bec21795a46e9e0f27f6a72c4e86fc85
-Size 897024 bytes
-ARM9 ELF size: text=787536 data=1488 bss=11484
-```
-
-## Test And Benchmark
-
-Byte-reproducibility tests:
+Run two-clean-build byte comparisons with:
 
 ```sh
 tools/repro/test_v06_repro.sh
 tools/repro/test_v06_perf.sh
 ```
 
-Those tests build two fresh output directories per profile and byte-compare the
-resulting ROMs. They intentionally do not use host wall-clock emulator timing.
+Final uninstrumented artifacts:
 
-End-to-end in-ROM benchmark test:
+| Role | SHA256 | Size |
+| --- | --- | ---: |
+| Modern | `1545483fa3d0b1c1dd45909e25805b294e4b8a75f1adb2220fc15dd421a6a25a` | 739,328 B |
+| Improved | `744fe2978d3faed507c1f1dba3fa50b2b1fef65f4374c3eb2ef3a8ddf9268269` | 898,048 B |
 
-```sh
-tools/repro/test_v06_inrom.sh
-```
+Each row was produced identically by two clean builds.
 
-The benchmark ROM creates a deterministic touch workload through the real
-`Canvas` pen APIs: solid floor/platform strokes, dynamic boxes, circles,
-polygons, a pin, repeated hit tests, a simulated drag, 240 physics steps, and
-240 object-render frames. The ROM emits `PPBENCH` CSV rows containing DS CPU
-timer ticks, counts, min/max, checksums, and pass/fail fields.
+## Instrumented Workload
 
-The harness can collect rows from a FAT `ppbench.csv` file when available, or
-from the emulator debug stream. `timeout` status `124` is expected because the
-ROM deliberately idles after emitting benchmark rows; timeout duration is not a
-performance metric.
-
-The 2008 release binary is verified by SHA256 below, but it cannot emit in-ROM
-timing rows without modifying or binary-patching it. The empirical timing
-comparison therefore uses the source-equivalent instrumented `bench-repro` ROM
-against the instrumented proposed `bench-perf` ROM. The uninstrumented 2008
-release remains the binary baseline for artifact verification and boot testing.
-
-## Verified Artifacts
-
-| Role | Path | SHA256 | Size |
-| --- | --- | --- | --- |
-| 2008 v0.6 release | `.codex-artifacts/release-v0.6/gamebrew/PocketPhysics-v0.6/pocketphysics.nds` | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` | 894016 |
-| Rebuilt updated-dependency ROM | `.codex-artifacts/build/v06-blocksds/pocketphysics-v0.6-blocksds.nds` | `e82787396c2fc96630951dda980d15bb85a684a80fa73776356acc6acb921190` | 739328 |
-| Improved fixed-point ARM/O3 ROM | `.codex-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds` | `d7d652e3275cd7a394ccda0f83ce3946bec21795a46e9e0f27f6a72c4e86fc85` | 897024 |
-| Instrumented reproduced baseline | `.codex-artifacts/build/bench-repro/pocketphysics-v0.6-blocksds.nds` | `57e2b43c6cd3a66c7b7dd49c98fd34d518d6614a465a5663f30bdd4aaae41f4d` | 703488 |
-| Instrumented improved build | `.codex-artifacts/build/bench-perf/pocketphysics-v0.6-blocksds.nds` | `08319b5c4afae10cc2de0e6b303a3125100cf0de09ea1da7e3cf244fbbbda665` | 862208 |
-
-## Final In-ROM Comparison
-
-Run on 2026-06-25:
+Run the complete development loop with:
 
 ```sh
-REPEATS=3 DURATION=20 OUT=.codex-artifacts/benchmarks/inrom-final \
-    tools/repro/benchmark_inrom.sh
+REPEATS=3 DURATION=12 tools/repro/test_v06_inrom.sh
 ```
 
-Assertions from `.codex-artifacts/benchmarks/inrom-final/assertions.txt`:
+The historical benchmark rebuilds and verifies the exact public hash before
+installing a source-built overlay. The overlay bypasses only the release splash,
+branches after the original `setupGui`, and calls audited 2008 functions by
+address. `instrument_exact_arm9.py` refuses an ARM9 payload or hook bytes that do
+not match the verified release.
+
+All three instrumented ROMs then perform the same application-level workload:
+
+- Dispatch 225 down/move/up samples through the application's touch state machine.
+- Create exactly 27 objects: platforms, boxes, circles, freehand polygons, and a pin.
+- Reproduce the one-frame pen debounce, canvas bounds, GUI routing, scroll offsets,
+  and pen-up behavior.
+- Execute 600 real Box2D hit tests.
+- Drag a body while running 240 physics steps.
+- Draw 240 complete uLibrary canvas frames.
+- Count visible objects and textured line quads outside the timed regions.
+- Hash behavior and topology, calibrate timer-read cost, and measure heap growth.
+
+The harness requires every metric exactly once per repetition, expected sample
+counts, timeout status 124 from the deliberate post-test idle loop, stable timer
+totals, stable checksums, and a matching ordered shape/type topology checksum.
+Historical and improved fixed-point initial position sums must agree within one
+pixel; the float baseline is bounded to one pixel per created object.
+
+## Final Three-Way Result
+
+Final interpreter-mode run: `.codex-artifacts/benchmarks/inrom-three-way-final`.
+Every value below was identical in all three repetitions.
+
+| Instrumented role | SHA256 | Size |
+| --- | --- | ---: |
+| Historical overlay | `8871cfc7782b2c95763d1346cb667de01c0ee1463c8bf464efc9136d87f6c307` | 3,215,936 B |
+| Modern | `4aacea4e93a46fda4f3b693653e95900101f09a6e24d08af8c9b2719d46aef65` | 705,536 B |
+| Improved | `81a9c2249788fd12012c14255745e1eaa2bd10e6d49d3769a412c33920160c59` | 867,328 B |
+
+| Metric (mean DS ticks) | 2008 exact | Modern | Improved | Improved vs 2008 | Improved vs modern |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Touch create + drag | 10,068 | 15,468 | 13,445 | +33.54% | -13.08% |
+| Hit test | 3,456 | 3,358 | 1,877 | -45.69% | -44.10% |
+| Physics step | 606,516 | 613,252 | 544,593 | -10.21% | -11.20% |
+| Canvas render | 99,018 | 302,842 | 120,482 | +21.68% | -60.22% |
+| Full frame | 706,356 | 916,690 | 665,659 | -5.76% | -27.38% |
+| Hit-test heap delta | 14,400 B | 14,400 B | 0 B | fixed | fixed |
+
+The improved ROM rendered 22,488 line quads versus 22,183 in the historical run.
+The 2008 renderer remains faster per quad and historical touch creation remains
+faster; those regressions are retained rather than averaged away. The improved
+whole frame is faster because physics and hit testing more than recover the
+remaining renderer gap.
+
+Acceptance assertions:
 
 ```text
-bench-perf overall_pass=1
-bench-repro overall_pass=0 as expected for unfixed baseline
-bench-perf mean ticks lower than bench-repro for touch, hit-test, physics, render, and frame-total metrics
-bench-perf hit-test heap delta fixed from positive bytes to 0
+bench-historical: deterministic complete touch/physics/render workload
+bench-improved: deterministic complete touch/physics/render workload
+bench-modern: deterministic complete touch/physics/render workload
+all builds created an identical 27-object scene through touch dispatch
+improved build removed the reproduced hit-test leak
+improved build beat modern in every primary timed workload
+improved build beat historical hit-test, physics, and full-frame totals
 ```
 
-Summary from `.codex-artifacts/benchmarks/inrom-final/summary.csv`:
+## Fixes And Selection
 
-| Metric | Reproduced baseline mean ticks | Improved mean ticks | Delta |
-| --- | ---: | ---: | ---: |
-| Touch create and drag | 15575 | 13006 | -16.49% |
-| Hit test | 3634 | 2036 | -43.97% |
-| Physics step | 617736 | 536888 | -13.09% |
-| Render frame | 301418 | 201819 | -33.04% |
-| Frame total | 919710 | 739343 | -19.61% |
-| Hit-test heap delta bytes | 14416 | 0 | -100.00% |
-| Overall pass | 0 | 1 | fixed |
+The improved build contains:
 
-The repeated runs were deterministic in DeSmuME interpreter mode: each metric's
-min and max were identical across the three repeats, and checksums were stable
-within each build.
+- Stack allocation for the hit-test `b2AABB`, removing 14,400 bytes of measured
+  growth per 600-query workload.
+- Correct `free` for `calloc`-allocated load tables.
+- Removal of `fclose(NULL)` on new-file save.
+- Bounded and terminated sample/caption strings.
+- A six-byte stack number buffer instead of a four-byte heap buffer that could
+  receive six bytes.
+- A corrected aligned-allocation check.
+- Correct uLibrary quad tint writes and historical vertex argument order.
+- Fixed-point Box2D in ARM mode with GCC `-O3`.
+- One reciprocal per line normal instead of two serialized DS hardware divides.
+- One crayon texture bind per canvas.
+- Cached polygon rotation/origin and first transformed vertex per draw, moving
+  invariant work out of every vertex calculation.
+- A direct historical 512-angle sine lookup reconstructed from the r21 table.
 
-The frame metric is still over a nominal 60 Hz budget for much of this stress
-scene (`over_budget_total=606` across 720 optimized frames). The claim here is a
-measured improvement and fixed leak under a reproducible touch/physics workload,
-not a guarantee that this scene now holds 60 Hz on every DS frame.
+Rejected by in-ROM measurement:
 
-## Profile Selection
+- Fixed-point Thumb/O2: slower physics.
+- Float ARM/O3: slower frame total.
+- Mixed ARM/Thumb canvas: frame total increased to 727,852 ticks.
+- Whole-program LTO: physics increased to 547,028 and frame total to 730,641 ticks.
 
-The selected profile came from a one-repeat in-ROM matrix in
-`.codex-artifacts/benchmarks/profile-selection`:
+## Real Hardware
 
-| Candidate | Frame total delta vs `bench-repro` | Physics delta | Hit-test delta | Result |
-| --- | ---: | ---: | ---: | --- |
-| Float Thumb/O3 runtime fixes | -0.34% | -0.60% | -15.44% | Fixes leak, small speedup |
-| Float Thumb/O2 runtime fixes | -1.38% | -2.33% | -12.03% | Fixes leak, small speedup |
-| Float ARM/O3 runtime fixes | +1.46% | +3.23% | -15.38% | Rejected |
-| Fixed Thumb/O2 runtime fixes | +2.70% | +19.15% | +9.03% | Rejected |
-| Fixed ARM/O3 runtime fixes | -19.63% | -13.08% | -44.11% | Selected |
+Each benchmark ROM writes a separate file when DLDI/FAT is available:
 
-This matters because the first fixed-point attempt was slower for physics. The
-final proposal is not "fixed-point because the DS has no FPU"; it is the
-specific fixed-point ARM/O3 profile that won the in-ROM workload.
-
-## Real Hardware Notes
-
-For flashcart or real-hardware runs, build the benchmark ROMs and run:
-
-```sh
-REPEATS=1 DURATION=20 OUT=.codex-artifacts/benchmarks/inrom-hw-prep \
-    tools/repro/benchmark_inrom.sh
+```text
+ppbench-historical.csv
+ppbench-modern.csv
+ppbench-improved.csv
 ```
 
-Then copy `.codex-artifacts/build/bench-repro/pocketphysics-v0.6-blocksds.nds`
-and `.codex-artifacts/build/bench-perf/pocketphysics-v0.6-blocksds.nds` to the
-device. When FAT is available, the ROM writes `ppbench.csv`; otherwise use a
-debug console path that captures `PPBENCH` rows. Do not compare wall-clock time
-spent sitting in the post-benchmark idle loop.
+Use these ROMs:
+
+```text
+.codex-artifacts/build/bench-historical/pocketphysics-bench-historical.nds
+.codex-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds
+.codex-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds
+```
+
+Run each ROM from the same flashcart and hardware, then collect the three CSVs.
+The timer values are hardware bus-clock ticks. Do not use launch time, emulator
+wall time, or time spent in the deliberate final idle loop as performance data.
+
+The automated final numbers above are DeSmuME interpreter results. They prove
+deterministic ARM instruction/register behavior and catch application regressions,
+but they are not presented as a substitute for a collected physical-DS run.
