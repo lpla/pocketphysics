@@ -1,0 +1,8 @@
+melonds bench-historical: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds bench-improved: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds bench-modern: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds: all builds created the same 27-object touch scene
+melonds: improved removed the reproduced hit-test leak
+melonds: improved beat modern touch, hit-test, physics, and complete-frame time
+melonds: improved beat historical hit-test and physics time
+melonds: improved kept all frames within 1% of the 60 Hz target and recorded no two-frame intervals

@@ -164,7 +164,7 @@ class AnalyzerTests(unittest.TestCase):
             tmp = Path(raw_tmp)
             results = tmp / "results.csv"
             with results.open("w", newline="") as handle:
-                writer = csv.DictWriter(handle, fieldnames=FIELDS)
+                writer = csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n")
                 writer.writeheader()
                 writer.writerows(rows)
             return subprocess.run(
@@ -231,7 +231,9 @@ class AnalyzerTests(unittest.TestCase):
                         for field in ("total_ticks", "mean_ticks", "min_ticks", "max_ticks"):
                             row[field] = 1
                 with raw_csv.open("w", newline="") as handle:
-                    writer = csv.DictWriter(handle, fieldnames=FIELDS[6:])
+                    writer = csv.DictWriter(
+                        handle, fieldnames=FIELDS[6:], lineterminator="\n"
+                    )
                     writer.writeheader()
                     writer.writerows(
                         {field: row[field] for field in FIELDS[6:]} for row in role_rows

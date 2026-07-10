@@ -7,12 +7,36 @@ in-ROM benchmark workflow. Each completed dataset contains:
 - `summary.csv`: grouped timing and correctness summary.
 - `assertions.txt`: machine-checked acceptance statements.
 - `metadata.json`: emulator/runtime or physical-hardware identity.
-- `roms.txt`: role-to-ROM paths used locally; hashes remain authoritative in
-  `results.csv`.
+- `roms.txt`: portable role-to-ROM SHA-256 and byte-size manifest, with no local
+  paths.
 
 The canonical emulator datasets are generated after the implementation commit
 so their metadata points to a clean source revision. Optimization screening is
 published separately from the final historical/modern/improved comparison.
+
+## Canonical Comparison
+
+- [DeSmuME 0.9.11 final dataset](desmume-final/)
+- [melonDS 1.1 final dataset](melonds-final/)
+
+Each value below is the deterministic per-run mean from three complete runs.
+Cadence columns count intervals out of 240 simulation/render frames.
+
+| Emulator | Role | Touch | Hit test | Physics | Frame | >1% | >2x | Leak bytes |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| DeSmuME | Historical | 10,062 | 3,464 | 606,231 | 706,134 | 209 | 0 | 14,400 |
+| DeSmuME | Modern | 15,628 | 3,531 | 616,583 | 918,315 | 103 | 87 | 14,400 |
+| DeSmuME | Improved | 10,270 | 1,851 | 181,898 | 557,252 | 0 | 0 | 0 |
+| melonDS | Historical | 5,471 | 2,805 | 278,893 | 554,829 | 0 | 0 | 14,400 |
+| melonDS | Modern | 12,286 | 3,015 | 584,579 | 904,349 | 102 | 87 | 14,400 |
+| melonDS | Improved | 6,242 | 1,591 | 111,042 | 556,910 | 0 | 0 | 0 |
+
+Against modern, improved reduces physics time by 70.5% in DeSmuME and 81.0%
+in melonDS, while complete-frame time falls by 39.3% and 38.4%. It removes the
+reproduced hit-test leak and all tolerant cadence overruns in both emulators.
+The historical melonDS frame is already synchronized at the 60 Hz floor, so its
+0.4% frame advantage over improved is not presented as extra CPU headroom;
+improved physics and hit testing are substantially faster.
 
 There is currently no physical Nintendo DS result set. See
 [`docs/real-hardware.md`](../../docs/real-hardware.md) for the collection and

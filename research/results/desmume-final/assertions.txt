@@ -1,0 +1,8 @@
+desmume bench-historical: complete touch/physics/render workload; timing spread <= 0.000000%
+desmume bench-improved: complete touch/physics/render workload; timing spread <= 0.000000%
+desmume bench-modern: complete touch/physics/render workload; timing spread <= 0.000000%
+desmume: all builds created the same 27-object touch scene
+desmume: improved removed the reproduced hit-test leak
+desmume: improved beat modern touch, hit-test, physics, and complete-frame time
+desmume: improved beat historical hit-test and physics time
+desmume: improved kept all frames within 1% of the 60 Hz target and recorded no two-frame intervals

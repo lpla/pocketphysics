@@ -112,7 +112,7 @@ def main() -> int:
     result_path = output / "results.csv"
     source_files: list[dict[str, object]] = []
     with result_path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=RESULT_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=RESULT_FIELDS, lineterminator="\n")
         writer.writeheader()
         for label in sorted(csvs):
             rom = roms[label].resolve()

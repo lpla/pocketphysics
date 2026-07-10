@@ -57,7 +57,7 @@ Compact evidence intended for review is tracked under `research/results`:
 - Metric summary CSV.
 - Machine-checked assertion log.
 - Runtime and source metadata.
-- ROM hash manifest.
+- Portable ROM hash and byte-size manifest.
 
 No ROM is committed in the evidence directories. The scripts rebuild each ROM
 from its documented role and verify its hash.

@@ -101,7 +101,7 @@ def main() -> int:
         "status_set",
     ]
     with args.summary.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for key, metric_rows in sorted(groups.items()):
             emu, label, build, metric = key

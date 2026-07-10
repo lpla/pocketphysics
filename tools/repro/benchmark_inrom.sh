@@ -47,14 +47,23 @@ case "$OUT" in
 esac
 
 container_specs=()
+rom_manifest=("label,sha256,size_bytes")
+rom_labels=()
 for spec in "${rom_specs[@]}"; do
     label="${spec%%=*}"
     rom="${spec#*=}"
-    if [ "$label" = "$rom" ] || [ -z "$label" ] || [ ! -f "$rom" ]; then
+    if [ "$label" = "$rom" ] || [[ ! "$label" =~ ^[A-Za-z0-9._-]+$ ]] || [ ! -f "$rom" ]; then
         echo "Invalid ROM spec or missing ROM: $spec" >&2
         echo "Use label=/absolute/or/repo-relative/path.nds" >&2
         exit 1
     fi
+    for existing_label in "${rom_labels[@]}"; do
+        if [ "$label" = "$existing_label" ]; then
+            echo "Duplicate ROM label: $label" >&2
+            exit 1
+        fi
+    done
+    rom_labels+=("$label")
 
     case "$rom" in
         "$ROOT"/*) container_rom="/workspace/${rom#$ROOT/}" ;;
@@ -65,11 +74,14 @@ for spec in "${rom_specs[@]}"; do
         *) container_rom="/workspace/$rom" ;;
     esac
     container_specs+=("$label=$container_rom")
+    rom_sha256="$(shasum -a 256 "$rom" | awk '{print $1}')"
+    rom_size="$(wc -c < "$rom" | tr -d ' ')"
+    rom_manifest+=("$label,$rom_sha256,$rom_size")
 done
 
 rm -rf "$OUT"
 mkdir -p "$OUT/logs" "$OUT/runs"
-printf '%s\n' "${rom_specs[@]}" > "$OUT/roms.txt"
+printf '%s\n' "${rom_manifest[@]}" > "$OUT/roms.txt"
 echo "emulator,label,iteration,status,rom_sha256,rom_size_bytes,tag,build,metric,count,total_ticks,mean_ticks,min_ticks,max_ticks,budget_ticks,over_budget,checksum,pass" > "$OUT/results.csv"
 
 echo "Building pinned $EMULATOR runtime"
