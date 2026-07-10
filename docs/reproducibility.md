@@ -23,7 +23,7 @@ Important controls include:
 
 - Public release ZIP and both release ROM hashes.
 - devkitARM r21 archive hash.
-- Debian base image digest and dated signed package snapshot.
+- Debian base image digest and dated signed package snapshots.
 - BlocksDS image digest and exact package archive hashes.
 - Box2D, TinyXML, and convex-decomposition source hashes.
 - melonDS 1.1 AppImage hash and exact DeSmuME package version.

@@ -7,7 +7,8 @@ records every external release archive, source archive, package, container base,
 and emulator consumed by the research workflows.
 
 Scripts verify file hashes before extraction. Container images are addressed by
-digest. Debian package resolution uses the signed `20260709T000000Z` snapshot.
+digest. The legacy multiarch build uses the signed `20260709T000000Z` snapshot;
+emulator packages use `20250721T000000Z`, which retains DeSmuME `0.9.11-4.1`.
 The BlocksDS container's rolling package index is not synchronized; exact
 archives from [`blocksds-packages.lock`](../tools/repro/blocksds-packages.lock)
 are installed directly.

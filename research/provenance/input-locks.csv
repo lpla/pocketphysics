@@ -15,8 +15,10 @@ package,blocksds-ulibrary,1.14-1,https://blocksds.skylyrac.net/packages/rolling/
 package,libpng,1.6.58-1,https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-libpng16-1.6.58-1-any.pkg.tar.xz,0d30a305b66f352fa632104b17941eb45edc2275bd2fdf2a796c4d905a09b250,build_v06_blocksds.sh
 package,zlib,1.3.2-1,https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-zlib-1.3.2-1-any.pkg.tar.xz,3c81569d924f2f455207320c0abec99261891d9bb5f105bce56c54afaa3f89f5,build_v06_blocksds.sh
 container-image,Debian bookworm-slim,12.14,docker://debian:bookworm-slim,0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb,all runtime Dockerfiles
-apt-snapshot,Debian archive,20260709T000000Z,http://snapshot.debian.org/archive/debian/20260709T000000Z,,all runtime Dockerfiles
-apt-snapshot,Debian security archive,20260709T000000Z,http://snapshot.debian.org/archive/debian-security/20260709T000000Z,,all runtime Dockerfiles
+apt-snapshot,Debian archive,20260709T000000Z,http://snapshot.debian.org/archive/debian/20260709T000000Z,,exact/Dockerfile
+apt-snapshot,Debian security archive,20260709T000000Z,http://snapshot.debian.org/archive/debian-security/20260709T000000Z,,exact/Dockerfile
+apt-snapshot,Debian archive,20250721T000000Z,http://snapshot.debian.org/archive/debian/20250721T000000Z,,emulator Dockerfiles
+apt-snapshot,Debian security archive,20250721T000000Z,http://snapshot.debian.org/archive/debian-security/20250721T000000Z,,emulator Dockerfiles
 emulator,melonDS AppImage,1.1,https://github.com/melonDS-emu/melonDS/releases/download/1.1/melonDS-1.1-appimage-x86_64.zip,bf377420a2e95f2cd2cdda17d5372b51c2534f858b038db9ec6d129554875124,emulators/melonds/Dockerfile
 emulator,DeSmuME Debian package,0.9.11-4.1,apt:desmume,,emulators/desmume/Dockerfile
 tracked-input,ppicon.bmp,repository blob,repo:ppicon.bmp,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,build_v06_exact.sh
