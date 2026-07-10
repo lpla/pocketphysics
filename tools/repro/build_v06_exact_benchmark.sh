@@ -10,8 +10,8 @@ OVERLAY_ADDRESS=0x02300000
 
 OUT="$BASE_OUT" "$ROOT/tools/repro/build_v06_exact.sh"
 
-docker build -q -t "$IMAGE" -f "$ROOT/tools/repro/exact/Dockerfile" "$ROOT/tools/repro/exact" >/dev/null
-container="$(docker create "$IMAGE" sleep infinity)"
+docker build --platform linux/amd64 -q -t "$IMAGE" -f "$ROOT/tools/repro/exact/Dockerfile" "$ROOT/tools/repro/exact" >/dev/null
+container="$(docker create --platform linux/amd64 "$IMAGE" sleep infinity)"
 cleanup() {
     docker rm -f "$container" >/dev/null 2>&1 || true
 }
@@ -35,7 +35,7 @@ docker exec "$container" bash -lc '
         -fno-exceptions -fno-rtti -fno-builtin -nostdlib -nostartfiles \
         -c /work/overlay/benchmark_overlay.cpp -o /work/out/benchmark_overlay.o
     arm-eabi-as -mthumb-interwork /work/overlay/nocash_debug.S -o /work/out/nocash_debug.o
-    arm-none-eabi-ld -T /work/overlay/overlay.ld --gc-sections \
+    arm-none-eabi-ld --no-warn-execstack -T /work/overlay/overlay.ld --gc-sections \
         /work/out/benchmark_overlay.o /work/out/nocash_debug.o \
         -o /work/out/overlay.elf
     arm-none-eabi-objcopy -O binary /work/out/overlay.elf /work/out/overlay.bin

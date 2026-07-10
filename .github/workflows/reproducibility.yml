@@ -1,0 +1,40 @@
+name: Reproducibility
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/reproducibility.yml"
+      - "tools/repro/**"
+      - "research/provenance/**"
+
+permissions:
+  contents: read
+
+jobs:
+  full-development-loop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out full history
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Run reproducibility and in-ROM smoke suite
+        env:
+          REPEATS: "1"
+          DESMUME_DURATION: "45"
+          MELONDS_DURATION: "12"
+        run: tools/repro/test_all.sh
+
+      - name: Upload normalized benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: inrom-smoke-${{ github.sha }}
+          path: |
+            .codex-artifacts/benchmarks/inrom-test/**
+            .codex-artifacts/test/**
+          if-no-files-found: warn
+          retention-days: 14

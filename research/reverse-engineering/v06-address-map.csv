@@ -1,0 +1,30 @@
+address,kind,name,thumb_entry,validation
+0x0200451c,patch-site,splash call,yes,preimage fdf748fd required before two Thumb NOPs
+0x020045b8,patch-site,post-setupGui hook,yes,preimage 684a0223 required before overlay branch
+0x02084a55,function,fclose,yes,called after CSV emission
+0x02084de9,function,fopen,yes,opens ppbench-historical.csv
+0x02084eb5,function,fputs,yes,writes benchmark CSV lines
+0x02086581,function,mallinfo,yes,measures hit-test heap delta
+0x0207954d,function,swiWaitForVBlank,yes,deliberate post-benchmark idle loop
+0x020ca208,global,World pointer,no,27-object scene and physics validation
+0x020ca218,global,Canvas pointer,no,touch and render validation
+0x02002385,function,application touch dispatcher,yes,225 scripted stylus samples
+0x02002da1,function,set pen mode,yes,selects polygon box circle pin and move modes
+0x02002e41,function,set object mode,yes,selects dynamic and solid objects
+0x02000ced,function,Canvas::draw,yes,240 measured canvas frames
+0x02000379,function,Canvas::startSimulationMode,yes,enters simulation before drag
+0x02000385,function,Canvas::stopSimulationMode,yes,leaves simulation after drag
+0x0200767d,function,World::getNThings,yes,scene count and hash validation
+0x02007685,function,World::getThing,yes,scene topology and state hashing
+0x02007fa9,function,World::getThingsAt,yes,600 measured hit tests
+0x02008265,function,World::step,yes,240 measured physics steps
+0x0200731d,function,Thing::getPosition,yes,scene and final-state hashing
+0x02006db9,function,Thing::getShape,yes,topology and render-work validation
+0x02006dbd,function,Thing::getType,yes,topology validation
+0x02006df1,function,Thing::isInvisible,yes,render-work validation
+0x02004a49,function,Polygon::getNVertices,yes,line-quad count validation
+0x02004a59,function,Polygon::getClosed,yes,line-quad count validation
+0x02001535,function,Circle::getRadius,yes,line-quad count validation
+0x0205e3cc,function,ulStartDrawing2D,no,render phase boundary
+0x0205da70,function,ulEndDrawing,no,render phase boundary
+0x02300000,overlay-region,source-built benchmark overlay,no,link address checked against ARM9 payload end

@@ -5,6 +5,7 @@ ROOT="$(git rev-parse --show-toplevel)"
 ZIP="${1:-$ROOT/.codex-artifacts/downloads/pocketphysics-gamebrew.zip}"
 OUT="${OUT:-$ROOT/.codex-artifacts/release-v0.6/gamebrew}"
 
+ZIP_URL="https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip"
 ZIP_SHA256="953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6"
 ROM_SHA256="9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64"
 ROM_NOTHUMB_SHA256="64a15ff6c0e0e7235dd716833d68f8adaa9043afc867f5b6523d9c73750e586a"
@@ -14,14 +15,13 @@ sha256_file() {
 }
 
 if [ ! -f "$ZIP" ]; then
-    cat >&2 <<EOF
-Release zip not found:
-  $ZIP
-
-Download the Pocket Physics v0.6 archive from GameBrew's Download link and
-place it at that path, or pass the zip path as the first argument.
-EOF
-    exit 1
+    if [ "$#" -gt 0 ]; then
+        echo "Release zip not found: $ZIP" >&2
+        exit 1
+    fi
+    mkdir -p "$(dirname "$ZIP")"
+    echo "Fetching checksum-pinned Pocket Physics v0.6 release archive"
+    curl -L --fail --retry 3 --retry-delay 2 "$ZIP_URL" -o "$ZIP"
 fi
 
 actual_zip_sha="$(sha256_file "$ZIP")"

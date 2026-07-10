@@ -11,7 +11,9 @@ if [ -z "${OUT:-}" ]; then
 fi
 DOWNLOADS="${DOWNLOADS:-$ROOT/.codex-artifacts/downloads}"
 DEPS_CACHE="${DEPS_CACHE:-$ROOT/.codex-artifacts/deps}"
-IMAGE="${BLOCKSDS_IMAGE:-skylyrac/blocksds:slim-v1.20.0}"
+PACKAGE_CACHE="${BLOCKSDS_PACKAGE_CACHE:-$DOWNLOADS/blocksds-packages}"
+PACKAGE_LOCK="$ROOT/tools/repro/blocksds-packages.lock"
+IMAGE="${BLOCKSDS_IMAGE:-skylyrac/blocksds@sha256:67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8}"
 
 sha256_file() {
     shasum -a 256 "$1" | awk '{print $1}'
@@ -40,7 +42,7 @@ fetch() {
 }
 
 rm -rf "$OUT"
-mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE"
+mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE" "$PACKAGE_CACHE"
 
 SRC="$OUT/src"
 DEPS="$OUT/deps"
@@ -88,6 +90,14 @@ fetch "$CONVEX_BASE/b2Polygon.h" "$DEPS/convex-decomposition-original/b2Polygon.
 fetch "$CONVEX_BASE/b2Triangle.cpp" "$DEPS/convex-decomposition-original/b2Triangle.cpp" "fa8896a7b252cb233502a9698ca6a706a717d4ad5a62b17bad9f6a67ae8b03ee"
 fetch "$CONVEX_BASE/b2Triangle.h" "$DEPS/convex-decomposition-original/b2Triangle.h" "689bd29eea223e6f73365f1b46456fd55d5313d3959b6baeff60cd3d54626bf1"
 
+echo "Fetching checksum-pinned BlocksDS package archives"
+while IFS='|' read -r filename expected url; do
+    case "$filename" in
+        ''|'#'*) continue ;;
+    esac
+    fetch "$url" "$PACKAGE_CACHE/$filename" "$expected"
+done < "$PACKAGE_LOCK"
+
 python3 "$ROOT/tools/repro/transform_convex_decomposition.py" \
     "$DEPS/convex-decomposition-original" \
     "$DEPS/convex-decomposition"
@@ -98,8 +108,11 @@ python3 "$ROOT/tools/repro/patch_v06_source.py" "$SRC"
 echo "Building in Docker image: $IMAGE"
 OUT_REL="${OUT#$ROOT/}"
 docker run --rm \
+    --platform linux/amd64 \
     -e BUILD_PROFILE="$PROFILE" \
+    -e LOCKED_PACKAGES_DIR=/locked-packages \
     -v "$ROOT":/workspace \
+    -v "$PACKAGE_CACHE":/locked-packages:ro \
     -w /workspace \
     "$IMAGE" \
     bash tools/repro/container_build_v06.sh "/workspace/$OUT_REL"

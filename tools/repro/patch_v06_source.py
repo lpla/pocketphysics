@@ -387,6 +387,18 @@ void handleInput(void)
     canvas = src / "arm9/source/canvas.cpp"
     replace_exact(
         canvas,
+        "void Canvas::draw(void)\n",
+        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM)\n"
+        "ITCM_CODE\n#endif\nvoid Canvas::draw(void)\n",
+    )
+    replace_exact(
+        canvas,
+        "void Canvas::drawLine(u16 col, int x1, int y1, int x2, int y2)\n",
+        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM)\n"
+        "ITCM_CODE\n#endif\nvoid Canvas::drawLine(u16 col, int x1, int y1, int x2, int y2)\n",
+    )
+    replace_exact(
+        canvas,
         "void Canvas::draw(void)\n{\n",
         "void Canvas::draw(void)\n{\n#ifdef PP_RENDER_BATCHED\n\tulSetTexture(crayon);\n#endif\n",
     )
@@ -489,7 +501,24 @@ void handleInput(void)
 \tody = div32(4 * (ody<<8), len);
 """,
         """#ifdef PP_RENDER_BATCHED
+\tif(len <= 0)
+\t\treturn;
+#ifdef PP_RENDER_RECIPROCAL_CACHE
+\tstatic int reciprocal_lengths[64];
+\tstatic int reciprocal_values[64];
+\tint reciprocal_index = len & 63;
+\tint reciprocal;
+\tif(reciprocal_lengths[reciprocal_index] == len)
+\t\treciprocal = reciprocal_values[reciprocal_index];
+\telse
+\t{
+\t\treciprocal = div32(1 << 20, len);
+\t\treciprocal_lengths[reciprocal_index] = len;
+\t\treciprocal_values[reciprocal_index] = reciprocal;
+\t}
+#else
 \tint reciprocal = div32(1 << 20, len);
+#endif
 \todx = (odx * reciprocal) >> 10;
 \tody = (ody * reciprocal) >> 10;
 #else

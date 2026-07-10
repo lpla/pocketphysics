@@ -8,6 +8,35 @@ static const u32 kFrameBudget = 33513982u / 60u;
 static const int kSimulationFrames = 240;
 static const int kHitTestIterations = 600;
 
+// Audited Pocket Physics v0.6 release addresses. Thumb entry points retain
+// their low-bit marker; data pointers are naturally aligned.
+static const u32 kFclose = 0x02084a55u;
+static const u32 kFopen = 0x02084de9u;
+static const u32 kFputs = 0x02084eb5u;
+static const u32 kMallInfo = 0x02086581u;
+static const u32 kWaitForVBlank = 0x0207954du;
+static const u32 kWorldGlobal = 0x020ca208u;
+static const u32 kCanvasGlobal = 0x020ca218u;
+static const u32 kDispatchTouch = 0x02002385u;
+static const u32 kSetPenMode = 0x02002da1u;
+static const u32 kSetObjectMode = 0x02002e41u;
+static const u32 kCanvasDraw = 0x02000cedu;
+static const u32 kCanvasStartSimulationMode = 0x02000379u;
+static const u32 kCanvasStopSimulationMode = 0x02000385u;
+static const u32 kWorldGetNThings = 0x0200767du;
+static const u32 kWorldGetThing = 0x02007685u;
+static const u32 kWorldGetThingsAt = 0x02007fa9u;
+static const u32 kWorldStep = 0x02008265u;
+static const u32 kThingGetPosition = 0x0200731du;
+static const u32 kThingGetShape = 0x02006db9u;
+static const u32 kThingGetType = 0x02006dbdu;
+static const u32 kThingIsInvisible = 0x02006df1u;
+static const u32 kPolygonGetNVertices = 0x02004a49u;
+static const u32 kPolygonGetClosed = 0x02004a59u;
+static const u32 kCircleGetRadius = 0x02001535u;
+static const u32 kUlStartDrawing2D = 0x0205e3ccu;
+static const u32 kUlEndDrawing = 0x0205da70u;
+
 static volatile u16 &timerData(int timer)
 {
 	return *(volatile u16 *)(0x04000100u + (u32)timer * 4u);
@@ -63,18 +92,18 @@ static void writeFileLine(const char *line)
 {
 	if(!g_benchmark_file)
 		return;
-	((int (*)(const char *, void *))0x02084eb5u)(line, g_benchmark_file);
-	((int (*)(const char *, void *))0x02084eb5u)("\n", g_benchmark_file);
+	((int (*)(const char *, void *))kFputs)(line, g_benchmark_file);
+	((int (*)(const char *, void *))kFputs)("\n", g_benchmark_file);
 }
 
 static void *world()
 {
-	return *(void **)0x020ca208u;
+	return *(void **)kWorldGlobal;
 }
 
 static void *canvas()
 {
-	return *(void **)0x020ca218u;
+	return *(void **)kCanvasGlobal;
 }
 
 static void statInit(BenchStat *stat)
@@ -272,12 +301,12 @@ static void emitValue(const char *metric, int value, u32 checksum, int pass)
 
 static void setObjectMode(int mode)
 {
-	((void (*)(int))0x02002e41u)(mode);
+	((void (*)(int))kSetObjectMode)(mode);
 }
 
 static void setPenMode(int mode)
 {
-	((void (*)(int))0x02002da1u)(mode);
+	((void (*)(int))kSetPenMode)(mode);
 }
 
 static void dispatchTouch(int x, int y, bool down, BenchStat *input)
@@ -292,7 +321,7 @@ static void dispatchTouch(int x, int y, bool down, BenchStat *input)
 	else
 		ipc->buttons |= (1u << 6);
 	u32 start = tickNow();
-	((void (*)())0x02002385u)();
+	((void (*)())kDispatchTouch)();
 	statAdd(input, tickNow() - start, 0);
 }
 
@@ -365,7 +394,7 @@ static void buildScene(BenchStat *input)
 
 static int getThingCount()
 {
-	return ((int (*)(void *))0x0200767du)(world());
+	return ((int (*)(void *))kWorldGetNThings)(world());
 }
 
 static u32 hashWorld()
@@ -373,12 +402,12 @@ static u32 hashWorld()
 	u32 hash = hashU32(kFnvOffset, (u32)getThingCount());
 	for(int i=0; i<getThingCount(); ++i)
 	{
-		void *thing = ((void *(*)(void *, int))0x02007685u)(world(), i);
+		void *thing = ((void *(*)(void *, int))kWorldGetThing)(world(), i);
 		int x = 0;
 		int y = 0;
-		((void (*)(void *, int *, int *))0x0200731du)(thing, &x, &y);
-		hash = hashU32(hash, (u32)((int (*)(void *))0x02006db9u)(thing));
-		hash = hashU32(hash, (u32)((int (*)(void *))0x02006dbdu)(thing));
+		((void (*)(void *, int *, int *))kThingGetPosition)(thing, &x, &y);
+		hash = hashU32(hash, (u32)((int (*)(void *))kThingGetShape)(thing));
+		hash = hashU32(hash, (u32)((int (*)(void *))kThingGetType)(thing));
 		hash = hashU32(hash, (u32)x);
 		hash = hashU32(hash, (u32)y);
 	}
@@ -390,9 +419,9 @@ static u32 hashSceneTopology()
 	u32 hash = hashU32(kFnvOffset, (u32)getThingCount());
 	for(int i=0; i<getThingCount(); ++i)
 	{
-		void *thing = ((void *(*)(void *, int))0x02007685u)(world(), i);
-		hash = hashU32(hash, (u32)((int (*)(void *))0x02006db9u)(thing));
-		hash = hashU32(hash, (u32)((int (*)(void *))0x02006dbdu)(thing));
+		void *thing = ((void *(*)(void *, int))kWorldGetThing)(world(), i);
+		hash = hashU32(hash, (u32)((int (*)(void *))kThingGetShape)(thing));
+		hash = hashU32(hash, (u32)((int (*)(void *))kThingGetType)(thing));
 	}
 	return hash;
 }
@@ -403,10 +432,10 @@ static void scenePositionSums(int *sum_x, int *sum_y)
 	*sum_y = 0;
 	for(int i=0; i<getThingCount(); ++i)
 	{
-		void *thing = ((void *(*)(void *, int))0x02007685u)(world(), i);
+		void *thing = ((void *(*)(void *, int))kWorldGetThing)(world(), i);
 		int x = 0;
 		int y = 0;
-		((void (*)(void *, int *, int *))0x0200731du)(thing, &x, &y);
+		((void (*)(void *, int *, int *))kThingGetPosition)(thing, &x, &y);
 		*sum_x += x;
 		*sum_y += y;
 	}
@@ -416,21 +445,21 @@ static void countRenderWork(u32 *visible_things, u32 *line_quads)
 {
 	for(int i=0; i<getThingCount(); ++i)
 	{
-		void *thing = ((void *(*)(void *, int))0x02007685u)(world(), i);
-		if(((bool (*)(void *))0x02006df1u)(thing))
+		void *thing = ((void *(*)(void *, int))kWorldGetThing)(world(), i);
+		if(((bool (*)(void *))kThingIsInvisible)(thing))
 			continue;
-		int shape = ((int (*)(void *))0x02006db9u)(thing);
+		int shape = ((int (*)(void *))kThingGetShape)(thing);
 		if(shape == 1)
 		{
 			(*visible_things)++;
-			int vertices = ((int (*)(void *))0x02004a49u)(thing);
-			bool closed = ((bool (*)(void *))0x02004a59u)(thing);
+			int vertices = ((int (*)(void *))kPolygonGetNVertices)(thing);
+			bool closed = ((bool (*)(void *))kPolygonGetClosed)(thing);
 			*line_quads += closed ? vertices : vertices - 1;
 		}
 		else if(shape == 0)
 		{
 			(*visible_things)++;
-			int radius = ((int (*)(void *))0x02001535u)(thing);
+			int radius = ((int (*)(void *))kCircleGetRadius)(thing);
 			int segments = (int)divideU32((u32)(radius * radius), 20u, 0);
 			if(segments < 5)
 				segments = 5;
@@ -443,7 +472,7 @@ static void countRenderWork(u32 *visible_things, u32 *line_quads)
 
 static MallInfo mallInfo()
 {
-	return ((MallInfo (*)())0x02086581u)();
+	return ((MallInfo (*)())kMallInfo)();
 }
 
 extern "C" __attribute__((section(".text.benchmark_entry"), noreturn))
@@ -470,7 +499,7 @@ void benchmark_entry()
 	u32 line_quads = 0;
 
 	g_benchmark_file = 0;
-	g_benchmark_file = ((void *(*)(const char *, const char *))0x02084de9u)
+	g_benchmark_file = ((void *(*)(const char *, const char *))kFopen)
 		("ppbench-historical.csv", "w");
 	writeFileLine("tag,build,metric,count,total_ticks,mean_ticks,min_ticks,max_ticks,budget_ticks,over_budget,checksum,pass");
 	emitValue("benchmark_started", 1, 0, 1);
@@ -495,7 +524,7 @@ void benchmark_entry()
 		int x = 20 + (int)moduloU32((u32)(i * 37), 210u);
 		int y = 20 + (int)moduloU32((u32)(i * 29), 145u);
 		u32 start = tickNow();
-		int count = ((int (*)(void *, int, int, void **, int, bool))0x02007fa9u)
+		int count = ((int (*)(void *, int, int, void **, int, bool))kWorldGetThingsAt)
 			(world(), x, y, things, 4, true);
 		statAdd(&hit_test, tickNow() - start, 0);
 		hit_checksum = hashU32(hit_checksum, (u32)count);
@@ -506,7 +535,7 @@ void benchmark_entry()
 	int leak_bytes = after.uordblks - before.uordblks;
 	emitValue("hit_test_heap_delta_bytes", leak_bytes, hit_checksum, leak_bytes <= 1024);
 
-	((void (*)(void *))0x02000379u)(canvas());
+	((void (*)(void *))kCanvasStartSimulationMode)(canvas());
 	setPenMode(4);
 	dispatchTouch(33, 37, true, &input);
 	dispatchTouch(33, 37, true, &input);
@@ -519,25 +548,25 @@ void benchmark_entry()
 
 		int timestep_raw = 0x0ccc;
 		u32 physics_start = tickNow();
-		((void (*)(void *, const int *))0x02008265u)(world(), &timestep_raw);
+		((void (*)(void *, const int *))kWorldStep)(world(), &timestep_raw);
 		statAdd(&physics, tickNow() - physics_start, kFrameBudget);
 
 		u32 render_start = tickNow();
 		u32 phase_start = render_start;
-		((void (*)())0x0205e3ccu)();
+		((void (*)())kUlStartDrawing2D)();
 		statAdd(&render_begin, tickNow() - phase_start, kFrameBudget);
 		phase_start = tickNow();
-		((void (*)(void *))0x02000cedu)(canvas());
+		((void (*)(void *))kCanvasDraw)(canvas());
 		statAdd(&render_canvas, tickNow() - phase_start, kFrameBudget);
 		phase_start = tickNow();
-		((void (*)())0x0205da70u)();
+		((void (*)())kUlEndDrawing)();
 		statAdd(&render_end, tickNow() - phase_start, kFrameBudget);
 		statAdd(&render, tickNow() - render_start, kFrameBudget);
 		statAdd(&frame, tickNow() - frame_start, kFrameBudget);
 		countRenderWork(&visible_things, &line_quads);
 	}
 	dispatchTouch(73, 63, false, &input);
-	((void (*)(void *))0x02000385u)(canvas());
+	((void (*)(void *))kCanvasStopSimulationMode)(canvas());
 
 	u32 final_checksum = hashWorld();
 	int behavior_pass = scene_pass && getThingCount() == 27 &&
@@ -560,10 +589,10 @@ void benchmark_entry()
 	emitValue("overall_pass", pass, final_checksum, pass);
 	if(g_benchmark_file)
 	{
-		((int (*)(void *))0x02084a55u)(g_benchmark_file);
+		((int (*)(void *))kFclose)(g_benchmark_file);
 		g_benchmark_file = 0;
 	}
 
 	while(1)
-		((void (*)())0x0207954du)();
+		((void (*)())kWaitForVBlank)();
 }

@@ -1,0 +1,103 @@
+path,size_bytes,sha256,category,used_by_tools_repro,note
+data/COS.bin,1024,299733194b421ba0ad2a75c00a353350de919432892769424fa9f00d4e90b1d5,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+data/SIN.bin,1024,b16a59de78c1e8c300afef839d8480f9597c2bc0213fdf60bc7bdb7a3053cdc3,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+data/TAN.bin,1024,8e2eb54a550eff9d717f508e892cb136fcd4b49284a1d1011984e2b2dd9a078d,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+data/crayon.png,918,dfbb3fdd84a505b543e03811ace263636caa16aee66e39760121470678bb8801,historical-media-asset,no,Original image or audio asset preserved from the project history.
+data/paper2.png,42062,b42cb2321b277255282a48fd7c58c1eccfcbd130d2fb618a56dc6a3b99ef688c,historical-media-asset,no,Original image or audio asset preserved from the project history.
+data/pocketphysics.png,41008,5a508e36490fc3344ef6194469eedf5c57c5f2a7054d0e17eb48b13f908bde25,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010092.JPG,2487127,68372221810c201794a693b5f92776cbed88ea0dade954a08adbe477a60bab34,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010093.JPG,2651338,471989e26cae8daf9c8b3b4ea27f1b187cf47cd2729808c885ba60f2d2936171,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010094.JPG,2656808,f7ff2eeda677a702b8cbd6634b10ff838682f17f0985987abe178cde20d65c1e,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010095.JPG,2495846,b485f55f42d8c4cf2f237fa565049439ea12783aff9c2005060afdeed8a49cb3,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010096.JPG,2464086,1e23066b50cc9d276bba4ff306de068e03a0bff80af37b8cabbe60fd31ab14c2,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010097.JPG,2539557,0b75329fc9f0e58d01458e37743d5510bc0530cc0070c7bf1db8f623b68fe1cc,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/P1010102.JPG,2538629,e00e12d72923b49428cde4402373bfc25fec660fa93b86e4364c58cc2576a67a,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_back.png,219,06996a7fd84ad6b6c6aa464ec0995c7d14ffeaabd83e7ab50727c6fdedd318c7,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_box.png,203,3c702f32e9d5bb7eac646334914d018621c4824c1a0b8d6931735969ead62832,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_box.raw,34,faa1b888ff69a68641c13629429034c3371c5b4010f30a5676aac1fbef241fd5,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_box.rgb,810,f6d49019a01c9c7ad50dd745213fc60813b6a65b223a24ae2c6a428dc7a127de,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_circle.png,221,d99bc9b1ba383901b87d94dca76ad43f4a4c53e2974217e2c0636f73e4299051,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_circle.raw,34,703892d88763c1fdab3428e79a35b242e66c799c662e07ee1e8806579658fa71,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_circle.rgb,810,352206c072392a05664710d28dbf38f6549b2516febeb33cd7e4513bc71e4b5f,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_delete.png,244,c22bca1baa03e1c2c8cab744a9cdeb2f7b3ec88e1ec5d170d659bac944d97856,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_delete.raw,34,b745bbfedf951cb4d1fc96bf36cfe49bfa5ccb35952eede48330847729b88c5b,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_delete.rgb,810,70fa22b3af01ed776b6d2fdce9511c0b30f5e7a680c854deb9bb21bdd311a0bb,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_delete_file.png,191,b4c3290fc874c972a4e2b49bd9349487e1ce6a0faf01d1155506f52d25270d48,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_dynamic.png,236,01147060e81374f120ae970057438c5b601c465280b3315e3897c9dccaaee2db,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_dynamic.raw,34,67161c48a363cee820c57632447a8543a43ee0b2421ebdbabf7a744263a80f9a,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_dynamic.rgb,810,60798e060fa1feea87404e47a8e6e6e2efcdcafdf442cece2747c06bb7cfb64f,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_load.png,181,03aabf69053656ef1eea9d0211e1fa3a780b6570db091eba77308375916ea2da,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_move.png,244,91a40be7ea60d9e7b54cc3a7e13d97ce966b0b9792392ad215ccbbc534f81057,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_nonsolid.png,254,f5e411abe721aa69edab33eda274fc807fb94dad1e7d1359221f143e00284a25,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_nonsolid.raw,34,8abc98df79156b9c3797c2c1df5b7391e28e8a5acb81d8118f4442c091b4e530,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_nonsolid.rgb,810,4568be845cb382abbb87291057514c2237dadfab594d548a0c3ff7d290510930,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_pin.png,244,046fdae0b6ac079627e9dbf0c6d4895441f3b10923911a9a3a730d9fadacf1e4,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_pin.raw,34,56d4038294917dbab2acae649b6dbed0b4c80980b8ea869b0558293a7c79c3f8,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_pin.rgb,810,a64c6cebe4b4b20f515d45b7e97716c51915ea34665c83bbde982a94815bfdc0,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_polygon.png,240,42d6d5f3aa532013a1550a758b4900d0694443adc57eb20b21ad8b6759009b52,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_polygon.raw,34,eeeb07551bc7df21ebe1ad1ff3dd3d86d794f640c8bd8b7d7653bc8533c2128a,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_polygon.rgb,810,79c0cf9bed10ec8b3300a73bac727c58cb59b8a27453901850e105b9852356d0,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_save.png,198,3ff94befc08be39d80ad0642699ff3bb01adb4e8959101e81133ec101946514a,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_select.png,235,1ee5d9ff6783c3ca11940f19fd2e16b5a7cfff335faa8c8c93a2998a50b938a8,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_select.raw,34,80e1b2dcf994bebc10b70f49e707deee621f740e26d3757ebc5d531b434b30f1,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_select.rgb,810,f5500879f1270f6a18f3b556e454f665e6bc684d1bdeac55c7eb1f3a4eeaa121,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_solid.png,232,3d05ae236b4ece5d386398e7cc1d9409c3f1b241b4236e3ef83ec0daf026a71d,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_solid.raw,34,ae9fe0c671aee4be2a822ed5d6734d1a92a9377f7dbda590e614f00c02748c80,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_solid.rgb,810,42f2f3d7fa7f5519e53906915079058fda01c66e88183adfd1f8e1da3c4fc964,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_stop.png,180,240fbb25c8a6925cb7bfbef6a01bbfccbd35b9bc486ab45258c8999188be0cef,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_stop.raw,19,d71ffc6e2ff5ca4eeee827ac4835365a812bebdf201db9e38c5b275bf1e744af,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_stop.rgb,432,6d1d33e960aaae92164afe6884d236975d59a6cf7ed91390f73dc36e47fd9da8,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_zap.png,243,6c3625bccc4987257e77bbef1df9038672f3e26220c0bb68085d3abb5b52ad99,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/icon_zap.raw,34,f7f9878b0389f06f34fdcbbe2d68f3275d877976a9d896a108a529fd90d3b44f,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/icon_zap.rgb,810,8abc9025351aa4772ed37dd9efad7959a69c62d4c2930c527edbc0f8450ddc7d,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+gfx/pngrgb,302,bcb0b4c886e41fd10eac360e65d2d7c753d93688bb96f0efaf84513de22e08f1,historical-media-asset,no,Original image or audio asset preserved from the project history.
+gfx/rgb2bin,7655,9da8295badc7fa6f0d98eb6446a968b111dc8db25d2a56a30e6d6ac8f4f1460a,historical-host-executable,no,"Ancient 32-bit x86 ELF asset converter; preserved, never executed."
+ndsloader.bin,512,0e1da547e72c5288128c8be112b52c49c437b48a1dae10a60988d4723309e7cb,historical-runtime-blob,no,Original repository loader blob; never consumed by tools/repro.
+pen.raw,441000,794b111aa1b994947193a4ba85b827c7f295c7cffa691255103afa2f7f482b77,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+pocketphysics_src.tgz,243927,bb72c488d98e27ef9b7c38089ce4dfb9f9d9995dced76353dbb4ed6106ca9450,historical-source-archive,no,Original repository archive; research builds use audited git commits.
+ppicon.bmp,1146,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,historical-media-asset,yes,Icon/title bitmap passed to historical ndstool packaging.
+press/PVG Interview_files/a_data/grin.gif,939,fded9cdea8b9cf3ffef870a57c35dbdf5be0fee165776fdeaf4f16606b435209,historical-media-asset,no,Original image or audio asset preserved from the project history.
+press/PVG Interview_files/a_data/smile.gif,936,4015f87a9931d687de36a2b85dcbf0b43aa1babf027bb4aa50d70667c97ac402,historical-media-asset,no,Original image or audio asset preserved from the project history.
+press/PVG Interview_files/blogcatalog5.gif,235,f3011f5e640e821629f633b0e38b63079a83161417a1acae22f2f75457b2668b,historical-media-asset,no,Original image or audio asset preserved from the project history.
+press/PVG Interview_files/flashsrv.swf,27380,946d930a6f3d3e2065b19bf9636c9800c81f802472b8b0c17366c5f1095e30d2,archived-web-plugin,no,Third-party Flash asset in the preserved press-page snapshot.
+press/PVG Interview_files/header.jpg,46490,2cd195eda4f4f68d7b5822f342fdd8eaddc096057d3c8a6c866dc8fa6202ca91,historical-media-asset,no,Original image or audio asset preserved from the project history.
+press/PVG Interview_files/iIpDRbaVtD4rel1.swf,715,a7949bb940798e2d2f085cebdf337e5a1f9e4ed062b0c0e9a2fe338de8a95c4d,archived-web-plugin,no,Third-party Flash asset in the preserved press-page snapshot.
+press/PVG Interview_files/icon_smile.gif,174,f1698b011eebe56e957e016babf926d261be8dc86a3c0a39e841e73238f0c472,historical-media-asset,no,Original image or audio asset preserved from the project history.
+press/PVG Interview_files/pocketphysics.png,61365,c85e3da15239dedc76cc717f29f6172d4f9b715c029569d3fde4a8b486cb0f9e,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/1.bmp,393270,8a27231785a6005ecfc2f9db2d9dcb22530b33e6d3b6efa97c3aa68243167769,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/2.bmp,393270,0ec62ffd4dc068de8285455ae4a37fa6973a02cdc02f6ed13bc55f09d27ecf4b,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/3.bmp,393270,05d7e314e620f763b39d1758f8c017f9c79b8febdecdd14b63e07cbcca1e39c1,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/4.bmp,393270,243c0828d6cb0222d8c44de49a6d02e2bd623e01b2258288f374e08ab22e5ab5,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/5.bmp,393270,58020a8d0f4726581d499f1dc96bcf368d6023f7dcd7ce3e53f096e413017fb5,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/6.bmp,393270,5257f87dba70bf13178b90e98a705f6d735eb96c649671885d154c281e4bd8a9,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/car.bmp,196662,6294389850cf4f7dc090b64c73bd52ea40ec2965bba61dc4abb2cd944fd879f1,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/crayon.jpg,85647,2e343e5219b2caec4c3aac7753714547eb3e6260a938cef5c783fbf3ace63fd8,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/1.bmp,393270,6d78dd3854150c7fc049b679ef4f81764e9b275d34023020f242c593f5a83915,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/2.bmp,393270,b227eb0bbabad98494da17246bc38b32437c38a7bdf226d805faec7673841a41,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/3.bmp,393270,a72795217b1844185cef96932d2981737c205fa17f5db4972278d8348e7b34c6,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/4.bmp,393270,e9abe3ab5d7df3d2473093fdc9795ae63458d45c1b07aa609cd047e923646239,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/5.bmp,393270,5f9ef90a24f31f006951020b52e9b9fb0a18409cde5095a3c49fe59bd3e79446,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/dismount/porrasturvat.png,107223,6792023307738c27c056c7529a018d4fac1c5e772d678bec2041ced4cf33ba9b,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino.bmp,393270,7cc0f7bcf26ef047079a48821e616614ea539503b5678404dd2a2b28cb32756f,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino.png,47341,1d026205842ef9ebd8e4a3905265f74622787abd5546c8d27994a65984a31b1d,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/1.bmp,393270,2db324d84e44fdd07f6a7fda5a6090f0fbd5021482e602d66127b6ad8734fa30,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/2.bmp,393270,19c47829c8982781accbd7fd85233a549de1ded7d3dc0a864b711e932a7e7ee3,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/3.bmp,393270,081f701c122cec3218029feee849dc8b91af32f14e7f8024c212dccc41ec1a65,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/4.bmp,393270,90b1a02aa95d3580860d7469c6175d83fed4d7a44f841be5138d0269b9976b9f,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/5.bmp,393270,6ef49ec5ba136221104e524e9010604c1b20533dcaee2351a0d0dade5f575dbf,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/6.bmp,393270,8596a4b0ecad94328f6b59e6b460b8aca9c4518f2eecfebbada1cd7e92ed9e18,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/domino/domino.png,149172,042f4eab055120e2ef5193a7e031a8ed847525ac560dd868f127284699916590,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/pp.png,142089,0f59e17351fc8830a3aeac1f96fd6b6c6c20e5e8f9bd97e97bec28ac1de00d3f,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/pyramid.bmp,393270,29bc54289f975c94a624f4e44a82272714f02284882c025ccd669e9e32c57006,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/pyramid.png,47216,965eaefe81be1eb6d65957d0220e7c5379128350a680538cefec6cdf66ff68f0,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/ramps.bmp,196662,f104803b27335c616121074884d340e0804cabcdb1e42690fd476a50a1e713e9,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/ramps.png,50739,2c86f36916fbedeef8b462837ddbff8c942ae12f730b3b109cd2f882496eceae,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/seesaw.bmp,196662,97674a1d79c7f6879d92bc98eef036a8b260021852421017a79de5210003e745,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/seesaw.png,50513,a7b0fe56c39af26eaf8ff0df1c7d2bc7cf3f08af9a5f79174ed7f57fd2b312a7,historical-media-asset,no,Original image or audio asset preserved from the project history.
+screenshots/seesaw2.bmp,196662,1b6e9eedb0703dc0ce3cf0bbb38a78558062a98b826c404422aff34ee049afc2,historical-media-asset,no,Original image or audio asset preserved from the project history.
+sounds/click.raw,7730,e3b1da7fa050f36b8ea058e710dbae3de74d4f8211bb7aa7c51558a3265f21bd,historical-data-asset,no,Original graphics/audio/table data; not executable research code.
+sounds/click.wav,174,7b064ea598c1c23ab703322db01b931b79fc63bf2e2ca94183c0b91da8036292,historical-media-asset,no,Original image or audio asset preserved from the project history.
+sounds/del.wav,2638,73d1076d792839f21fc75791a5e72fd8f07e3d2ffe7446d115fe9b6a93e3deaa,historical-media-asset,no,Original image or audio asset preserved from the project history.
+sounds/del2.wav,2638,73d1076d792839f21fc75791a5e72fd8f07e3d2ffe7446d115fe9b6a93e3deaa,historical-media-asset,no,Original image or audio asset preserved from the project history.
+sounds/play.wav,1330,739e5d3f38b72b5624e3345d760fe4107e3f70896283f01a20d2130234881198,historical-media-asset,no,Original image or audio asset preserved from the project history.
+sounds/stift.wav,32486,7e63f35d94aaf6a5764102c29e74e40660e6d176ee6a072d40e8727ca9b18325,historical-media-asset,no,Original image or audio asset preserved from the project history.

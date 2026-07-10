@@ -11,4 +11,4 @@ cmp "$BASE/first/pocketphysics.arm9" "$BASE/second/pocketphysics.arm9"
 cmp "$BASE/first/pocketphysics.arm7" "$BASE/second/pocketphysics.arm7"
 cmp "$BASE/first/pocketphysics.nds" "$BASE/second/pocketphysics.nds"
 
-echo "Two clean exact builds are byte-identical."
+echo "Two clean archival repacks are byte-identical to the public v0.6 ROM."

@@ -1,0 +1,5 @@
+# filename|sha256|url
+blocksds-toolchain-1.21.1-1-x86_64.pkg.tar.xz|2fff228c254aa6b286a59ddabba5984da7b6942e394e7a692022ec0393975bfa|https://blocksds.skylyrac.net/packages/rolling/linux/x86_64/blocksds-toolchain-1.21.1-1-x86_64.pkg.tar.xz
+blocksds-ulibrary-1.14-1-any.pkg.tar.xz|6722ca01f80df946cd952f49bb50eb9d115ee1d56a2ddd525dd91de6c499d39f|https://blocksds.skylyrac.net/packages/rolling/linux/x86_64/blocksds-ulibrary-1.14-1-any.pkg.tar.xz
+toolchain-gcc-arm-none-eabi-libpng16-1.6.58-1-any.pkg.tar.xz|0d30a305b66f352fa632104b17941eb45edc2275bd2fdf2a796c4d905a09b250|https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-libpng16-1.6.58-1-any.pkg.tar.xz
+toolchain-gcc-arm-none-eabi-zlib-1.3.2-1-any.pkg.tar.xz|3c81569d924f2f455207320c0abec99261891d9bb5f105bce56c54afaa3f89f5|https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-zlib-1.3.2-1-any.pkg.tar.xz

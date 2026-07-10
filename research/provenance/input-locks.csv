@@ -1,0 +1,22 @@
+kind,name,version_or_revision,url,sha256,consumer
+release-archive,Pocket Physics public archive,v0.6,https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
+release-rom,pocketphysics.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics.nds,9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64,build_v06_exact.sh
+release-rom,pocketphysics_nothumb.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics_nothumb.nds,64a15ff6c0e0e7235dd716833d68f8adaa9043afc867f5b6523d9c73750e586a,extract_release_v06.sh
+legacy-toolchain,devkitARM,r21,https://wii.leseratte10.de/devkitPro/devkitARM/r21%20(2007)/14943_devkitARM_r21linux.tar.bz2,7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203,build_v06_exact.sh
+source-archive,Box2D,2.0.1+dfsg1,https://snapshot.debian.org/file/868397d39d1a842b252454ba44c475cd2eb14d49,ff35fa514b6a7bcdfd1d83c499d57cdd4dfec7adb1b42aeaeb8dbedfb069fdb0,build_v06_blocksds.sh
+source-archive,TinyXML,2.6.2,https://snapshot.debian.org/file/cba3f50dd657cb1434674a03b21394df9913d764,15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593,build_v06_blocksds.sh
+source-file,ConvexDecomposition b2Polygon.cpp,893e0d71a0fbffdbb3ccbd61c166311525be5ada,https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition/b2Polygon.cpp,a0f64105be21e827b48dc14a084bcde21fb8c5f88cbe3e683256118f778ad490,build_v06_blocksds.sh
+source-file,ConvexDecomposition b2Polygon.h,893e0d71a0fbffdbb3ccbd61c166311525be5ada,https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition/b2Polygon.h,215bf5f4217f8fa50a900dff339a905cf086356440844cb0d8787586e1e3d5e8,build_v06_blocksds.sh
+source-file,ConvexDecomposition b2Triangle.cpp,893e0d71a0fbffdbb3ccbd61c166311525be5ada,https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition/b2Triangle.cpp,fa8896a7b252cb233502a9698ca6a706a717d4ad5a62b17bad9f6a67ae8b03ee,build_v06_blocksds.sh
+source-file,ConvexDecomposition b2Triangle.h,893e0d71a0fbffdbb3ccbd61c166311525be5ada,https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition/b2Triangle.h,689bd29eea223e6f73365f1b46456fd55d5313d3959b6baeff60cd3d54626bf1,build_v06_blocksds.sh
+container-image,BlocksDS,rolling image snapshot,docker://skylyrac/blocksds,67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8,build_v06_blocksds.sh
+package,blocksds-toolchain,1.21.1-1,https://blocksds.skylyrac.net/packages/rolling/linux/x86_64/blocksds-toolchain-1.21.1-1-x86_64.pkg.tar.xz,2fff228c254aa6b286a59ddabba5984da7b6942e394e7a692022ec0393975bfa,build_v06_blocksds.sh
+package,blocksds-ulibrary,1.14-1,https://blocksds.skylyrac.net/packages/rolling/linux/x86_64/blocksds-ulibrary-1.14-1-any.pkg.tar.xz,6722ca01f80df946cd952f49bb50eb9d115ee1d56a2ddd525dd91de6c499d39f,build_v06_blocksds.sh
+package,libpng,1.6.58-1,https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-libpng16-1.6.58-1-any.pkg.tar.xz,0d30a305b66f352fa632104b17941eb45edc2275bd2fdf2a796c4d905a09b250,build_v06_blocksds.sh
+package,zlib,1.3.2-1,https://wonderful.asie.pl/packages/rolling/linux/x86_64/toolchain-gcc-arm-none-eabi-zlib-1.3.2-1-any.pkg.tar.xz,3c81569d924f2f455207320c0abec99261891d9bb5f105bce56c54afaa3f89f5,build_v06_blocksds.sh
+container-image,Debian bookworm-slim,12.14,docker://debian:bookworm-slim,0104b334637a5f19aa9c983a91b54c89887c0984081f2068983107a6f6c21eeb,all runtime Dockerfiles
+apt-snapshot,Debian archive,20260709T000000Z,http://snapshot.debian.org/archive/debian/20260709T000000Z,,all runtime Dockerfiles
+apt-snapshot,Debian security archive,20260709T000000Z,http://snapshot.debian.org/archive/debian-security/20260709T000000Z,,all runtime Dockerfiles
+emulator,melonDS AppImage,1.1,https://github.com/melonDS-emu/melonDS/releases/download/1.1/melonDS-1.1-appimage-x86_64.zip,bf377420a2e95f2cd2cdda17d5372b51c2534f858b038db9ec6d129554875124,emulators/melonds/Dockerfile
+emulator,DeSmuME Debian package,0.9.11-4.1,apt:desmume,,emulators/desmume/Dockerfile
+tracked-input,ppicon.bmp,repository blob,repo:ppicon.bmp,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,build_v06_exact.sh
