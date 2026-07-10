@@ -5,6 +5,7 @@ typedef unsigned int u32;
 static const u32 kFnvOffset = 2166136261u;
 static const u32 kFnvPrime = 16777619u;
 static const u32 kFrameBudget = 33513982u / 60u;
+static const u32 kFrameTolerance = kFrameBudget / 100u;
 static const int kSimulationFrames = 240;
 static const int kHitTestIterations = 600;
 
@@ -487,6 +488,8 @@ void benchmark_entry()
 	BenchStat render_canvas;
 	BenchStat render_end;
 	BenchStat frame;
+	u32 frame_over_1pct = 0;
+	u32 frame_over_2x = 0;
 	statInit(&input);
 	statInit(&hit_test);
 	statInit(&physics);
@@ -562,7 +565,12 @@ void benchmark_entry()
 		((void (*)())kUlEndDrawing)();
 		statAdd(&render_end, tickNow() - phase_start, kFrameBudget);
 		statAdd(&render, tickNow() - render_start, kFrameBudget);
-		statAdd(&frame, tickNow() - frame_start, kFrameBudget);
+		u32 frame_ticks = tickNow() - frame_start;
+		statAdd(&frame, frame_ticks, kFrameBudget);
+		if(frame_ticks > kFrameBudget + kFrameTolerance)
+			frame_over_1pct++;
+		if(frame_ticks > kFrameBudget * 2u)
+			frame_over_2x++;
 		countRenderWork(&visible_things, &line_quads);
 	}
 	dispatchTouch(73, 63, false, &input);
@@ -581,6 +589,8 @@ void benchmark_entry()
 	emitStat("render_canvas", &render_canvas, kFrameBudget, final_checksum, pass);
 	emitStat("render_end", &render_end, kFrameBudget, final_checksum, pass);
 	emitStat("frame_total", &frame, kFrameBudget, final_checksum, pass);
+	emitValue("frame_over_1pct_count", (int)frame_over_1pct, final_checksum, frame_over_1pct == 0);
+	emitValue("frame_over_2x_count", (int)frame_over_2x, final_checksum, frame_over_2x == 0);
 	emitValue("visible_things_rendered", (int)visible_things, final_checksum, behavior_pass);
 	emitValue("line_quads_rendered", (int)line_quads, final_checksum, behavior_pass);
 	emitValue("things_final", getThingCount(), final_checksum, pass);

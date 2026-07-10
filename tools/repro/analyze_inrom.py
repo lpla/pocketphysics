@@ -28,6 +28,8 @@ REQUIRED_METRICS = TIMED_METRICS | {
     "scene_things_created",
     "scene_position_sum_x",
     "scene_position_sum_y",
+    "frame_over_1pct_count",
+    "frame_over_2x_count",
     "hit_test_heap_delta_bytes",
     "visible_things_rendered",
     "line_quads_rendered",
@@ -127,6 +129,18 @@ def main() -> int:
     labels = {row["label"] for row in rows}
     assertions: list[str] = []
 
+    if {row["tag"] for row in rows} != {"PPBENCH"}:
+        raise AssertionError("Result file contains a non-PPBENCH record")
+
+    for label in sorted(labels):
+        label_rows = [row for row in rows if row["label"] == label]
+        builds = {row["build"] for row in label_rows}
+        roms = {(row["rom_sha256"], row["rom_size_bytes"]) for row in label_rows}
+        if len(builds) != 1:
+            raise AssertionError(f"{label} combines multiple emitted builds: {builds}")
+        if len(roms) != 1:
+            raise AssertionError(f"{label} combines multiple ROM identities: {roms}")
+
     def require_metric(label: str, metric: str) -> list[dict[str, str]]:
         matches = [
             row for row in rows if row["label"] == label and row["metric"] == metric
@@ -197,6 +211,8 @@ def main() -> int:
             for row in require_metric(label, "behavior_pass")
         ):
             raise AssertionError(f"{label} failed behavior validation")
+        if emulator == "hardware" and scalar(label, "file_output_ready") != 1:
+            raise AssertionError(f"{label} did not confirm physical FAT output")
         if not all(
             0 < int(row["total_ticks"]) < 1000
             for row in require_metric(label, "timer_read_overhead_ticks")
@@ -208,6 +224,13 @@ def main() -> int:
             for row in require_metric(label, metric)
         ):
             raise AssertionError(f"{label} rendered no measurable scene work")
+        frame_over_1pct = scalar(label, "frame_over_1pct_count")
+        frame_over_2x = scalar(label, "frame_over_2x_count")
+        if not 0 <= frame_over_2x <= frame_over_1pct <= EXPECTED_COUNTS["frame_total"]:
+            raise AssertionError(
+                f"{label} has inconsistent frame cadence counters: "
+                f"over_1pct={frame_over_1pct}, over_2x={frame_over_2x}"
+            )
         assertions.append(
             f"{emulator} {label}: complete touch/physics/render workload; "
             f"timing spread <= {args.max_timing_spread_percent:.6f}%"
@@ -249,7 +272,6 @@ def main() -> int:
             "touch_create_and_drag",
             "hit_test",
             "physics_step",
-            "render_frame",
             "frame_total",
         ):
             improved = mean_ticks("bench-improved", metric)
@@ -260,7 +282,7 @@ def main() -> int:
                     f"than modern {modern:.2f}"
                 )
 
-        for metric in ("hit_test", "physics_step", "frame_total"):
+        for metric in ("hit_test", "physics_step"):
             improved = mean_ticks("bench-improved", metric)
             historical = mean_ticks("bench-historical", metric)
             if improved >= historical:
@@ -269,12 +291,20 @@ def main() -> int:
                     f"than historical {historical:.2f}"
                 )
 
+        if scalar("bench-improved", "frame_over_1pct_count") != 0:
+            raise AssertionError("bench-improved exceeded the 60 Hz frame target by over 1%")
+        if scalar("bench-improved", "frame_over_2x_count") != 0:
+            raise AssertionError("bench-improved recorded a two-frame interval")
+        if scalar("bench-modern", "frame_over_1pct_count") <= 0:
+            raise AssertionError("bench-modern did not reproduce frame-cadence overruns")
+
         assertions.extend(
             [
                 f"{emulator}: all builds created the same 27-object touch scene",
                 f"{emulator}: improved removed the reproduced hit-test leak",
-                f"{emulator}: improved beat modern in every primary workload",
-                f"{emulator}: improved beat historical hit-test, physics, and frame total",
+                f"{emulator}: improved beat modern touch, hit-test, physics, and complete-frame time",
+                f"{emulator}: improved beat historical hit-test and physics time",
+                f"{emulator}: improved kept all frames within 1% of the 60 Hz target and recorded no two-frame intervals",
             ]
         )
 

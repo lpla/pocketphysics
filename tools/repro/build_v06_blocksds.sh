@@ -11,6 +11,7 @@ if [ -z "${OUT:-}" ]; then
 fi
 DOWNLOADS="${DOWNLOADS:-$ROOT/.codex-artifacts/downloads}"
 DEPS_CACHE="${DEPS_CACHE:-$ROOT/.codex-artifacts/deps}"
+CONVEX_CACHE="$DEPS_CACHE/convex-decomposition-original"
 PACKAGE_CACHE="${BLOCKSDS_PACKAGE_CACHE:-$DOWNLOADS/blocksds-packages}"
 PACKAGE_LOCK="$ROOT/tools/repro/blocksds-packages.lock"
 IMAGE="${BLOCKSDS_IMAGE:-skylyrac/blocksds@sha256:67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8}"
@@ -42,7 +43,7 @@ fetch() {
 }
 
 rm -rf "$OUT"
-mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE" "$PACKAGE_CACHE"
+mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE" "$CONVEX_CACHE" "$PACKAGE_CACHE"
 
 SRC="$OUT/src"
 DEPS="$OUT/deps"
@@ -85,10 +86,13 @@ mv "$DEPS/tinyxml" "$DEPS/tinyxml-2.6.2"
 
 echo "Fetching pinned convex decomposition utility"
 CONVEX_BASE="https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition"
-fetch "$CONVEX_BASE/b2Polygon.cpp" "$DEPS/convex-decomposition-original/b2Polygon.cpp" "a0f64105be21e827b48dc14a084bcde21fb8c5f88cbe3e683256118f778ad490"
-fetch "$CONVEX_BASE/b2Polygon.h" "$DEPS/convex-decomposition-original/b2Polygon.h" "215bf5f4217f8fa50a900dff339a905cf086356440844cb0d8787586e1e3d5e8"
-fetch "$CONVEX_BASE/b2Triangle.cpp" "$DEPS/convex-decomposition-original/b2Triangle.cpp" "fa8896a7b252cb233502a9698ca6a706a717d4ad5a62b17bad9f6a67ae8b03ee"
-fetch "$CONVEX_BASE/b2Triangle.h" "$DEPS/convex-decomposition-original/b2Triangle.h" "689bd29eea223e6f73365f1b46456fd55d5313d3959b6baeff60cd3d54626bf1"
+fetch "$CONVEX_BASE/b2Polygon.cpp" "$CONVEX_CACHE/b2Polygon.cpp" "a0f64105be21e827b48dc14a084bcde21fb8c5f88cbe3e683256118f778ad490"
+fetch "$CONVEX_BASE/b2Polygon.h" "$CONVEX_CACHE/b2Polygon.h" "215bf5f4217f8fa50a900dff339a905cf086356440844cb0d8787586e1e3d5e8"
+fetch "$CONVEX_BASE/b2Triangle.cpp" "$CONVEX_CACHE/b2Triangle.cpp" "fa8896a7b252cb233502a9698ca6a706a717d4ad5a62b17bad9f6a67ae8b03ee"
+fetch "$CONVEX_BASE/b2Triangle.h" "$CONVEX_CACHE/b2Triangle.h" "689bd29eea223e6f73365f1b46456fd55d5313d3959b6baeff60cd3d54626bf1"
+for convex_file in b2Polygon.cpp b2Polygon.h b2Triangle.cpp b2Triangle.h; do
+    cp "$CONVEX_CACHE/$convex_file" "$DEPS/convex-decomposition-original/$convex_file"
+done
 
 echo "Fetching checksum-pinned BlocksDS package archives"
 while IFS='|' read -r filename expected url; do

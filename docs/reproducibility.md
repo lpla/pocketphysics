@@ -94,9 +94,12 @@ Expected uninstrumented result:
 ## Improved Source Build
 
 The improved role enables the selected bug fixes and optimizations, ARM code,
-fixed-point Box2D, batched rendering, and whole-program LTO. LTO archives are
-created with `arm-none-eabi-gcc-ar`, which loads GCC's LTO plugin; plain `ar`
-was empirically found to produce unresolved archive symbols.
+fixed-point Box2D, the original DS hardware divider/square-root/trigonometry
+path, two conservative later-Box2D backports, physics-only ITCM placement,
+batched rendering, and whole-program LTO. The 6,144-byte uninstrumented ITCM
+section remains well below the ARM9's 32 KiB limit. LTO archives are created
+with `arm-none-eabi-gcc-ar`, which loads GCC's LTO plugin; plain `ar` was
+empirically found to produce unresolved archive symbols.
 
 ```sh
 tools/repro/build_v06_perf.sh
@@ -106,7 +109,7 @@ tools/repro/test_v06_perf.sh
 Expected uninstrumented result:
 
 ```text
-84898333bdbd29b3fa9844bf201d701ddfb888b73e0ccc0100f4f73e9872b26a  824320 bytes
+f0da3c30421246944e69abcbeaa42edf47d04f4404dc119ea69e88862265a3b4  814080 bytes
 ```
 
 The accepted and rejected changes are documented in

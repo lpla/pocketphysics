@@ -46,6 +46,11 @@ def main() -> int:
 """,
     )
 
+    fixed = Path(sys.argv[1]) / "Source/Common/Fixed.h"
+    replace_exact(fixed, "COS_bin[idx]", "pp_cos_bin(idx)")
+    replace_exact(fixed, "SIN_bin[idx]", "pp_sin_bin(idx)")
+    replace_exact(fixed, "TAN_bin[idx]", "pp_tan_bin(idx)")
+
     replace_exact(
         island,
         """		float32 vMagnitude = b->m_linearVelocity.Length();

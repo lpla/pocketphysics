@@ -41,9 +41,12 @@ Timing rows are rejected unless all of these hold:
 - Timer-read calibration is plausible.
 - The improved build has zero measured hit-test heap growth.
 - Historical and modern builds reproduce the 14,400-byte leak workload.
+- The improved build records no frame more than 1% beyond one 60 Hz period and
+  no interval longer than two periods.
+- The modern build reproduces frame-cadence overruns.
 - All repeated timing totals stay within the configured spread.
 
-The final fixed-point candidates end with checksum `f49066a8` in both emulators.
+The selected fixed-point build ends with checksum `8c4d9050` in both emulators.
 The floating modern build intentionally follows a different numeric trajectory;
 its behavioral bounds and topology still pass.
 
@@ -102,8 +105,22 @@ are under [`research/results`](../research/results/).
 ## Interpretation
 
 `mean_ticks` is the arithmetic mean per in-ROM sample. `frame_total` includes
-touch work on drag frames, physics, and rendering. Phase totals are retained so
-an aggregate win cannot conceal a regression.
+touch work on drag frames, physics, and rendering. The raw `over_budget` field
+uses the exact `BUS_CLOCK / 60` threshold. Two additional in-ROM counters make
+cadence interpretation explicit:
+
+- `frame_over_1pct_count`: intervals more than 1% beyond one nominal period.
+- `frame_over_2x_count`: intervals longer than two nominal periods.
+
+The 1% counter separates a real cadence overrun from sub-percent variation at
+the emulator's VBlank boundary without discarding the raw threshold count.
+
+Render phase timing includes real graphics FIFO and display synchronization.
+When physics becomes faster, drawing begins earlier and can wait longer for the
+same VBlank; `render_frame` can therefore rise while the complete frame and
+cadence improve. Render timing is retained as synchronization evidence, but it
+is not treated as an isolated CPU benchmark. Candidate acceptance uses touch,
+hit testing, physics, complete-frame time, and cadence together.
 
 Emulator cycle models are evidence, not physical hardware. A change is not
 described as hardware-proven until collected on a Nintendo DS with the procedure

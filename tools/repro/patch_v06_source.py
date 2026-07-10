@@ -18,6 +18,20 @@ def main() -> int:
     world = src / "arm9/source/world.cpp"
     main_cpp = src / "arm9/source/main.cpp"
 
+    linear_frequency_header = src / "arm9/source/linear_freq_table.h"
+    replace_exact(
+        linear_frequency_header,
+        "extern const u32 linear_freq_table[LINEAR_FREQ_TABLE_SIZE];\n",
+        """#ifdef PP_RUNTIME_FIXES
+// The object contains one octave (12 * 128 entries); lookup code maps the
+// absolute note space into that octave. Do not publish a false object bound.
+extern const u32 linear_freq_table[];
+#else
+extern const u32 linear_freq_table[LINEAR_FREQ_TABLE_SIZE];
+#endif
+""",
+    )
+
     replace_exact(
         world,
         '#include "Circle.h"\n',

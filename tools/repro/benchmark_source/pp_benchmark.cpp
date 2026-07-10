@@ -427,6 +427,9 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	statInit(&frame);
 
 	u32 frame_budget = BUS_CLOCK / 60;
+	u32 frame_tolerance = frame_budget / 100;
+	u32 frame_over_1pct = 0;
+	u32 frame_over_2x = 0;
 	u32 visible_things = 0;
 	u32 line_quads = 0;
 	FILE *file = 0;
@@ -498,7 +501,12 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 		statAdd(&render_end, tickDelta(phase_start), frame_budget);
 		statAdd(&render, tickDelta(render_start), frame_budget);
 
-		statAdd(&frame, tickDelta(frame_start), frame_budget);
+		u32 frame_ticks = tickDelta(frame_start);
+		statAdd(&frame, frame_ticks, frame_budget);
+		if(frame_ticks > frame_budget + frame_tolerance)
+			frame_over_1pct++;
+		if(frame_ticks > frame_budget * 2)
+			frame_over_2x++;
 		countRenderWork(world, &visible_things, &line_quads);
 	}
 
@@ -521,6 +529,8 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	emitRow(file, "render_canvas", &render_canvas, frame_budget, final_checksum, pass);
 	emitRow(file, "render_end", &render_end, frame_budget, final_checksum, pass);
 	emitRow(file, "frame_total", &frame, frame_budget, final_checksum, pass);
+	emitValue(file, "frame_over_1pct_count", frame_over_1pct, final_checksum, frame_over_1pct == 0);
+	emitValue(file, "frame_over_2x_count", frame_over_2x, final_checksum, frame_over_2x == 0);
 	emitValue(file, "visible_things_rendered", visible_things, final_checksum, behavior_pass);
 	emitValue(file, "line_quads_rendered", line_quads, final_checksum, behavior_pass);
 	emitValue(file, "things_final", world->getNThings(), final_checksum, pass);

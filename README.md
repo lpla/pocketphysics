@@ -15,7 +15,7 @@ Three roles are kept deliberately separate:
 | --- | --- | --- |
 | 2008 release | Verified public ARM payloads repacked with historical ndstool | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 | Modern | v0.6 C++ source ported to checksum-locked BlocksDS dependencies | `1545483fa3d0b1c1dd45909e25805b294e4b8a75f1adb2220fc15dd421a6a25a` |
-| Improved | Modern port plus measured fixes, fixed-point physics, batched rendering, and LTO | `84898333bdbd29b3fa9844bf201d701ddfb888b73e0ccc0100f4f73e9872b26a` |
+| Improved | Modern port plus measured fixes, restored DS hardware math, selected Box2D backports, physics ITCM, batched rendering, and LTO | `f0da3c30421246944e69abcbeaa42edf47d04f4404dc119ea69e88862265a3b4` |
 
 The first row is byte-identical to the public ROM, but it is **not a source
 recompilation**. The original release translation units and complete library
