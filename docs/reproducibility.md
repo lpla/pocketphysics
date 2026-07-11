@@ -29,6 +29,10 @@ Important controls include:
 - melonDS 1.1 AppImage hash and exact DeSmuME package version.
 - Explicit `linux/amd64` containers for legacy x86 tooling and emulator parity.
 
+GameBrew's download host requires the public Pocket Physics page as the HTTP
+referrer. The release extractor supplies that header explicitly and still
+rejects any archive that does not match the locked SHA-256.
+
 The modern build never runs `pacman -Sy` or resolves an unversioned package at
 build time. It installs the archives in
 [`blocksds-packages.lock`](../tools/repro/blocksds-packages.lock) with
