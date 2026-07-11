@@ -53,10 +53,10 @@ case "$BUILD_PROFILE" in
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_LINE_ITCM -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
-        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports and physics ITCM"
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports, physics ITCM, and Canvas::drawLine ITCM"
         ;;
     perf-o2)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
@@ -104,10 +104,10 @@ case "$BUILD_PROFILE" in
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-improved"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_LINE_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-improved"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
-        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports and physics ITCM benchmark"
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports, physics ITCM, and Canvas::drawLine ITCM benchmark"
         ;;
     bench-runtime)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
@@ -390,6 +390,42 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with physics-only ITCM benchmark"
+        ;;
+    bench-nds-hw-arm-combined-render-itcm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        AR=arm-none-eabi-gcc-ar
+        BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_RENDER_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-nds-hw-arm-combined-render-itcm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        PROFILE_LINK=(-flto)
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with render-only ITCM benchmark"
+        ;;
+    bench-nds-hw-arm-combined-hot-itcm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        AR=arm-none-eabi-gcc-ar
+        BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_HOT_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-nds-hw-arm-combined-hot-itcm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        PROFILE_LINK=(-flto)
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with render and physics ITCM benchmark"
+        ;;
+    bench-nds-hw-arm-combined-physics-draw-itcm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        AR=arm-none-eabi-gcc-ar
+        BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_DRAW_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-nds-hw-arm-combined-physics-draw-itcm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        PROFILE_LINK=(-flto)
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with physics and Canvas::draw ITCM benchmark"
+        ;;
+    bench-nds-hw-arm-combined-physics-line-itcm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        AR=arm-none-eabi-gcc-ar
+        BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_LINE_ITCM -DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-nds-hw-arm-combined-physics-line-itcm"' -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
+        PROFILE_LINK=(-flto)
+        BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with physics and Canvas::drawLine ITCM benchmark"
         ;;
     *)
         echo "Unknown BUILD_PROFILE: $BUILD_PROFILE" >&2

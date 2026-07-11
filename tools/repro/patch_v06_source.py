@@ -402,13 +402,13 @@ void handleInput(void)
     replace_exact(
         canvas,
         "void Canvas::draw(void)\n",
-        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM)\n"
+        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM) || defined(PP_CANVAS_DRAW_ITCM)\n"
         "ITCM_CODE\n#endif\nvoid Canvas::draw(void)\n",
     )
     replace_exact(
         canvas,
         "void Canvas::drawLine(u16 col, int x1, int y1, int x2, int y2)\n",
-        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM)\n"
+        "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM) || defined(PP_CANVAS_LINE_ITCM)\n"
         "ITCM_CODE\n#endif\nvoid Canvas::drawLine(u16 col, int x1, int y1, int x2, int y2)\n",
     )
     replace_exact(

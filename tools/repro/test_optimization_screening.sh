@@ -24,6 +24,10 @@ profiles=(
     bench-nds-hw-arm-backport-combined
     bench-nds-hw-arm-physics-itcm
     bench-nds-hw-arm-combined-physics-itcm
+    bench-nds-hw-arm-combined-render-itcm
+    bench-nds-hw-arm-combined-hot-itcm
+    bench-nds-hw-arm-combined-physics-draw-itcm
+    bench-nds-hw-arm-combined-physics-line-itcm
 )
 
 if [[ "$SKIP_BUILDS" != "1" ]]; then
@@ -47,7 +51,11 @@ roms=(
     "gate=$ROOT/research-artifacts/build/bench-nds-hw-arm-backport-gate/pocketphysics-v0.6-blocksds.nds"
     "combined=$ROOT/research-artifacts/build/bench-nds-hw-arm-backport-combined/pocketphysics-v0.6-blocksds.nds"
     "physics-itcm=$ROOT/research-artifacts/build/bench-nds-hw-arm-physics-itcm/pocketphysics-v0.6-blocksds.nds"
-    "selected=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-physics-itcm/pocketphysics-v0.6-blocksds.nds"
+    "physics-backports=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-physics-itcm/pocketphysics-v0.6-blocksds.nds"
+    "render-backports=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-render-itcm/pocketphysics-v0.6-blocksds.nds"
+    "broad-itcm=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-hot-itcm/pocketphysics-v0.6-blocksds.nds"
+    "physics-draw-itcm=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-physics-draw-itcm/pocketphysics-v0.6-blocksds.nds"
+    "selected=$ROOT/research-artifacts/build/bench-nds-hw-arm-combined-physics-line-itcm/pocketphysics-v0.6-blocksds.nds"
 )
 
 for emulator in $EMULATORS; do
