@@ -23,8 +23,8 @@ build claim, and it is not stored in the Git tree.
 
 The historical repository contains media, raw graphics/audio data, generated
 objects, a source tarball, an old x86 converter, a loader blob, and archived
-Flash files. They are preserved for historical integrity, not silently treated
-as recovered source.
+Flash files. They are preserved for historical integrity and classified
+separately from recovered source inputs.
 
 The exhaustive current-tree inventory is
 [`tracked-binaries.csv`](../research/provenance/tracked-binaries.csv). It records
@@ -44,7 +44,7 @@ Notable preserved files:
 
 | File | Status |
 | --- | --- |
-| `gfx/rgb2bin` | Ancient 32-bit x86 ELF; never executed by research scripts |
+| `gfx/rgb2bin` | Historical 32-bit x86 ELF; not executed by research scripts |
 | `ndsloader.bin` | Original loader blob; not used by current builds |
 | `pocketphysics_src.tgz` | Original source archive; builds use audited git commits instead |
 | `build/*.o` | Historical generated objects; never linked by research scripts |
@@ -54,7 +54,7 @@ Notable preserved files:
 ## Generated Research Artifacts
 
 ROMs, ELF files, extracted release payloads, toolchains, downloaded archives,
-container caches, and raw emulator logs are ignored under `.codex-artifacts`.
+container caches, and raw emulator logs are ignored under `research-artifacts`.
 They can be recreated and are not source inputs.
 
 Compact evidence intended for review is tracked under `research/results`:

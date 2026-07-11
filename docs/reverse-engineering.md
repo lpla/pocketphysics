@@ -1,104 +1,136 @@
-# Reverse Engineering
+# Historical Source Reconstruction
 
-## Scope
+## Objective
 
-The reverse-engineering work has two purposes:
+The reconstruction target is the public Pocket Physics v0.6 Nintendo DS ROM
+released on 15 March 2008. Success requires a build from maintainable source
+that reproduces the release ARM7 payload, ARM9 payload, and packaged ROM byte
+for byte.
 
-1. Establish the identity and layout of the public 2008 v0.6 release.
-2. Instrument that release without pretending its original C++ was recovered.
+The release binary is treated as the experimental oracle. Packaging
+reproduction, behavioral equivalence, and source-level binary identity are
+measured separately so that progress in one category cannot be mistaken for
+completion of another.
 
-The exact release ROM is a research input, not a tracked source substitute.
+## Acceptance Standard
 
-## Release Identity
+A historical source build is accepted only when all of the following hold:
 
-The verified source archive and payload hashes are recorded in
-[`input-locks.csv`](../research/provenance/input-locks.csv). The release ROM is:
+1. Executable sections are produced from C, C++, or reviewed assembly with
+   named functions and maintainable control flow.
+2. Release ARM payloads are not embedded through binary includes, opaque blobs,
+   or data-only assembly directives.
+3. Generated assets are traceable to repository inputs and documented tools.
+4. The compiled ARM9 payload has SHA-256
+   `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89`.
+5. The compiled ARM7 payload has SHA-256
+   `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec`.
+6. Historical packaging produces the final ROM SHA-256
+   `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64`.
+7. Two independent clean builds reproduce all three hashes.
 
-```text
-SHA-256  9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
-Size     894016 bytes
-ARM9     0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
-ARM7     b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
-```
+Functionally equivalent code is useful evidence but does not satisfy the byte
+identity claim.
 
-[`build_v06_exact.sh`](../tools/repro/build_v06_exact.sh) extracts these two
-payloads and repacks them with historical ndstool. Matching the final ROM proves
-the archive/container reconstruction, header inputs, and packaging order. It
-does not prove recompilation from original source.
+## Release Reference
 
-## Removed False Source
+The checksum-locked release archive and preservation mirror are recorded in
+[`input-locks.csv`](../research/provenance/input-locks.csv). The primary binary
+identities are:
 
-Earlier research commits generated `recovered_arm9.S` and `recovered_arm7.S` as
-long sequences of `.word` directives copied directly from the release payloads.
-Those files were accepted by an assembler, but they had no recovered functions,
-types, control flow, or maintainable semantics. They were binary
-transliterations, not source recovery.
+| Artifact | Size | SHA-256 |
+| --- | ---: | --- |
+| Pocket Physics v0.6 ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
+| ARM9 payload | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
+| ARM7 payload | 62,828 B | `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec` |
 
-They and their generator have been removed from `master`. Git history preserves
-the audit trail, while the current documentation retracts the source-build
-claim. No opaque binary is tracked under `tools/repro`; this is enforced by
-[`audit_tracked_binaries.py`](../tools/repro/audit_tracked_binaries.py).
+The release uses ARM9 load address `0x02000000`. Known application functions and
+instrumentation entry points are recorded in
+[`v06-address-map.csv`](../research/reverse-engineering/v06-address-map.csv).
 
-## Historical Instrumentation
+## Evidence Corpus
 
-The historical benchmark starts from the verified release payload and adds a
-source-built overlay:
+The repository preserves several independent evidence classes:
+
+- The complete Git history, including the v0.6-era source tree and later source
+  repairs.
+- The tracked `pocketphysics_src.tgz` source snapshot.
+- Historical generated objects and build products, inventoried in
+  [`tracked-binaries.csv`](../research/provenance/tracked-binaries.csv).
+- The public release ROM and its two processor payloads.
+- The devkitARM r21 archive and historical ndstool 1.36 executable.
+- Source snapshots for Box2D, TinyXML, convex decomposition, libnds, uLibrary,
+  and the ARM7 runtime candidates.
+
+Each input is classified by provenance and hash before it is used for code or
+toolchain attribution.
+
+## Packaging Control
+
+[`build_v06_exact.sh`](../tools/repro/build_v06_exact.sh) extracts the verified
+ARM payloads and packages them with ndstool 1.36, the historical title, and the
+tracked icon. The resulting ROM is byte-identical to the public release.
+
+This control fixes the cartridge header, banner, processor offsets, padding,
+and packaging order. It narrows source reconstruction to reproducing the two
+processor payloads; it does not count as their compilation.
+
+## Instrumented Reference
+
+The historical benchmark adds a source-built overlay to a verified copy of the
+release ARM9 payload:
 
 - Overlay source:
   [`exact_overlay/benchmark_overlay.cpp`](../tools/repro/exact_overlay/benchmark_overlay.cpp).
 - no$gba debug transport:
   [`exact_overlay/nocash_debug.S`](../tools/repro/exact_overlay/nocash_debug.S).
-- Link address: `0x02300000`.
-- ARM9 load address: `0x02000000`.
+- Overlay link address: `0x02300000`.
 - Splash-call patch: `0x0200451c`, guarded by preimage `fdf748fd`.
 - Post-`setupGui` hook: `0x020045b8`, guarded by preimage `684a0223`.
 
-[`instrument_exact_arm9.py`](../tools/repro/instrument_exact_arm9.py) refuses an
-unknown ARM9 hash, a changed patch preimage, an overlapping overlay, an invalid
-Thumb branch, or an out-of-range target. Its branch encoder has forward,
-backward, alignment, and range unit tests.
+[`instrument_exact_arm9.py`](../tools/repro/instrument_exact_arm9.py) verifies
+the base payload hash, patch preimages, branch encoding, target ranges, and
+overlay bounds before producing a derived experimental ROM. The overlay drives
+the release touch dispatcher, physics engine, and renderer through the same
+workload used by source builds.
 
-The overlay calls audited release functions by address. Those targets are named
-at the top of the source and published in
-[`v06-address-map.csv`](../research/reverse-engineering/v06-address-map.csv).
-Validation is behavioral: the overlay creates the expected scene through the
-real touch dispatcher, exercises real Box2D and rendering functions, and emits
-stable topology/state hashes.
+The instrumented ROM is intentionally distinct from the release reference and
+is identified by its own hash in every result manifest.
 
-The benchmark ROM is intentionally not byte-identical to the release. It is a
-derived experimental specimen whose base hash and two modifications are fully
-specified.
+## Reconstruction Method
 
-## What Is Source
+The source reconstruction proceeds by measurable reductions in binary distance:
 
-The maintainable v0.6 source reproduction comes from commits `e9b621e` and
-`3e538e0`, then receives explicit, reviewable transformations. All application,
-benchmark, compatibility, Box2D, and build logic under `tools/repro` is text
-source.
+1. Reconstruct each candidate historical source tree from Git and archived
+   source inputs.
+2. Recreate the 2008 compiler, assembler, linker, libraries, asset tools, flags,
+   and object order in an isolated environment.
+3. Split release and candidate payloads into code, read-only data, initialized
+   data, relocation, and padding regions.
+4. Match functions using symbols from historical objects, normalized
+   disassembly, call graphs, literal pools, strings, and control-flow hashes.
+5. Attribute every unmatched region to source revision, compiler behavior,
+   library version, link order, generated data, or still-unrecovered code.
+6. Recover semantic source or reviewed assembly for unmatched executable
+   regions and record the resulting byte-distance change.
+7. Repeat until ARM7, ARM9, and final ROM hashes match the release oracle.
 
-Third-party source is downloaded by hash. Generated object files, ELF files,
-ARM payloads, and ROMs remain ignored build outputs.
+Intermediate candidates must publish exact hashes and region-level distance
+reports. A lower byte distance is progress; only a zero distance is completion.
 
-## What Remains Unknown
+## Current State
 
-A genuine byte-identical source compilation would require, at minimum:
+| Milestone | Status |
+| --- | --- |
+| Release archive and payload identity | Complete |
+| Historical packaging reproduction | Complete |
+| Safe instrumentation of the release oracle | Complete |
+| Maintainable modern source build | Complete |
+| Complete historical dependency and flag attribution | In progress |
+| Byte-identical ARM9 compilation from source | In progress |
+| Byte-identical ARM7 compilation from source | In progress |
+| Byte-identical final ROM from source compilation | In progress |
 
-- The exact original C/C++ translation units used for the public ROM.
-- Exact Box2D, TinyXML, uLibrary, libnds, and ARM7 source snapshots.
-- Original Makefiles, compiler flags, object order, linker scripts, generated
-  asset order, and post-link tooling.
-- Evidence that reconstructed code produces the release ARM9 and ARM7 payload
-  hashes before packaging.
-
-The repository does not currently possess that evidence. Future work may use
-disassembly, function matching, and decompilation, but every recovered function
-must be reviewed as code; bulk `.word` payloads will not satisfy the claim.
-
-## Claim Vocabulary
-
-- **Byte-identical release repack:** achieved and tested twice.
-- **Byte-identical build from original source:** not achieved.
-- **Maintainable modern source build:** achieved and byte-reproducible.
-- **Historically instrumented ROM:** achieved as an explicitly derived artifact.
-- **Behavioral equivalence:** bounded by the benchmark's public invariants and
-  checksums, not asserted for every possible user interaction.
+The unresolved work is an active reverse-engineering program, not a relaxed
+claim boundary. Every source candidate remains subordinate to the release
+hashes above.

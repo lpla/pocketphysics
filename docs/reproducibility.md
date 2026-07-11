@@ -6,14 +6,17 @@ independently.
 
 ## Build Roles
 
-| Role | Input program | Toolchain | Intended claim |
+| Role | Input program | Toolchain | Status |
 | --- | --- | --- | --- |
-| `historical-repack` | Verified ARM9 and ARM7 payloads from the public v0.6 ROM | devkitARM r21 ndstool 1.36 | Byte-identical archival repack |
-| `modern` | v0.6 C++ tree from git | BlocksDS 1.21.1 and uLibrary 1.14 | Reproducible maintainable source build |
-| `improved` | Same C++ tree plus explicit source transforms | Same locked BlocksDS stack | Reproducible fixed and optimized source build |
+| `release-reference` | Public v0.6 ROM | Hash verification and ndstool extraction | Binary oracle |
+| `historical-repack` | Verified release ARM9 and ARM7 payloads | devkitARM r21 ndstool 1.36 | Byte-identical packaging control |
+| `historical-source` | Reconstructed 2008 source and dependencies | Reconstructed devkitARM-era build | Active; byte identity required |
+| `modern` | v0.6 C++ tree from Git | BlocksDS 1.21.1 and uLibrary 1.14 | Byte-reproducible source port |
+| `improved` | Modern source plus explicit fixes and optimizations | Same locked BlocksDS stack | Byte-reproducible measured profile |
 
-The historical row is not called a source build. See
-[Reverse Engineering](reverse-engineering.md) for the evidence boundary.
+The release reference and archival repack define the oracle for the active
+[historical source reconstruction](reverse-engineering.md). They do not replace
+that work.
 
 ## Locked Inputs
 
@@ -69,6 +72,14 @@ Payload identities:
 `test_v06_exact.sh` performs two clean repacks and byte-compares both payloads
 and both final ROMs.
 
+## Historical Source Reconstruction
+
+The source-build track uses the same payload and ROM hashes as hard acceptance
+targets. Candidate builds must also publish their exact source revision,
+dependency set, compiler flags, object order, section layout, and normalized
+binary-distance report. The method and current milestone table are maintained
+in [Historical Source Reconstruction](reverse-engineering.md).
+
 ## Modern Source Build
 
 [`build_v06_blocksds.sh`](../tools/repro/build_v06_blocksds.sh) reconstructs the
@@ -95,7 +106,7 @@ tools/repro/test_v06_repro.sh
 Expected uninstrumented result:
 
 ```text
-1545483fa3d0b1c1dd45909e25805b294e4b8a75f1adb2220fc15dd421a6a25a  739328 bytes
+93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06  739328 bytes
 ```
 
 ## Improved Source Build
@@ -116,7 +127,7 @@ tools/repro/test_v06_perf.sh
 Expected uninstrumented result:
 
 ```text
-f0da3c30421246944e69abcbeaa42edf47d04f4404dc119ea69e88862265a3b4  814080 bytes
+851b0ce20f119f37c266ff269c44a5c6114ec48a7f3be081316cfcecd229fb83  814080 bytes
 ```
 
 The accepted and rejected changes are documented in
@@ -144,24 +155,26 @@ The default full loop performs:
 - Two modern builds and byte comparisons.
 - Two improved builds and byte comparisons.
 - Historical benchmark overlay build with release-byte guards.
-- Three complete in-ROM runs for all roles in DeSmuME.
 - Three complete in-ROM runs for all roles in melonDS.
 - Correctness, allocation, checksum, sample-count, and timing assertions.
 
-Generated local files are written under ignored `.codex-artifacts/`. Published
-evidence is copied into [`research/results`](../research/results/) and is the
-stable GitHub-facing record.
+Generated build products and raw logs are written under `research-artifacts/`.
+Versioned evidence is published in [`research/results`](../research/results/)
+with source revision, runtime identity, ROM hashes, and assertion output.
+
+DeSmuME can be requested with `EMULATORS=desmume` for supplemental compatibility
+work. melonDS is the primary emulator and the pre-hardware optimization
+decision baseline.
 
 ## Residual Limits
 
-- A future disappearance of an upstream URL can prevent a fresh download even
-  though its required hash remains known. Mirroring legally redistributable
-  inputs is future archive work.
 - Docker itself and the host kernel are outside the bit-reproducibility claim.
   All target binaries nevertheless compare byte-for-byte after independent
   clean builds.
-- Emulator agreement is not a substitute for physical hardware. The repository
+- melonDS is not a substitute for physical hardware. The repository
   provides a hardware ingestion and assertion path in
   [Real Hardware](real-hardware.md).
-- No original-source byte-identical compilation of the 2008 ROM has been
-  achieved. The exact workflow is intentionally and accurately named a repack.
+- Historical source reconstruction is incomplete until compiled ARM7, ARM9,
+  and final ROM outputs match the release byte for byte. Current progress and
+  acceptance criteria are maintained in
+  [Historical Source Reconstruction](reverse-engineering.md).

@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-OUT="${OUT:-$ROOT/.codex-artifacts/test/source-patches}"
-DEPS_CACHE="${DEPS_CACHE:-$ROOT/.codex-artifacts/deps}"
+OUT="${OUT:-$ROOT/research-artifacts/test/source-patches}"
+DEPS_CACHE="${DEPS_CACHE:-$ROOT/research-artifacts/deps}"
 BOX2D_ARCHIVE="$DEPS_CACHE/box2d_2.0.1+dfsg1.orig.tar.gz"
 BOX2D_SHA="ff35fa514b6a7bcdfd1d83c499d57cdd4dfec7adb1b42aeaeb8dbedfb069fdb0"
 BOX2D_URL="https://snapshot.debian.org/file/868397d39d1a842b252454ba44c475cd2eb14d49"

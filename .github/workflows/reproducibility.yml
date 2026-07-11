@@ -43,7 +43,7 @@ jobs:
         with:
           name: inrom-smoke-${{ github.sha }}
           path: |
-            .codex-artifacts/benchmarks/inrom-test/**
-            .codex-artifacts/test/**
+            research-artifacts/benchmarks/inrom-test/**
+            research-artifacts/test/**
           if-no-files-found: warn
           retention-days: 14

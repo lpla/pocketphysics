@@ -2,15 +2,15 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-EMULATOR="${EMULATOR:-desmume}"
-OUT="${OUT:-$ROOT/.codex-artifacts/benchmarks/${EMULATOR}-$(date -u +%Y%m%dT%H%M%SZ)}"
+EMULATOR="${EMULATOR:-melonds}"
+OUT="${OUT:-$ROOT/research-artifacts/benchmarks/${EMULATOR}-$(date -u +%Y%m%dT%H%M%SZ)}"
 REPEATS="${REPEATS:-3}"
-DURATION="${DURATION:-45}"
+DURATION="${DURATION:-12}"
 MAX_TIMING_SPREAD_PERCENT="${MAX_TIMING_SPREAD_PERCENT:-0}"
 
-default_historical="$ROOT/.codex-artifacts/build/bench-historical/pocketphysics-bench-historical.nds"
-default_modern="$ROOT/.codex-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds"
-default_improved="$ROOT/.codex-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds"
+default_historical="$ROOT/research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds"
+default_modern="$ROOT/research-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds"
+default_improved="$ROOT/research-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds"
 
 case "$EMULATOR" in
     desmume)

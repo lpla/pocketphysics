@@ -5,12 +5,12 @@ ROOT="$(git rev-parse --show-toplevel)"
 PROFILE="${BUILD_PROFILE:-repro}"
 if [ -z "${OUT:-}" ]; then
     case "$PROFILE" in
-        repro) OUT="$ROOT/.codex-artifacts/build/v06-blocksds" ;;
-        *) OUT="$ROOT/.codex-artifacts/build/$PROFILE" ;;
+        repro) OUT="$ROOT/research-artifacts/build/v06-blocksds" ;;
+        *) OUT="$ROOT/research-artifacts/build/$PROFILE" ;;
     esac
 fi
-DOWNLOADS="${DOWNLOADS:-$ROOT/.codex-artifacts/downloads}"
-DEPS_CACHE="${DEPS_CACHE:-$ROOT/.codex-artifacts/deps}"
+DOWNLOADS="${DOWNLOADS:-$ROOT/research-artifacts/downloads}"
+DEPS_CACHE="${DEPS_CACHE:-$ROOT/research-artifacts/deps}"
 CONVEX_CACHE="$DEPS_CACHE/convex-decomposition-original"
 PACKAGE_CACHE="${BLOCKSDS_PACKAGE_CACHE:-$DOWNLOADS/blocksds-packages}"
 PACKAGE_LOCK="$ROOT/tools/repro/blocksds-packages.lock"

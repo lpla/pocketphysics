@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-OUT_A="$ROOT/.codex-artifacts/build/repro-check-a"
-OUT_B="$ROOT/.codex-artifacts/build/repro-check-b"
+OUT_A="$ROOT/research-artifacts/build/repro-check-a"
+OUT_B="$ROOT/research-artifacts/build/repro-check-b"
 
 sha256_file() {
     shasum -a 256 "$1" | awk '{print $1}'

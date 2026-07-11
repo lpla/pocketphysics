@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-OUT="${OUT:-$ROOT/.codex-artifacts/build/v06-exact}"
-TOOLCHAIN="${DEVKITARM_R21_ARCHIVE:-$ROOT/.codex-artifacts/downloads/devkitARM_r21linux.tar.bz2}"
+OUT="${OUT:-$ROOT/research-artifacts/build/v06-exact}"
+TOOLCHAIN="${DEVKITARM_R21_ARCHIVE:-$ROOT/research-artifacts/downloads/devkitARM_r21linux.tar.bz2}"
 IMAGE="${EXACT_IMAGE:-pocketphysics-devkitarm-r21-exact}"
 EXPECTED_TOOLCHAIN_SHA="7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203"
 EXPECTED_ROM_SHA="9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64"

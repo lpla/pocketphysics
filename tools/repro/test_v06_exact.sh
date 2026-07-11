@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-BASE="${OUT:-$ROOT/.codex-artifacts/test/v06-exact}"
+BASE="${OUT:-$ROOT/research-artifacts/test/v06-exact}"
 
 OUT="$BASE/first" "$ROOT/tools/repro/build_v06_exact.sh"
 OUT="$BASE/second" "$ROOT/tools/repro/build_v06_exact.sh"

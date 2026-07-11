@@ -1,22 +1,22 @@
-# Real Hardware
+# Physical Nintendo DS Validation
 
-Emulator agreement is useful but does not prove Nintendo DS memory, cache, bus,
-flashcart, and firmware behavior. The benchmark ROMs therefore write the same
-in-ROM records to FAT for physical collection.
+melonDS is the pre-hardware baseline, but it cannot establish Nintendo DS cache,
+bus, flashcart, firmware, or display behavior. The benchmark ROMs therefore
+write the same in-ROM records to FAT for physical collection.
 
-## Build The Specimens
+## Build Specimens
 
 ```sh
 tools/repro/build_v06_exact_benchmark.sh
 BUILD_PROFILE=bench-modern \
-  OUT="$PWD/.codex-artifacts/build/bench-modern" \
+  OUT="$PWD/research-artifacts/build/bench-modern" \
   tools/repro/build_v06_blocksds.sh
 BUILD_PROFILE=bench-improved \
-  OUT="$PWD/.codex-artifacts/build/bench-improved" \
+  OUT="$PWD/research-artifacts/build/bench-improved" \
   tools/repro/build_v06_blocksds.sh
 ```
 
-The three ROMs are generated locally under `.codex-artifacts/build`. Record their
+The three ROMs are generated under `research-artifacts/build`. Record their
 SHA-256 hashes before copying them to media.
 
 ## Collection Protocol
@@ -44,13 +44,13 @@ ppbench-bench-improved.csv
 Rename each collected copy by role and run number before launching the next
 specimen so it is not overwritten.
 
-## Normalize And Validate
+## Normalize and Validate
 
 ```sh
 tools/repro/ingest_hardware_results.py \
-  --rom bench-historical=.codex-artifacts/build/bench-historical/pocketphysics-bench-historical.nds \
-  --rom bench-modern=.codex-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds \
-  --rom bench-improved=.codex-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds \
+  --rom bench-historical=research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds \
+  --rom bench-modern=research-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds \
+  --rom bench-improved=research-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds \
   --csv bench-historical=hardware/historical.1.csv \
   --csv bench-historical=hardware/historical.2.csv \
   --csv bench-historical=hardware/historical.3.csv \
@@ -77,5 +77,4 @@ A hardware result directory should be committed unchanged with its metadata and
 raw files. Do not replace emulator evidence or average emulator and hardware
 ticks together. Report each console/flashcart configuration as its own dataset.
 
-No physical Nintendo DS dataset is currently claimed in this repository. The
-absence is explicit so emulator results cannot be mistaken for hardware proof.
+No physical Nintendo DS dataset has yet been published in this repository.

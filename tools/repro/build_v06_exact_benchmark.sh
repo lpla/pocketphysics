@@ -2,9 +2,9 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-OUT="${OUT:-$ROOT/.codex-artifacts/build/bench-historical}"
+OUT="${OUT:-$ROOT/research-artifacts/build/bench-historical}"
 BASE_OUT="$OUT/base"
-TOOLCHAIN="${DEVKITARM_R21_ARCHIVE:-$ROOT/.codex-artifacts/downloads/devkitARM_r21linux.tar.bz2}"
+TOOLCHAIN="${DEVKITARM_R21_ARCHIVE:-$ROOT/research-artifacts/downloads/devkitARM_r21linux.tar.bz2}"
 IMAGE="${EXACT_IMAGE:-pocketphysics-devkitarm-r21-exact}"
 OVERLAY_ADDRESS=0x02300000
 

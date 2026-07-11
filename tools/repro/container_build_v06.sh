@@ -533,6 +533,6 @@ echo "Assembling NDS ROM"
 "$NDSTOOL" -c "$ROM" \
     -7 "$BLOCKSDS/sys/default_arm7/arm7.elf" \
     -9 "$OUT/pocketphysics-v0.6-blocksds.elf" \
-    -b "$SRC/ppicon.bmp" "Pocket Physics;v0.6 BlocksDS;0xtob/Codex"
+    -b "$SRC/ppicon.bmp" "Pocket Physics;v0.6 BlocksDS;0xtob"
 
 arm-none-eabi-size "$OUT/pocketphysics-v0.6-blocksds.elf" > "$LOGDIR/arm9-size.txt"

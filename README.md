@@ -7,22 +7,26 @@ fork preserves the historical repository and adds a public, reproducible
 research workflow for release archaeology, modern source builds, bug fixes, and
 in-ROM performance measurement.
 
-## Research Status
+## Research Program
 
-Three roles are kept deliberately separate:
+The archive separates the release reference, historical reconstruction,
+toolchain modernization, and measured optimization. This keeps binary identity,
+source provenance, behavioral equivalence, and performance as independently
+testable claims.
 
-| Role | What it is | SHA-256 |
+| Track | Current result | SHA-256 or target |
 | --- | --- | --- |
-| 2008 release | Verified public ARM payloads repacked with historical ndstool | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
-| Modern | v0.6 C++ source ported to checksum-locked BlocksDS dependencies | `1545483fa3d0b1c1dd45909e25805b294e4b8a75f1adb2220fc15dd421a6a25a` |
-| Improved | Modern port plus measured fixes, restored DS hardware math, selected Box2D backports, physics ITCM, batched rendering, and LTO | `f0da3c30421246944e69abcbeaa42edf47d04f4404dc119ea69e88862265a3b4` |
+| Public v0.6 reference | Verified 2008 release ROM and extracted ARM payloads | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
+| Historical source reconstruction | Active reconstruction with the 2008 toolchain and source corpus | Target: byte-identical ARM7, ARM9, and final ROM |
+| Archival repack control | Historical ndstool reproduces the reference ROM from verified payloads | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
+| Modern source port | v0.6 C++ source on checksum-locked BlocksDS dependencies | `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06` |
+| Improved source port | Modern port with measured correctness and performance changes | `851b0ce20f119f37c266ff269c44a5c6114ec48a7f3be081316cfcecd229fb83` |
 
-The first row is byte-identical to the public ROM, but it is **not a source
-recompilation**. The original release translation units and complete library
-build inputs have not been recovered. Earlier generated `.word` transcriptions
-were binary payloads disguised as assembly and have been removed. The exact
-claim is now limited to a verified archival repack; the maintainable source
-reproduction is the modern row.
+The archival repack establishes the release oracle and packaging procedure; it
+is not the endpoint of the historical-source investigation. A source
+reconstruction is accepted only when maintainable source and documented build
+inputs reproduce both processor payloads and the final ROM byte for byte.
+Embedding release payloads as source data does not satisfy that criterion.
 
 ## Reproduce
 
@@ -36,35 +40,38 @@ cd pocketphysics
 tools/repro/test_all.sh
 ```
 
-The full command performs source-transform tests, two clean historical repacks,
+The full command performs source-transform tests, two clean archival repacks,
 two clean modern builds, two clean improved builds, and three in-ROM workload
-runs in both DeSmuME and melonDS. The emulator watchdog is host-side process
-control only; every reported performance value is read from the ROM's cascaded
-ARM9 hardware timers.
+runs in melonDS. The emulator watchdog is host-side process control only; every
+reported performance value is read from the ROM's cascaded ARM9 hardware
+timers.
 
 Individual entry points:
 
 ```sh
-tools/repro/test_v06_exact.sh   # byte-identical archival repack, twice
+tools/repro/test_v06_exact.sh   # archival repack control, twice
 tools/repro/test_v06_repro.sh   # modern source build, twice
 tools/repro/test_v06_perf.sh    # improved source build, twice
-tools/repro/test_v06_inrom.sh   # both emulators, three repetitions each
-tools/repro/test_optimization_screening.sh  # all 13 optimization profiles
+tools/repro/test_v06_inrom.sh   # primary melonDS comparison
+tools/repro/test_optimization_screening.sh  # melonDS profile attribution
 ```
+
+DeSmuME remains available as a supplementary compatibility experiment by
+setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 
 ## Evidence
 
-- [Reproducibility model and exact limitations](docs/reproducibility.md)
-- [Reverse-engineering scope and release address map](docs/reverse-engineering.md)
+- [Reproducibility model and build identities](docs/reproducibility.md)
+- [Historical reconstruction method and release address map](docs/reverse-engineering.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)
 - [Tracked binary and external-input provenance](docs/provenance.md)
 - [Published benchmark evidence](research/results/README.md)
 
-No result link points into `.codex-artifacts`; that directory is only a local,
-ignored build cache. Reviewable CSVs, metadata, assertions, and summaries live
-under [`research/`](research/).
+Published datasets under [`research/results`](research/results/) bind every
+measurement to a source revision, emulator configuration, ROM hash, workload
+checksum, and machine-checked assertion set.
 
 ## License
 

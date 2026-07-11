@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-ZIP="${1:-$ROOT/.codex-artifacts/downloads/pocketphysics-gamebrew.zip}"
-OUT="${OUT:-$ROOT/.codex-artifacts/release-v0.6/gamebrew}"
+ZIP="${1:-$ROOT/research-artifacts/downloads/pocketphysics-gamebrew.zip}"
+OUT="${OUT:-$ROOT/research-artifacts/release-v0.6/gamebrew}"
 
 ZIP_URL="${ZIP_URL:-https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip}"
 ZIP_REFERER="${ZIP_REFERER:-https://www.gamebrew.org/wiki/Pocket_Physics}"
