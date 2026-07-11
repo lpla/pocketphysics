@@ -99,6 +99,18 @@ For a single emulator:
 EMULATOR=melonds REPEATS=3 DURATION=12 tools/repro/benchmark_inrom.sh
 ```
 
+To rebuild and measure every accepted and rejected optimization profile:
+
+```sh
+REPEATS=2 \
+DURATION=12 \
+MAX_TIMING_SPREAD_PERCENT=0 \
+tools/repro/test_optimization_screening.sh
+```
+
+`DURATION` is only a host watchdog. Increase it on a slower computer without
+changing the in-ROM measurements.
+
 Local output goes to `.codex-artifacts/benchmarks`. Published, reviewable runs
 are under [`research/results`](../research/results/).
 

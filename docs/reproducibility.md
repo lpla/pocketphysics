@@ -115,6 +115,13 @@ f0da3c30421246944e69abcbeaa42edf47d04f4404dc119ea69e88862265a3b4  814080 bytes
 The accepted and rejected changes are documented in
 [Optimization Study](optimization-study.md).
 
+The complete 13-profile attribution screen has its own reproducible entry
+point because it is substantially longer than a release-role comparison:
+
+```sh
+tools/repro/test_optimization_screening.sh
+```
+
 ## Complete Validation
 
 ```sh

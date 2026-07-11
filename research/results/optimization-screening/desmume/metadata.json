@@ -1,0 +1,13 @@
+{
+  "docker_image": "pocketphysics-desmume:0.9.11",
+  "docker_image_id": "sha256:f2f980a3136372fa5ad44fac3c09b8876f913f5237967163b6689f533ae8b957",
+  "docker_platform": "linux/amd64",
+  "duration_limit_seconds": 12,
+  "emulator": "desmume",
+  "emulator_version": "0.9.11-4.1 (Debian bookworm)",
+  "git_commit": "8173803a4ffe5b640267417105a75ddc186b22ff",
+  "max_timing_spread_percent": 0.0,
+  "repeats": 2,
+  "schema": 1,
+  "working_tree_dirty": false
+}

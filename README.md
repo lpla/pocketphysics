@@ -49,6 +49,7 @@ tools/repro/test_v06_exact.sh   # byte-identical archival repack, twice
 tools/repro/test_v06_repro.sh   # modern source build, twice
 tools/repro/test_v06_perf.sh    # improved source build, twice
 tools/repro/test_v06_inrom.sh   # both emulators, three repetitions each
+tools/repro/test_optimization_screening.sh  # all 13 optimization profiles
 ```
 
 ## Evidence

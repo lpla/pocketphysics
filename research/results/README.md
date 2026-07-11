@@ -38,6 +38,18 @@ The historical melonDS frame is already synchronized at the 60 Hz floor, so its
 0.4% frame advantage over improved is not presented as extra CPU headroom;
 improved physics and hit testing are substantially faster.
 
+## Optimization Screening
+
+- [DeSmuME 0.9.11 optimization screening](optimization-screening/desmume/)
+- [melonDS 1.1 optimization screening](optimization-screening/melonds/)
+- [Profile map, decisions, and reproduction command](optimization-screening/)
+
+The screening rebuilds 13 source profiles and runs each twice through the same
+225-touch, 27-object, 600-hit-test, 240-frame workload. Both emulators report
+zero timing spread and stable per-profile checksums. These datasets provide the
+evidence behind both the accepted composition and the measured rejections in
+[`docs/optimization-study.md`](../../docs/optimization-study.md).
+
 There is currently no physical Nintendo DS result set. See
 [`docs/real-hardware.md`](../../docs/real-hardware.md) for the collection and
 ingestion protocol.

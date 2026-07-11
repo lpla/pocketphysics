@@ -1,0 +1,13 @@
+{
+  "docker_image": "pocketphysics-melonds:1.1",
+  "docker_image_id": "sha256:47b1fcd4747f24d77b4156e68caec2edb62b6420a2ab61bf5ff03ddc84381f63",
+  "docker_platform": "linux/amd64",
+  "duration_limit_seconds": 12,
+  "emulator": "melonds",
+  "emulator_version": "1.1 (official AppImage x86_64)",
+  "git_commit": "8173803a4ffe5b640267417105a75ddc186b22ff",
+  "max_timing_spread_percent": 0.0,
+  "repeats": 2,
+  "schema": 1,
+  "working_tree_dirty": false
+}

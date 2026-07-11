@@ -39,14 +39,14 @@ Two-repeat melonDS attribution, mean ARM9 ticks:
 
 | Profile | Touch | Hit test | Physics | Render sync | Frame | Final checksum |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Software-math ARM/LTO control | 9,230 | 1,349 | 421,183 | 182,425 | 603,732 | `f49066a8` |
-| DS math ARM/LTO | 6,607 | 1,584 | 130,738 | 425,622 | 556,507 | `8c4d9050` |
-| DS math ARM/LTO/fast-math | 6,527 | 1,582 | 130,706 | 425,716 | 556,568 | `8c4d9050` |
-| DS math Thumb/LTO/fast-math | 7,024 | 1,655 | 223,168 | 334,394 | 557,729 | `8c4d9050` |
-| DS math Thumb/no-LTO/fast-math | 7,128 | 1,777 | 237,103 | 319,312 | 556,578 | `8c4d9050` |
+| Software-math ARM/LTO control | 9,210 | 1,381 | 417,160 | 183,996 | 601,278 | `f49066a8` |
+| DS math ARM/LTO | 6,611 | 1,579 | 130,192 | 426,180 | 556,519 | `8c4d9050` |
+| DS math ARM/LTO/fast-math | 6,529 | 1,577 | 130,903 | 425,600 | 556,651 | `8c4d9050` |
+| DS math Thumb/LTO/fast-math | 7,086 | 1,664 | 233,930 | 323,560 | 557,657 | `8c4d9050` |
+| DS math Thumb/no-LTO/fast-math | 7,117 | 1,778 | 236,696 | 319,748 | 556,607 | `8c4d9050` |
 
-DeSmuME independently reduced physics from 540,048 ticks in the software-math
-control to 223,327 in the ARM DS-math profile. ARM without `-ffast-math` had the
+DeSmuME independently reduced physics from 539,349 ticks in the software-math
+control to 218,894 in the ARM DS-math profile. ARM without `-ffast-math` had the
 best cross-emulator direction and remains selected. The checksum change is
 expected: the corrected build now executes the DS-specific fixed-point
 operators. Checksums remain exact across repetitions and both emulators, while
@@ -83,24 +83,29 @@ Revisiting them after the DS path was restored changed the result.
 
 Two-repeat results for the corrected ARM/LTO baseline and the selected
 components follow. All rows have identical `8c4d9050` final checksums and zero
-hit-test heap growth.
+hit-test heap growth. The complete machine-readable screening is published for
+[melonDS](../research/results/optimization-screening/melonds/) and
+[DeSmuME](../research/results/optimization-screening/desmume/).
 
 | Emulator | Profile | Touch | Hit test | Physics | Render sync | Frame |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| melonDS | DS-math baseline | 6,607 | 1,584 | 130,738 | 425,622 | 556,507 |
-| melonDS | Both Box2D backports | 6,244 | 1,626 | 118,012 | 438,054 | 556,213 |
-| melonDS | Physics-only ITCM | 6,591 | 1,619 | 123,595 | 432,621 | 556,363 |
-| melonDS | Backports plus physics ITCM | 6,237 | 1,608 | 111,159 | 444,583 | 555,889 |
-| DeSmuME | DS-math baseline | 10,830 | 1,889 | 223,327 | 332,710 | 556,608 |
-| DeSmuME | Both Box2D backports | 10,301 | 1,737 | 196,464 | 359,948 | 556,979 |
-| DeSmuME | Physics-only ITCM | 10,990 | 1,787 | 201,446 | 354,627 | 556,655 |
-| DeSmuME | Backports plus physics ITCM | 10,300 | 1,862 | 182,374 | 373,432 | 556,377 |
+| melonDS | DS-math baseline | 6,611 | 1,579 | 130,192 | 426,180 | 556,519 |
+| melonDS | Both Box2D backports | 6,234 | 1,585 | 118,066 | 438,103 | 556,316 |
+| melonDS | Physics-only ITCM | 6,588 | 1,622 | 122,811 | 433,390 | 556,345 |
+| melonDS | Backports plus physics ITCM | 6,246 | 1,593 | 111,042 | 444,844 | 556,033 |
+| DeSmuME | DS-math baseline | 10,831 | 1,901 | 218,894 | 337,232 | 556,702 |
+| DeSmuME | Both Box2D backports | 10,381 | 1,787 | 193,397 | 362,720 | 556,700 |
+| DeSmuME | Physics-only ITCM | 10,982 | 1,821 | 201,829 | 354,163 | 556,589 |
+| DeSmuME | Backports plus physics ITCM | 10,259 | 1,857 | 181,913 | 373,863 | 556,372 |
 
-The composition cuts physics by 14.98% in melonDS and 18.34% in DeSmuME. Touch
-processing improves by 5.60% and 4.89%. Complete-frame time is already pinned
-near the 60 Hz synchronization floor and changes by less than 0.2%. The
-uninstrumented ITCM section is 6,144 bytes; the larger instrumented specimen is
-11,688 bytes. Both fit comfortably within the ARM9's 32 KiB ITCM.
+The fixed-estimate backport alone cuts physics by 8.60% in melonDS and 11.43%
+in DeSmuME. The velocity gate cuts it by 2.53% and 1.49%, the combined
+backports by 9.31% and 11.65%, and physics-only ITCM by 5.67% and 7.80%.
+The selected composition cuts physics by 14.71% in melonDS and 16.89% in
+DeSmuME. Touch processing improves by 5.52% and 5.28%. Complete-frame time is
+already pinned near the 60 Hz synchronization floor and changes by less than
+0.1%. The uninstrumented ITCM section is 6,144 bytes; the larger instrumented
+specimen is 11,848 bytes. Both fit comfortably within the ARM9's 32 KiB ITCM.
 
 The canonical `perf` and `bench-improved` profiles therefore enable DS hardware
 math, both conservative Box2D changes, and physics-only ITCM together.
@@ -109,7 +114,8 @@ math, both conservative Box2D changes, and physics-only ITCM together.
 
 - **`-ffast-math`:** no complete-frame gain and a DeSmuME physics regression.
 - **Thumb profiles:** lower synchronized render intervals but substantially
-  slower physics; complete-frame cadence did not improve.
+  slower physics. DeSmuME records 9 tolerant cadence overruns with LTO and 13
+  without LTO, versus zero for the ARM baseline and selected profile.
 - **Per-file ARM/O2 and Thumb/O2 canvas:** at most 0.1% frame movement with no
   useful phase gain after synchronization.
 - **Exact reciprocal cache:** no meaningful complete-frame or render gain on

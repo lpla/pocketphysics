@@ -1,0 +1,13 @@
+melonds canvas-arm-o2: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds canvas-thumb-o2: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds combined: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-arm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-arm-fast: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-thumb-fast: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-thumb-fast-nolto: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds gate: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds length: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds physics-itcm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds reciprocal: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds selected: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds software-control: complete touch/physics/render workload; timing spread <= 0.000000%
