@@ -13,6 +13,12 @@ The BlocksDS container's rolling package index is not synchronized; exact
 archives from [`blocksds-packages.lock`](../tools/repro/blocksds-packages.lock)
 are installed directly.
 
+The original GameBrew v0.6 ZIP is also mirrored as a GitHub Release asset on
+this fork because GameBrew blocks some automated runner networks. Both URLs are
+locked to `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6`.
+The mirror is binary archival input, not recovered source or a source-identical
+build claim, and it is not stored in the Git tree.
+
 ## Tracked Binary Inventory
 
 The historical repository contains media, raw graphics/audio data, generated

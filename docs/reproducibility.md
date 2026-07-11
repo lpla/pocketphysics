@@ -31,7 +31,10 @@ Important controls include:
 
 GameBrew's download host requires the public Pocket Physics page as the HTTP
 referrer. The release extractor supplies that header explicitly and still
-rejects any archive that does not match the locked SHA-256.
+rejects any archive that does not match the locked SHA-256. If GameBrew is
+unavailable, it uses the checksum-identical
+[preservation release](https://github.com/lpla/pocketphysics/releases/tag/historical-input-v0.6)
+on this fork.
 
 The modern build never runs `pacman -Sy` or resolves an unversioned package at
 build time. It installs the archives in

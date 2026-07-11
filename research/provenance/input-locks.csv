@@ -1,5 +1,6 @@
 kind,name,version_or_revision,url,sha256,consumer
 release-archive,Pocket Physics public archive,v0.6,https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
+release-archive-mirror,Pocket Physics preservation mirror,v0.6,https://github.com/lpla/pocketphysics/releases/download/historical-input-v0.6/pocketphysics-gamebrew.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
 release-rom,pocketphysics.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics.nds,9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64,build_v06_exact.sh
 release-rom,pocketphysics_nothumb.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics_nothumb.nds,64a15ff6c0e0e7235dd716833d68f8adaa9043afc867f5b6523d9c73750e586a,extract_release_v06.sh
 legacy-toolchain,devkitARM,r21,https://wii.leseratte10.de/devkitPro/devkitARM/r21%20(2007)/14943_devkitARM_r21linux.tar.bz2,7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203,build_v06_exact.sh
