@@ -59,6 +59,6 @@ grep -q 'pp_cos_bin(idx)' "$OUT/deps/box2d-2.0.1/Source/Common/Fixed.h"
 grep -q 'frame_over_1pct_count' "$ROOT/tools/repro/benchmark_source/pp_benchmark.cpp"
 grep -q 'frame_over_1pct_count' "$ROOT/tools/repro/exact_overlay/benchmark_overlay.cpp"
 grep -q 'bench-improved.*TARGET_IS_NDS' "$ROOT/tools/repro/container_build_v06.sh"
-grep -q 'bench-improved.*PP_CANVAS_LINE_ITCM' "$ROOT/tools/repro/container_build_v06.sh"
+grep -q 'PP_CANVAS_LINE_ITCM.*bench-improved' "$ROOT/tools/repro/container_build_v06.sh"
 
 echo "Historical source transforms and instrumentation unit tests passed."
