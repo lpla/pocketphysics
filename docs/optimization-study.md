@@ -58,6 +58,11 @@ software-math control and removes its tolerant cadence overruns. The checksum
 change is expected because the corrected build executes the historical
 fixed-point operators; checksums are exact across repetitions.
 
+The melonDS-only reassessment does not select `-ffast-math`: touch improves by
+1.24%, but physics regresses by 0.55% and complete-frame time by 0.02%. Both
+Thumb profiles regress touch, hit testing, physics, and complete-frame time
+relative to ARM/LTO, so the ARM/LTO profile remains the compiler baseline.
+
 Render timing includes graphics FIFO and display synchronization. Faster
 physics reaches that wait earlier, moving ticks from physics into drawing. The
 complete frame and cadence counters are therefore interpreted with the phase
@@ -96,32 +101,40 @@ zero timing spread.
 | Both Box2D backports | 6,234 | 1,585 | 118,066 | 438,103 | 556,316 |
 | Physics-only ITCM | 6,588 | 1,622 | 122,811 | 433,390 | 556,345 |
 | Backports plus physics ITCM | 6,246 | 1,593 | 111,042 | 444,844 | 556,033 |
+| Backports plus render ITCM | 6,241 | 1,641 | 118,122 | 437,680 | 555,948 |
+| Backports plus broad ITCM | 6,225 | 1,614 | 111,223 | 444,867 | 556,235 |
+| Physics plus `Canvas::draw` ITCM | 6,249 | 1,614 | 111,077 | 444,631 | 555,854 |
+| Physics plus `Canvas::drawLine` ITCM | 6,233 | 1,593 | 111,038 | 444,764 | 555,947 |
 
 Against the corrected baseline, the fixed-estimate backport reduces physics by
 8.60%, the velocity gate by 2.53%, both backports by 9.31%, and physics-only
-ITCM by 5.67%. Their selected composition reduces physics by 14.71% and touch
-processing by 5.52%. Complete-frame time is synchronized near one 60 Hz period
-and improves by 0.09%.
+ITCM by 5.67%. The selected backport, physics-ITCM, and line-ITCM composition
+reduces physics by 14.71% and touch processing by 5.72%. Complete-frame time is
+synchronized near one 60 Hz period and improves by 0.10%.
 
-The uninstrumented ITCM section is 6,144 bytes and the instrumented specimen is
-11,848 bytes, both below the ARM9's 32 KiB ITCM capacity.
+The uninstrumented ITCM section is 6,640 bytes and the instrumented specimen is
+12,344 bytes, both below the ARM9's 32 KiB ITCM capacity.
 
-## Candidates Under Reassessment
+## MelonDS Reassessment
 
-The following profiles were previously classified under a cross-emulator rule
-and are being reassessed using melonDS as the decision baseline:
+The remaining compiler and renderer candidates were rerun under the same
+melonDS-only decision rule:
 
-- `-ffast-math` on the ARM/LTO profile.
-- Thumb/LTO and Thumb/no-LTO profiles.
-- Per-file ARM/O2 and Thumb/O2 canvas compilation.
-- Exact reciprocal caching in the line renderer.
-- Broader canvas-and-solver ITCM placement.
-- Earlier non-LTO, mixed-mode, and renderer-cache candidates retained by the
-  build-profile matrix.
+| Candidate | Touch | Hit test | Physics | Frame | Decision |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Canvas ARM/O2 | 6,610 | 1,524 | 130,353 | 556,573 | Exclude: physics and frame regress |
+| Canvas Thumb/O2 | 6,663 | 1,524 | 130,400 | 556,144 | Exclude: touch and physics regress |
+| Reciprocal cache | 6,614 | 1,579 | 130,605 | 556,411 | Exclude: touch and physics regress |
+| Backports plus render ITCM | 6,241 | 1,641 | 118,122 | 555,948 | Exclude: hit test and physics regress |
+| Backports plus broad ITCM | 6,225 | 1,614 | 111,223 | 556,235 | Exclude: hit test, physics, and frame regress |
+| Physics plus `Canvas::draw` ITCM | 6,249 | 1,614 | 111,077 | 555,854 | Exclude: touch, hit test, and physics regress |
+| Physics plus `Canvas::drawLine` ITCM | 6,233 | 1,593 | 111,038 | 555,947 | Select: all decision metrics are non-regressive |
 
-No candidate is rejected solely because of a DeSmuME regression. Each retained
-or discarded profile must have a current melonDS workload, checksum, cadence,
-and ROM-identity record.
+The selected line-only placement improves touch by 0.21%, physics by 0.004%,
+and complete-frame time by 0.015% relative to backports plus physics ITCM while
+leaving hit-test time unchanged. The gains are small but repeat exactly in
+melonDS; physical hardware remains the final decision point. No candidate in
+this table is rejected because of a DeSmuME result.
 
 ## Selection Rule
 

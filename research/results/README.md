@@ -41,7 +41,7 @@ byte-identical source build, not from an extracted release payload.
 - [melonDS 1.1 optimization screening](optimization-screening/melonds/)
 - [Profile definitions, measurements, and reproduction command](optimization-screening/)
 
-The screen measures 13 source profiles twice with the same 225-touch,
+The screen measures 17 source profiles twice with the same 225-touch,
 27-object, 600-hit-test, 240-frame workload. Every profile has stable workload
 checksums and zero timing spread. Candidate classification uses melonDS
 correctness, touch, hit-test, physics, complete-frame, and cadence results.

@@ -1,7 +1,7 @@
 # Optimization Attribution Screen
 
 This dataset was generated from source revision
-`8173803a4ffe5b640267417105a75ddc186b22ff`. Thirteen ROM profiles execute the
+`01bbe06e2d8b9ae8a49d0385a704c273cf13e59d`. Seventeen ROM profiles execute the
 complete application workload twice. All profiles pass the behavioral gates,
 retain stable per-profile checksums, and have zero timing spread between
 repetitions.
@@ -17,20 +17,24 @@ hit testing, physics, frame totals, cadence, and correctness together.
 | --- | ---: | ---: | ---: | ---: | --- |
 | Software-math control | 9,210 | 1,381 | 417,160 | 601,278 | Attribution control |
 | DS math ARM/LTO | 6,611 | 1,579 | 130,192 | 556,519 | Corrected baseline |
-| DS math ARM/LTO/fast-math | 6,529 | 1,577 | 130,903 | 556,651 | Pending melonDS-only reassessment |
-| DS math Thumb/LTO/fast-math | 7,086 | 1,664 | 233,930 | 557,657 | Pending melonDS-only reassessment |
-| DS math Thumb/no-LTO/fast-math | 7,117 | 1,778 | 236,696 | 556,607 | Pending melonDS-only reassessment |
-| Canvas ARM/O2 | 6,610 | 1,524 | 130,353 | 556,573 | Pending melonDS-only reassessment |
-| Canvas Thumb/O2 | 6,663 | 1,524 | 130,400 | 556,144 | Pending melonDS-only reassessment |
-| Reciprocal cache | 6,614 | 1,579 | 130,605 | 556,411 | Pending melonDS-only reassessment |
+| DS math ARM/LTO/fast-math | 6,529 | 1,577 | 130,903 | 556,651 | Rejected: physics and frame regression |
+| DS math Thumb/LTO/fast-math | 7,086 | 1,664 | 233,930 | 557,657 | Rejected: touch, hit-test, and physics regression |
+| DS math Thumb/no-LTO/fast-math | 7,117 | 1,778 | 236,696 | 556,607 | Rejected: touch, hit-test, and physics regression |
+| Canvas ARM/O2 | 6,610 | 1,524 | 130,353 | 556,573 | Rejected: physics and frame regression |
+| Canvas Thumb/O2 | 6,663 | 1,524 | 130,400 | 556,144 | Rejected: touch and physics regression |
+| Reciprocal cache | 6,614 | 1,579 | 130,605 | 556,411 | Rejected: touch and physics regression |
 | Fixed length estimate | 6,232 | 1,586 | 118,992 | 556,431 | Accepted component |
 | Velocity gate | 6,603 | 1,587 | 126,903 | 556,182 | Accepted component |
 | Both Box2D backports | 6,234 | 1,585 | 118,066 | 556,316 | Accepted composition |
 | Physics-only ITCM | 6,588 | 1,622 | 122,811 | 556,345 | Accepted component |
-| Backports plus physics ITCM | 6,246 | 1,593 | 111,042 | 556,033 | Current selected profile |
+| Backports plus physics ITCM | 6,246 | 1,593 | 111,042 | 556,033 | Accepted composition |
+| Backports plus render ITCM | 6,241 | 1,641 | 118,122 | 555,948 | Rejected: hit-test and physics regression |
+| Backports plus broad ITCM | 6,225 | 1,614 | 111,223 | 556,235 | Rejected: hit-test, physics, and frame regression |
+| Physics plus `Canvas::draw` ITCM | 6,249 | 1,614 | 111,077 | 555,854 | Rejected: touch, hit-test, and physics regression |
+| Physics plus `Canvas::drawLine` ITCM | 6,233 | 1,593 | 111,038 | 555,947 | Current selected profile |
 
 `summary.csv` records every metric and embedded build label. `results.csv`
-contains all 598 normalized per-run metric rows. `roms.txt` binds each profile
+contains all 782 normalized per-run metric rows. `roms.txt` binds each profile
 to its ROM SHA-256 and byte size, allowing binary identity verification without
 storing ROM files in the dataset.
 
