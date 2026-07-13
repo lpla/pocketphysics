@@ -24,7 +24,7 @@ columns count intervals out of 240 simulation/render frames.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Historical release | 5,471 | 2,805 | 278,893 | 554,829 | 0 | 0 | 14,400 |
 | Modern source port | 12,286 | 3,015 | 584,579 | 904,349 | 102 | 87 | 14,400 |
-| Improved source port | 6,242 | 1,591 | 111,042 | 556,910 | 0 | 0 | 0 |
+| Improved source port | 6,239 | 1,594 | 111,032 | 556,860 | 0 | 0 | 0 |
 
 Relative to the modern source port, the improved profile reduces physics time
 by 81.0% and complete-frame time by 38.4%. It removes the reproduced hit-test
@@ -32,6 +32,9 @@ allocation leak and all tolerant cadence overruns. The historical frame is
 already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
+
+The historical specimen in this dataset was instrumented from the
+byte-identical source build, not from an extracted release payload.
 
 ## Optimization Attribution
 
