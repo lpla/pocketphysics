@@ -61,6 +61,13 @@ patch -d "$OUT/src" -p1 < "$ROOT/research/reconstruction/v06/application.patch"
 
 docker build --platform linux/amd64 -q -t "$IMAGE" \
     -f "$ROOT/tools/repro/exact/Dockerfile" "$ROOT/tools/repro/exact" >/dev/null
+
+normalize_permissions() {
+    docker run --rm --platform linux/amd64 \
+        -v "$OUT:/work" "$IMAGE" chmod -R a+rwX /work >/dev/null
+}
+trap 'normalize_permissions || true' EXIT
+
 docker run --rm --platform linux/amd64 \
     -v "$ROOT:/workspace:ro" \
     -v "$OUT:/work" \
@@ -68,6 +75,7 @@ docker run --rm --platform linux/amd64 \
     "$IMAGE" \
     bash tools/repro/container_build_v06_exact.sh
 
+normalize_permissions
 mv "$OUT/out/"* "$OUT/"
 rmdir "$OUT/out"
 shasum -a 256 \
@@ -75,6 +83,7 @@ shasum -a 256 \
     "$OUT/pocketphysics.arm9" \
     "$OUT/pocketphysics.arm7" \
     "$OUT/pocketphysics.nds" > "$OUT/SHA256SUMS"
+trap - EXIT
 
 printf '\nByte-identical source build:\n'
 cat "$OUT/SHA256SUMS"
