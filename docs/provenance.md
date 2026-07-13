@@ -19,6 +19,11 @@ locked to `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6`.
 The mirror is binary archival input, not recovered source or a source-identical
 build claim, and it is not stored in the Git tree.
 
+The exact source build does not download either release URL. It downloads only
+the checksum-locked 2007 SDK, devkitARM r21, and libnds source revision listed
+in the input lock; all remaining source is reconstructed from Git or tracked in
+[`research/reconstruction/v06`](../research/reconstruction/v06/README.md).
+
 ## Tracked Binary Inventory
 
 The historical repository contains media, raw graphics/audio data, generated
@@ -39,6 +44,16 @@ tools/repro/audit_tracked_binaries.py --check
 ```
 
 The audit fails if any binary appears under `tools/repro`.
+
+The reconstruction corpus has a stricter independent audit:
+
+```sh
+tools/repro/audit_reconstruction_source.py
+```
+
+It rejects NUL-bearing files, object/archive/ROM extensions, binary includes,
+and `.word` instruction transcriptions. The accepted corpus contains only text
+source, patches, linker scripts, object-order metadata, and documentation.
 
 Notable preserved files:
 
@@ -66,7 +81,9 @@ Compact evidence intended for review is tracked under `research/results`:
 - Portable ROM hash and byte-size manifest.
 
 No ROM is committed in the evidence directories. The scripts rebuild each ROM
-from its documented role and verify its hash.
+from its documented role and verify its hash. The historical benchmark begins
+with the hash-identical source-built ARM9 and ARM7 outputs, not extracted
+release payloads.
 
 ## Licenses
 

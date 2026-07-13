@@ -8,7 +8,6 @@ DESMUME_DURATION="${DESMUME_DURATION:-${DURATION:-45}}"
 MELONDS_DURATION="${MELONDS_DURATION:-${DURATION:-12}}"
 EMULATORS="${EMULATORS:-melonds}"
 
-"$ROOT/tools/repro/test_v06_exact.sh"
 "$ROOT/tools/repro/build_v06_exact_benchmark.sh"
 
 BUILD_PROFILE=bench-modern \

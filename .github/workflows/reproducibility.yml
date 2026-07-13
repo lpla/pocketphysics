@@ -8,12 +8,14 @@ on:
     paths:
       - ".github/workflows/reproducibility.yml"
       - "tools/repro/**"
+      - "research/reconstruction/**"
       - "research/provenance/**"
       - "research/results/**"
   pull_request:
     paths:
       - ".github/workflows/reproducibility.yml"
       - "tools/repro/**"
+      - "research/reconstruction/**"
       - "research/provenance/**"
       - "research/results/**"
 
@@ -30,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run reproducibility and in-ROM smoke suite
+      - name: Run exact-source reproducibility and in-ROM smoke suite
         env:
           REPEATS: "1"
           DESMUME_DURATION: "45"

@@ -1,0 +1,198 @@
+diff -ruN '--exclude=*.elf' a/arm9/source/canvas.cpp b/arm9/source/canvas.cpp
+--- a/arm9/source/canvas.cpp	2026-07-13 01:07:53.936181838 +0200
++++ b/arm9/source/canvas.cpp	2026-07-13 01:07:54.073166719 +0200
+@@ -11,6 +11,10 @@
+ 
+ #include "crayon_png.h"
+ 
++extern "C" void ulDrawImageQuad(UL_IMAGE *img,
++		s16 x0, s16 y0, s16 x1, s16 y1,
++		s16 x2, s16 y2, s16 x3, s16 y3);
++
+ #define MAX_POINTS              64
+ #define DRAW_MIN_POINT_DIST     7 //15
+ #define DRAW_POLYGON_CLOSE_DIST	10 //15
+@@ -436,6 +440,19 @@
+ 				pinthing2 = things[1];
+ 			else
+ 				pinthing2 = 0;
++
++			// Snap to center of gravity
++			if(count > 0)
++			{
++				int tx, ty;
++				things[0]->getCenterOfGravity(&tx, &ty);
++				int dx = tx - x;
++				int dy = ty - y;
++				if(dx*dx + dy*dy <= 25)
++				{
++					pin->setPosition(tx, ty);
++				}
++			}
+ 		}
+ 		break;
+ 		
+diff -ruN '--exclude=*.elf' a/arm9/source/defines.h b/arm9/source/defines.h
+--- a/arm9/source/defines.h	1970-01-01 01:00:00.000000000 +0100
++++ b/arm9/source/defines.h	2026-07-13 01:07:54.077255921 +0200
+@@ -0,0 +1,6 @@
++#ifndef _DEFINES_H_
++#define _DEFINES_H_
++
++//#define SCLITE
++
++#endif
+diff -ruN '--exclude=*.elf' a/arm9/source/main.cpp b/arm9/source/main.cpp
+--- a/arm9/source/main.cpp	2026-07-13 01:07:53.955464235 +0200
++++ b/arm9/source/main.cpp	2026-07-13 01:07:54.091170377 +0200
+@@ -40,14 +40,16 @@
+ #include "sound_click_raw.h"
+ #include "sound_pen_raw.h"
+ #include "sound_play_raw.h"
+-#include "sound_del_raw.h"
++#include "sound_del_raw.h"
+ #include "tobkit/tools.h"
++
++#include"defines.h"
+ 
+ #define min(x,y)	((x)<(y)?(x):(y))
+ 
+ #define PEN_DOWN (~IPC->buttons & (1 << 6))
+ 
+-//#define DEBUG
++//#define DEBUG
+ #define DUALSCREEN
+ 
+ #define WORLD_WIDTH		(3*256)
+@@ -266,7 +268,7 @@
+ {
+ 	touchPosition touch = touchReadXY();
+ 	
+-	if( (keysheld & KEY_TOUCH) && ( (keysheld & KEY_L) || (keysheld & KEY_R) ) )
++	if( (keysheld & KEY_TOUCH) && ( (keysheld & KEY_L) || (keysheld & KEY_R) ) && (touch.px < 232) && (touch.py < 171) )
+ 	{
+ 		stylus_scrolling = true;
+ 		scroll_vx = (touch.px - 120) / 5;
+@@ -584,9 +586,12 @@
+ 	return b64screen;
+ }
+ 
+-void save(void)
+-{
+-	char *thumbnail = b64screenshot();
++void save(void)
++{
++	char *thumbnail = 0;
++#ifndef SCLITE
++	thumbnail = b64screenshot();
++#endif
+ 	world->save(current_filename, thumbnail);
+ 	free(thumbnail);
+ }
+diff -ruN '--exclude=*.elf' a/arm9/source/thing.cpp b/arm9/source/thing.cpp
+--- a/arm9/source/thing.cpp	2026-07-13 01:07:53.943623319 +0200
++++ b/arm9/source/thing.cpp	2026-07-13 01:07:54.079828776 +0200
+@@ -67,6 +67,21 @@
+ 	}
+ }
+ 
++void Thing::getCenterOfGravity(int *_x, int *_y)
++{
++	if(!b2body)
++	{
++		// If it's not physical, we shouldn't care about this anyway
++		*_x = x;
++		*_y = y;
++		return;
++	}
++
++	b2Vec2 cog = b2body->m_sweep.c;
++	*_x = (int)round(cog.x*PIXELS_PER_UNIT);
++	*_y = (int)round(cog.y*PIXELS_PER_UNIT);
++}
++
+ void Thing::setb2Body(b2Body *_b2body)
+ {
+ 	b2body = _b2body;
+diff -ruN '--exclude=*.elf' a/arm9/source/thing.h b/arm9/source/thing.h
+--- a/arm9/source/thing.h	2026-07-13 01:07:53.941838443 +0200
++++ b/arm9/source/thing.h	2026-07-13 01:07:54.078533601 +0200
+@@ -25,6 +25,7 @@
+ 		Type getType(void);
+ 		void setPosition(int _x, int _y);
+ 		virtual void getPosition(int *_x, int*_y);
++		void getCenterOfGravity(int *_x, int *_y);
+ 		void setb2Body(b2Body *_b2body);
+ 		b2Body* getb2Body(void);
+ 		void setRotation(float32 _rotation);
+diff -ruN '--exclude=*.elf' a/arm9/source/tobkit/loaddialog.cpp b/arm9/source/tobkit/loaddialog.cpp
+--- a/arm9/source/tobkit/loaddialog.cpp	2026-07-13 01:07:53.885873353 +0200
++++ b/arm9/source/tobkit/loaddialog.cpp	2026-07-13 01:07:54.024217008 +0200
+@@ -260,7 +260,8 @@
+ 	drawBox(px, py, POLAROID_WIDTH, POLAROID_HEIGHT, RGB15(0,0,0)|BIT(15));
+ 	if(names[thumb])
+ 	{
+-		drawImage(px+2, py+2, 64, 48, thumbnails[thumb]);
++		if(thumbnails[thumb] != 0)
++			drawImage(px+2, py+2, 64, 48, thumbnails[thumb]);
+ 		drawString(names[thumb], px+3, py+51, 64, theme->col_text);
+ 	}
+ 	
+@@ -286,6 +287,12 @@
+ 		root = &doc;
+ 	
+ 	TiXmlElement *imageelement = root->FirstChildElement("image");
++	if(imageelement == 0)
++	{
++		thumbnails[idx] = 0;
++		return;
++	}
++
+ 	const char *b64screenshot = imageelement->GetText();
+ 	
+ 	char *cscreenshot;
+diff -ruN '--exclude=*.elf' a/arm9/source/world.cpp b/arm9/source/world.cpp
+--- a/arm9/source/world.cpp	2026-07-13 01:07:53.952639000 +0200
++++ b/arm9/source/world.cpp	2026-07-13 01:07:54.088434612 +0200
+@@ -4,6 +4,7 @@
+ #include "Circle.h"
+ 
+ #include "tools.h"
++#include "defines.h"
+ 
+ #include <stdlib.h>
+ #include <sys/stat.h>
+@@ -652,8 +653,6 @@
+ 	TiXmlElement *ppsketchelement = new TiXmlElement( "ppsketch" );
+ 	doc.LinkEndChild(ppsketchelement);
+ 	
+-	// World
+-	
+ 	Thing **idtable = (Thing**)malloc(sizeof(Thing*) * (n_things+1));
+ 	
+ 	// Version
+@@ -672,7 +671,7 @@
+ 	authorelement->LinkEndChild(authortext);	
+ 	ppsketchelement->LinkEndChild(authorelement);
+ 
+-	
++	// World
+ 	TiXmlElement *worldelement = new TiXmlElement( "world" );
+ 	//TODO: Swap x and y axis!
+ 	worldelement->SetDoubleAttribute("gravity_x", DEFAULT_GRAVITY);
+@@ -721,13 +720,13 @@
+ 	free(idtable);
+ 	
+ 	// Thumbnail
+-	
++#ifndef SCLITE
+ 	TiXmlElement *imageelement = new TiXmlElement( "image" );
+ 	TiXmlText *imagetext = new TiXmlText( thumbnail );
+ 	imageelement->LinkEndChild(imagetext);
+ 	
+ 	ppsketchelement->LinkEndChild(imageelement);
+-	
++#endif
+ 	// Save
+ 	
+ 	char *f = (char*)calloc(1, 255);

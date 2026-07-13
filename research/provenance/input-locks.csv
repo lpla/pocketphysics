@@ -1,9 +1,11 @@
 kind,name,version_or_revision,url,sha256,consumer
 release-archive,Pocket Physics public archive,v0.6,https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
 release-archive-mirror,Pocket Physics preservation mirror,v0.6,https://github.com/lpla/pocketphysics/releases/download/historical-input-v0.6/pocketphysics-gamebrew.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
-release-rom,pocketphysics.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics.nds,9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64,build_v06_exact.sh
+release-rom,pocketphysics.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics.nds,9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64,build_v06_repack_control.sh
 release-rom,pocketphysics_nothumb.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics_nothumb.nds,64a15ff6c0e0e7235dd716833d68f8adaa9043afc867f5b6523d9c73750e586a,extract_release_v06.sh
-legacy-toolchain,devkitARM,r21,https://wii.leseratte10.de/devkitPro/devkitARM/r21%20(2007)/14943_devkitARM_r21linux.tar.bz2,7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203,build_v06_exact.sh
+legacy-sdk,devkitPro Linux SDK,2007-05-03,https://www.libsdl.org/extras/nds/devkitPro-20070503-linux.tar.gz,5b4443f1656fd0bc2a040f31b1e275b6783dac9f75153d714145699bc94e0ec9,build_v06_exact.sh
+legacy-toolchain,devkitARM,r21,https://wii.leseratte10.de/devkitPro/devkitARM/r21%20(2007)/14943_devkitARM_r21linux.tar.bz2,7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203,build_v06_exact.sh and build_v06_repack_control.sh
+source-archive,libnds,df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb,https://github.com/devkitPro/libnds/archive/df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb.tar.gz,bdf7639b54acd9a8354b20a2a232493472229f182a471f1b51c1ae93ba222d2b,build_v06_exact.sh
 source-archive,Box2D,2.0.1+dfsg1,https://snapshot.debian.org/file/868397d39d1a842b252454ba44c475cd2eb14d49,ff35fa514b6a7bcdfd1d83c499d57cdd4dfec7adb1b42aeaeb8dbedfb069fdb0,build_v06_blocksds.sh
 source-archive,TinyXML,2.6.2,https://snapshot.debian.org/file/cba3f50dd657cb1434674a03b21394df9913d764,15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593,build_v06_blocksds.sh
 source-file,ConvexDecomposition b2Polygon.cpp,893e0d71a0fbffdbb3ccbd61c166311525be5ada,https://raw.githubusercontent.com/91Act/box2d_fixed/893e0d71a0fbffdbb3ccbd61c166311525be5ada/Contributions/Utilities/ConvexDecomposition/b2Polygon.cpp,a0f64105be21e827b48dc14a084bcde21fb8c5f88cbe3e683256118f778ad490,build_v06_blocksds.sh
@@ -22,4 +24,4 @@ apt-snapshot,Debian archive,20250721T000000Z,http://snapshot.debian.org/archive/
 apt-snapshot,Debian security archive,20250721T000000Z,http://snapshot.debian.org/archive/debian-security/20250721T000000Z,,emulator Dockerfiles
 emulator,melonDS AppImage,1.1,https://github.com/melonDS-emu/melonDS/releases/download/1.1/melonDS-1.1-appimage-x86_64.zip,bf377420a2e95f2cd2cdda17d5372b51c2534f858b038db9ec6d129554875124,emulators/melonds/Dockerfile
 emulator,DeSmuME Debian package,0.9.11-4.1,apt:desmume,,emulators/desmume/Dockerfile
-tracked-input,ppicon.bmp,repository blob,repo:ppicon.bmp,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,build_v06_exact.sh
+tracked-input,ppicon.bmp,repository blob,repo:ppicon.bmp,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,build_v06_exact.sh and build_v06_repack_control.sh

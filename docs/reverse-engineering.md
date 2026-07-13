@@ -7,10 +7,9 @@ released on 15 March 2008. Success requires a build from maintainable source
 that reproduces the release ARM7 payload, ARM9 payload, and packaged ROM byte
 for byte.
 
-The release binary is treated as the experimental oracle. Packaging
-reproduction, behavioral equivalence, and source-level binary identity are
-measured separately so that progress in one category cannot be mistaken for
-completion of another.
+The release binary is treated only as the experimental oracle. It is never an
+input to the source build. Packaging reproduction, behavioral equivalence, and
+source-level binary identity are measured separately.
 
 ## Acceptance Standard
 
@@ -27,7 +26,7 @@ A historical source build is accepted only when all of the following hold:
    `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec`.
 6. Historical packaging produces the final ROM SHA-256
    `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64`.
-7. Two independent clean builds reproduce all three hashes.
+7. Two independent clean builds reproduce the payload, ELF, and ROM outputs.
 
 Functionally equivalent code is useful evidence but does not satisfy the byte
 identity claim.
@@ -65,20 +64,30 @@ The repository preserves several independent evidence classes:
 Each input is classified by provenance and hash before it is used for code or
 toolchain attribution.
 
+## Exact Source Build
+
+[`build_v06_exact.sh`](../tools/repro/build_v06_exact.sh) constructs the
+application tree from Git, downloads three checksum-locked historical source
+and toolchain inputs, builds every dependency and both processors, links the
+reconstructed sections, and packages the ROM with ndstool 1.36. It checks the
+pre-reconstruction ARM9 link, final ARM9, ARM7, and ROM hashes before returning.
+
+[`test_v06_exact.sh`](../tools/repro/test_v06_exact.sh) runs this process twice
+in independent clean trees and byte-compares the binaries and ELF files. The
+complete source composition is inventoried in the
+[`v0.6 reconstruction README`](../research/reconstruction/v06/README.md).
+
 ## Packaging Control
 
-[`build_v06_exact.sh`](../tools/repro/build_v06_exact.sh) extracts the verified
-ARM payloads and packages them with ndstool 1.36, the historical title, and the
-tracked icon. The resulting ROM is byte-identical to the public release.
-
-This control fixes the cartridge header, banner, processor offsets, padding,
-and packaging order. It narrows source reconstruction to reproducing the two
-processor payloads; it does not count as their compilation.
+[`build_v06_repack_control.sh`](../tools/repro/build_v06_repack_control.sh)
+extracts the verified release payloads and repackages them independently. This
+fixes the cartridge header, banner, processor offsets, padding, and ndstool
+procedure, but it is not used by or credited to the source reconstruction.
 
 ## Instrumented Reference
 
-The historical benchmark adds a source-built overlay to a verified copy of the
-release ARM9 payload:
+The historical benchmark adds a source-built overlay to the ARM9 payload
+produced by the exact source build:
 
 - Overlay source:
   [`exact_overlay/benchmark_overlay.cpp`](../tools/repro/exact_overlay/benchmark_overlay.cpp).
@@ -91,15 +100,16 @@ release ARM9 payload:
 [`instrument_exact_arm9.py`](../tools/repro/instrument_exact_arm9.py) verifies
 the base payload hash, patch preimages, branch encoding, target ranges, and
 overlay bounds before producing a derived experimental ROM. The overlay drives
-the release touch dispatcher, physics engine, and renderer through the same
-workload used by source builds.
+the historical touch dispatcher, physics engine, and renderer through the same
+workload used by the modern and improved builds.
 
-The instrumented ROM is intentionally distinct from the release reference and
-is identified by its own hash in every result manifest.
+The instrumented ROM is intentionally distinct from the release and is
+identified by its own hash in every result manifest. Its base ARM9 hash is
+guarded before instrumentation.
 
 ## Reconstruction Method
 
-The source reconstruction proceeds by measurable reductions in binary distance:
+The source reconstruction proceeded by measurable reductions in binary distance:
 
 1. Reconstruct each candidate historical source tree from Git and archived
    source inputs.
@@ -115,8 +125,14 @@ The source reconstruction proceeds by measurable reductions in binary distance:
    regions and record the resulting byte-distance change.
 7. Repeat until ARM7, ARM9, and final ROM hashes match the release oracle.
 
-Intermediate candidates must publish exact hashes and region-level distance
-reports. A lower byte distance is progress; only a zero distance is completion.
+Intermediate candidates were evaluated by exact hashes and region-level
+distance. A lower byte distance was progress; only zero distance was accepted.
+
+Recovered compiler-sensitive executable regions are stored as named ARM or
+Thumb mnemonics. `.long` is limited to typed data, literal pools, switch tables,
+and relocation targets; it is not used as an instruction encoding mechanism.
+The source-integrity audit rejects binary files, `.incbin`, and `.word` in the
+recovered assembly corpus.
 
 ## Current State
 
@@ -126,11 +142,11 @@ reports. A lower byte distance is progress; only a zero distance is completion.
 | Historical packaging reproduction | Complete |
 | Safe instrumentation of the release oracle | Complete |
 | Maintainable modern source build | Complete |
-| Complete historical dependency and flag attribution | In progress |
-| Byte-identical ARM9 compilation from source | In progress |
-| Byte-identical ARM7 compilation from source | In progress |
-| Byte-identical final ROM from source compilation | In progress |
+| Complete historical dependency and flag attribution | Complete |
+| Byte-identical ARM9 compilation from source | Complete |
+| Byte-identical ARM7 compilation from source | Complete |
+| Byte-identical final ROM from source compilation | Complete |
 
-The unresolved work is an active reverse-engineering program, not a relaxed
-claim boundary. Every source candidate remains subordinate to the release
-hashes above.
+The accepted result was reproduced twice from clean trees. Future edits remain
+subordinate to the same release hashes and are rejected automatically when any
+source, archive-order, section-layout, or packaging change alters them.

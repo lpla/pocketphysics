@@ -33,6 +33,7 @@ mv "$OUT/deps/Box2D" "$OUT/deps/box2d-2.0.1"
 python3 "$ROOT/tools/repro/patch_v06_source.py" "$OUT"
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$OUT/deps/box2d-2.0.1"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_instrument_exact.py"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_apply_reconstructed_sections.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_analyze_inrom.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 -m py_compile "$ROOT"/tools/repro/*.py
 python3 "$ROOT/tools/repro/check_markdown_links.py"

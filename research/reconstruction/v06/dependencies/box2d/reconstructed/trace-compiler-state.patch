@@ -1,0 +1,19 @@
+--- a/Contrib/b2Polygon.h
++++ b/Contrib/b2Polygon.h
+@@ -38,7 +38,7 @@
+ b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert);
+ void ReversePolygon(float32* x, float32* y, int n);
+ 
+-b2Polygon TraceEdge(b2Polygon* p); //For use with self-intersecting polygons, finds outline
++b2Polygon* TraceEdge(b2Polygon* p); //For use with self-intersecting polygons, finds outline
+ 
+ class b2Polygon {
+ 	
+@@ -112,7 +112,6 @@
+ 	b2Vec2 position;
+ 	b2PolyNode* connected[MAX_CONNECTED];
+ 	int32 nConnected;
+-	bool visited;
+ 
+ 	b2PolyNode(b2Vec2& pos);
+ 	b2PolyNode();

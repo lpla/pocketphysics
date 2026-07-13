@@ -16,8 +16,10 @@ BUILD_PROFILE=bench-improved \
   tools/repro/build_v06_blocksds.sh
 ```
 
-The three ROMs are generated under `research-artifacts/build`. Record their
-SHA-256 hashes before copying them to media.
+The historical specimen is instrumented from the hash-identical source build;
+the release ROM is not a benchmark input. The three ROMs are generated under
+`research-artifacts/build`. Record their SHA-256 hashes before copying them to
+media.
 
 ## Collection Protocol
 

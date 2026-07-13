@@ -11,9 +11,13 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
         bzip2 \
         binutils-arm-none-eabi \
         ca-certificates \
+        gzip \
         libc6:i386 \
         libncurses6:i386 \
         libstdc++6:i386 \
+        make \
+        patch \
+        python3 \
         zlib1g:i386 \
     && rm -rf /var/lib/apt/lists/*
 

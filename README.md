@@ -17,16 +17,16 @@ testable claims.
 | Track | Current result | SHA-256 or target |
 | --- | --- | --- |
 | Public v0.6 reference | Verified 2008 release ROM and extracted ARM payloads | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
-| Historical source reconstruction | Active reconstruction with the 2008 toolchain and source corpus | Target: byte-identical ARM7, ARM9, and final ROM |
+| Historical source reconstruction | Two clean source builds reproduce ARM7, ARM9, and the ROM byte for byte | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 | Archival repack control | Historical ndstool reproduces the reference ROM from verified payloads | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 | Modern source port | v0.6 C++ source on checksum-locked BlocksDS dependencies | `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06` |
-| Improved source port | Modern port with measured correctness and performance changes | `851b0ce20f119f37c266ff269c44a5c6114ec48a7f3be081316cfcecd229fb83` |
+| Improved source port | Modern port with measured correctness and performance changes | `cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45` |
 
-The archival repack establishes the release oracle and packaging procedure; it
-is not the endpoint of the historical-source investigation. A source
-reconstruction is accepted only when maintainable source and documented build
-inputs reproduce both processor payloads and the final ROM byte for byte.
-Embedding release payloads as source data does not satisfy that criterion.
+The source reconstruction is the canonical exact build. It starts from
+checksum-locked historical tools and source, never from the release ROM or
+extracted payloads. Recovered executable regions are reviewed ARM/Thumb
+mnemonics with symbols and relocations, not embedded bytes or `.word` streams.
+The archival repack remains only as an independent packaging control.
 
 ## Reproduce
 
@@ -40,16 +40,17 @@ cd pocketphysics
 tools/repro/test_all.sh
 ```
 
-The full command performs source-transform tests, two clean archival repacks,
-two clean modern builds, two clean improved builds, and three in-ROM workload
-runs in melonDS. The emulator watchdog is host-side process control only; every
-reported performance value is read from the ROM's cascaded ARM9 hardware
-timers.
+The full command audits the reconstruction corpus, performs two clean
+byte-identical historical source builds, checks the independent repack control,
+performs two clean modern and improved builds, and runs three in-ROM workloads
+in melonDS. The emulator watchdog is host-side process control only; every
+reported performance value is read from the ROM's cascaded ARM9 timers.
 
 Individual entry points:
 
 ```sh
-tools/repro/test_v06_exact.sh   # archival repack control, twice
+tools/repro/test_v06_exact.sh   # exact historical source build, twice
+tools/repro/test_v06_repack_control.sh  # independent packaging control
 tools/repro/test_v06_repro.sh   # modern source build, twice
 tools/repro/test_v06_perf.sh    # improved source build, twice
 tools/repro/test_v06_inrom.sh   # primary melonDS comparison
