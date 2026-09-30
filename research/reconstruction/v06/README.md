@@ -36,7 +36,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | libnds | Upstream revision `df7b1022`, historical headers, and six mnemonic assembly objects for host-sensitive compiler output |
 | libfat | Historical C/assembly source with the recovered source and archive member order |
 | libpng 1.2.8 | Upstream C for 11 of 15 archive members; historical configuration, two small source changes, and four residual assembly members |
-| zlib 1.2.3 | Upstream C for 10 of 12 archive members; two source configuration/layout changes and two residual assembly members |
+| zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source plus mnemonic assembly for the two host-sensitive translation units |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
 | Box2D r132/r134 hybrid | C++ source for 32 archive members; the final convex-decomposition member is linked from two mnemonic components and one recovered C++ function |
@@ -52,7 +52,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Twenty uppercase `.S` files remain in this corpus, including
+remaining work. Nineteen uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy

@@ -99,12 +99,17 @@ for member in "${png_members[@]}"; do
 done
 for member in "${zlib_members[@]}"; do
     case "$member" in
-        deflate|inftrees)
+        deflate)
             "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
                 "$RECON/dependencies/zlib/$member.S" -o "$ZLIB_BUILD/$member.o"
             ;;
         *)
+            member_flags=()
+            if [ "$member" = inftrees ]; then
+                member_flags=(-fno-tree-salias -fno-tree-copy-prop)
+            fi
             "$r20_cc" -Os -DNO_vsnprintf -DZ_BUFSIZE=4096 -DMAXSEG_64K \
+                "${member_flags[@]}" \
                 -c "$ZLIB_BUILD/source/$member.c" -o "$ZLIB_BUILD/$member.o"
             ;;
     esac

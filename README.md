@@ -29,7 +29,7 @@ high-level source recovery is not. Residual assembly and section replacements
 remain, and the pinned SDK supplies precompiled startup and compiler runtime
 libraries. The archival repack is an independent packaging control.
 
-[Library C-source recovery](docs/c-source-recovery.md) now replaces 21 historical
+[Library C-source recovery](docs/c-source-recovery.md) now replaces 22 historical
 assembly objects with upstream C and small documented patches, while preserving
 the release hashes. The report distinguishes archive coverage from code
 actually linked into the ROM and inventories the remaining recovery work.

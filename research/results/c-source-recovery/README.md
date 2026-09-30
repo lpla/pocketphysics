@@ -78,3 +78,22 @@ or complete cross-role physics equivalence. See the
 [measurement limits](../../../docs/benchmarking.md) and
 [source-recovery report](../../../docs/c-source-recovery.md). No physical
 Nintendo DS measurements are included.
+
+## Additional `inftrees` Recovery
+
+After the 21-member dataset above, `inftrees` was recovered as the 22nd C
+member. Two further clean historical builds passed every object and payload
+identity gate and byte-compared both processor ELF files and the packaged ROM.
+The [identity log excerpt](inftrees-exact.txt) contains both sets of hashes.
+The final ROM remains `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64`.
+
+```sh
+OUT="$PWD/research-artifacts/test/inftrees-c-recovery" \
+    tools/repro/test_v06_exact.sh
+```
+
+The accepted object includes 1,440 executable-section bytes and 300 read-only
+data bytes. All are compiled from upstream C with the documented declaration
+order and per-member compiler flags. No post-compilation instruction edits are
+used. This additional recovery does not relabel the earlier nine-run dataset
+as a measurement of a later source revision.

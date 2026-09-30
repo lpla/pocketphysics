@@ -5,6 +5,12 @@
 -    unsigned long odd[GF2_DIM];     /* odd-power-of-two zeros operator */
 +    unsigned long odd[GF2_DIM];     /* odd-power-of-two zeros operator */
 +    unsigned long even[GF2_DIM];    /* even-power-of-two zeros operator */
+--- a/inftrees.c
++++ b/inftrees.c
+@@ -58,2 +58,2 @@
+-    unsigned short count[MAXBITS+1];    /* number of codes of each length */
+     unsigned short offs[MAXBITS+1];     /* offsets in table for each length */
++    unsigned short count[MAXBITS+1];    /* number of codes of each length */
 --- a/zconf.h
 +++ b/zconf.h
 @@ -287 +287 @@

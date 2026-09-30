@@ -35,6 +35,11 @@
       "identity_sha256": "790bcf24a079f6b8f43471fbdcd8455ee502bcc6e058e66191aa01840062ae46",
       "text_bytes": 7604
     },
+    "inftrees.o": {
+      "allocated_bytes": 1740,
+      "identity_sha256": "93631aac5f09b46db3e1736615fa32aacaf98a145cac290c31256c4ec21bb55f",
+      "text_bytes": 1440
+    },
     "trees.o": {
       "allocated_bytes": 10700,
       "identity_sha256": "b4f5442586c0843dfa034ca235a05bec576500c8ee6020cd72117d02654ac31d",

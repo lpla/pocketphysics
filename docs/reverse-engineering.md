@@ -153,7 +153,7 @@ checks for the libraries recovered to C.
 | Reproducible historical dependency configuration | Sufficient for exact mixed-source reconstruction |
 | Byte-identical ARM9 and ARM7 from C/C++ and recovered assembly | Complete |
 | Byte-identical final ROM from mixed-source reconstruction | Complete |
-| zlib/libpng archive members compiled from C | 21 of 27; see object-level evidence |
+| zlib/libpng archive members compiled from C | 22 of 27; see object-level evidence |
 | Replacement of residual assembly with maintainable high-level source | Incomplete |
 | Removal of ARM9 post-link section replacement | Incomplete |
 | Source rebuild of startup and compiler runtime libraries | Incomplete |

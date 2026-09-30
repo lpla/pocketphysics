@@ -2,13 +2,13 @@
 
 ## Result and Scope
 
-The historical build now compiles 21 zlib/libpng archive members from upstream
-C instead of reconstructed assembly. This removes 28,358 lines in 21 `.S`
-files. The replacement objects contain 74,184 bytes of executable sections
-(including their literal pools) and 99,104 allocated bytes in total. These are
+The historical build now compiles 22 zlib/libpng archive members from upstream
+C instead of reconstructed assembly. This removes 28,875 lines in 22 `.S`
+files. The replacement objects contain 75,624 bytes of executable sections
+(including their literal pools) and 100,844 allocated bytes in total. These are
 archive-level counts, not a whole-ROM recovery percentage.
 
-Thirteen of these members are included in the ARM9 link, contributing 47,540
+Fourteen of these members are included in the ARM9 link, contributing 48,980
 `.text` bytes. The other eight improve archive source coverage but are not
 credited as recovered release-ROM code. The ARM9 linker map, generated as
 `src/arm9/build/.map` in each build directory, identifies the included members.
@@ -17,16 +17,18 @@ guards and two-clean-build comparison.
 
 | Component | C members / archive members | Member coverage | Residual assembly |
 | --- | ---: | ---: | --- |
-| zlib 1.2.3 | 10 / 12 | 83.3% | `deflate`, `inftrees` |
+| zlib 1.2.3 | 11 / 12 | 91.7% | `deflate` |
 | libpng 1.2.8 | 11 / 15 | 73.3% | `pngerror`, `pngrtran`, `pngwrite`, `pngwutil` |
-| Combined | 21 / 27 | 77.8% | Six members |
+| Combined | 22 / 27 | 81.5% | Five members |
 
 This is a source-recovery result, not a performance change. The release ROM is
 unchanged, so these substitutions cannot themselves improve its runtime speed.
 The modern and improved build profiles do not consume these historical patches.
 The [validation dataset](../research/results/c-source-recovery/) records nine
-fresh melonDS runs with byte-identical benchmark ROMs and measurement rows,
-plus stricter reanalysis of the existing 17-profile optimization screen.
+fresh melonDS runs after the initial 21-member recovery, with byte-identical
+benchmark ROMs and measurement rows, plus stricter reanalysis of the existing
+17-profile optimization screen. It also records the two-clean-build identity
+check after the additional `inftrees` recovery.
 
 ## Inputs and Configuration
 
@@ -46,11 +48,21 @@ libpng: -Os -DMAXSEG_64K -DPNG_NO_MNG_FEATURES
 
 These settings are experimentally sufficient for the matched objects. They are
 not a claim to have recovered an original author-written build command.
+`inftrees.c` additionally uses `-fno-tree-salias -fno-tree-copy-prop`.
 
 The [zlib patch](../research/reconstruction/v06/dependencies/zlib/source.patch)
 enables the upstream `HAVE_UNISTD_H` configuration and reverses the declaration
-order of the two local CRC-combination arrays. The latter changes GCC's stack
-layout without changing the CRC algorithm.
+order of the two local CRC-combination arrays and the `count`/`offs` arrays in
+`inflate_table`. These changes affect GCC's stack layout without changing the
+algorithms.
+
+For `inftrees`, declaration order alone left 45 differing `.text` bytes, all
+in stack offsets. Disabling loop induction-variable canonicalization reduced
+that count to 17 but still failed the identity gate. The accepted combination
+disables structure alias analysis and tree copy propagation instead: all
+1,440 `.text` bytes, 300 read-only-data bytes, relocations, and exported-symbol
+metadata then match. The linker includes this member at ARM9 address
+`0x02072bfc`. Near matches are not accepted or patched after compilation.
 
 The [libpng patch](../research/reconstruction/v06/dependencies/libpng/source.patch)
 reverses two local shift-array declarations and reproduces the historical
@@ -87,6 +99,7 @@ build requires neither library archive nor a release ROM download.
 | `infback` | 3,812 | No |
 | `inffast` | 1,216 | Yes |
 | `inflate` | 7,604 | Yes |
+| `inftrees` | 1,440 | Yes |
 | `trees` | 8,032 | No |
 | `uncompr` | 180 | No |
 | `zutil` | 100 | Yes |
@@ -141,14 +154,14 @@ ROM must hash to:
 
 ## Remaining Recovery Work
 
-Twenty uppercase `.S` files remain in the reconstruction corpus: six zlib/libpng
+Nineteen uppercase `.S` files remain in the reconstruction corpus: five zlib/libpng
 members, six libnds objects, two TinyXML units, two uLibrary units, two Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
-The next source-recovery targets are the six remaining library members and the
-Box2D/TinyXML substitutions. Close C candidates for `inftrees` and `pngrtran`
-still differ in stack-slot allocation; no instruction-byte edits are accepted
+The next source-recovery targets are the five remaining library members and the
+Box2D/TinyXML substitutions. A close C candidate for `pngrtran`
+still differs in stack-slot allocation; no instruction-byte edits are accepted
 as substitutes for recovering a compiler-reproducible source/configuration.
 ARM9 section replacement and the SDK startup/runtime archives also remain.
 
