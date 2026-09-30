@@ -16,31 +16,7 @@ PACKAGE_CACHE="${BLOCKSDS_PACKAGE_CACHE:-$DOWNLOADS/blocksds-packages}"
 PACKAGE_LOCK="$ROOT/tools/repro/blocksds-packages.lock"
 IMAGE="${BLOCKSDS_IMAGE:-skylyrac/blocksds@sha256:67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8}"
 
-sha256_file() {
-    shasum -a 256 "$1" | awk '{print $1}'
-}
-
-fetch() {
-    local url="$1"
-    local dest="$2"
-    local expected="$3"
-
-    mkdir -p "$(dirname "$dest")"
-    if [ -f "$dest" ] && [ "$(sha256_file "$dest")" = "$expected" ]; then
-        return
-    fi
-
-    rm -f "$dest"
-    curl -L --fail --retry 3 --retry-delay 2 "$url" -o "$dest"
-    local actual
-    actual="$(sha256_file "$dest")"
-    if [ "$actual" != "$expected" ]; then
-        echo "Checksum mismatch for $dest" >&2
-        echo "expected: $expected" >&2
-        echo "actual:   $actual" >&2
-        exit 1
-    fi
-}
+source "$ROOT/tools/repro/fetch_locked.sh"
 
 rm -rf "$OUT"
 mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE" "$CONVEX_CACHE" "$PACKAGE_CACHE"
@@ -95,11 +71,11 @@ for convex_file in b2Polygon.cpp b2Polygon.h b2Triangle.cpp b2Triangle.h; do
 done
 
 echo "Fetching checksum-pinned BlocksDS package archives"
-while IFS='|' read -r filename expected url; do
+while IFS='|' read -r filename expected url mirror; do
     case "$filename" in
         ''|'#'*) continue ;;
     esac
-    fetch "$url" "$PACKAGE_CACHE/$filename" "$expected"
+    fetch "$url" "$PACKAGE_CACHE/$filename" "$expected" "$mirror"
 done < "$PACKAGE_LOCK"
 
 python3 "$ROOT/tools/repro/transform_convex_decomposition.py" \

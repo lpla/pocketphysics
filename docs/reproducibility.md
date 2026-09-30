@@ -43,6 +43,11 @@ The modern build never runs `pacman -Sy` or resolves an unversioned package at
 build time. It installs the archives in
 [`blocksds-packages.lock`](../tools/repro/blocksds-packages.lock) with
 `wf-pacman -U`.
+If a pinned package is missing or its upstream contents have changed, the
+build tries its preservation URL, where present in the lock. Every location
+must satisfy the same original SHA-256. BlocksDS 1.21.1 and uLibrary 1.14 have
+preservation URLs because their upstream packages were removed or replaced.
+A failed or mismatching download never causes an implicit version upgrade.
 
 ## Historical Source Build
 

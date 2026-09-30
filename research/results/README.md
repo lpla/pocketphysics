@@ -16,6 +16,7 @@ historical/modern/improved comparison.
 ## Primary melonDS Comparison
 
 - [melonDS 1.1 final dataset](melonds-final/)
+- [Fresh C-source recovery validation and stricter screening reanalysis](c-source-recovery/)
 
 Each value is the deterministic per-run mean from three complete runs. Cadence
 columns count intervals out of 240 simulation/render frames.

@@ -13,6 +13,16 @@ The BlocksDS container's rolling package index is not synchronized; exact
 archives from [`blocksds-packages.lock`](../tools/repro/blocksds-packages.lock)
 are installed directly.
 
+The BlocksDS 1.21.1 and uLibrary 1.14 packages are also preserved in the fork's
+[reproducibility-inputs release](https://github.com/lpla/pocketphysics/releases/tag/reproducibility-inputs-v1)
+because the rolling server removed the former and replaced the latter with
+different bytes under the same filename. Fallbacks use the original SHA-256
+values; they do not upgrade either dependency. The release includes the SDK
+v1.21.1 source tree with recursively populated submodules, the uLibrary v1.14
+source archive, and their upstream packaging recipes and license notices.
+These source companions are not a claim that the packages themselves have
+been rebuilt byte-identically.
+
 The original GameBrew v0.6 ZIP is also mirrored as a GitHub Release asset on
 this fork because GameBrew blocks some automated runner networks. Both URLs are
 locked to `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6`.

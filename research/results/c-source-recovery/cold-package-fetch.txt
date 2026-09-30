@@ -1,0 +1,13 @@
+Extracting Pocket Physics v0.6 source from git commit e9b621e
+Fetching pinned third-party source archives
+Fetching pinned convex decomposition utility
+Fetching checksum-pinned BlocksDS package archives
+curl: (56) The requested URL returned error: 404
+Trying checksum-identical preservation mirror: https://github.com/lpla/pocketphysics/releases/download/reproducibility-inputs-v1/blocksds-toolchain-1.21.1-1-x86_64.pkg.tar.xz
+Rejected download: https://blocksds.skylyrac.net/packages/rolling/linux/x86_64/blocksds-ulibrary-1.14-1-any.pkg.tar.xz
+expected: 6722ca01f80df946cd952f49bb50eb9d115ee1d56a2ddd525dd91de6c499d39f
+actual:   ad426693638952d1e7b765d5f315d9a03c9bb98591e6c5277da1304bb6799435
+Trying checksum-identical preservation mirror: https://github.com/lpla/pocketphysics/releases/download/reproducibility-inputs-v1/blocksds-ulibrary-1.14-1-any.pkg.tar.xz
+Building in Docker image: skylyrac/blocksds@sha256:67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8
+Built ROM: /Users/leopoldo.pla/pocketphysics/research-artifacts/test/cold-modern-v2/pocketphysics-v0.6-blocksds.nds
+SHA256: 93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06

@@ -1,0 +1,50 @@
+melonds broad-itcm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds broad-itcm: zero heap growth and all ROM correctness flags pass
+melonds canvas-arm-o2: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds canvas-arm-o2: zero heap growth and all ROM correctness flags pass
+melonds canvas-thumb-o2: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds canvas-thumb-o2: zero heap growth and all ROM correctness flags pass
+melonds combined: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds combined: zero heap growth and all ROM correctness flags pass
+melonds ds-arm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-arm: zero heap growth and all ROM correctness flags pass
+melonds ds-arm-fast: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-arm-fast: zero heap growth and all ROM correctness flags pass
+melonds ds-thumb-fast: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-thumb-fast: zero heap growth and all ROM correctness flags pass
+melonds ds-thumb-fast-nolto: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds ds-thumb-fast-nolto: zero heap growth and all ROM correctness flags pass
+melonds gate: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds gate: zero heap growth and all ROM correctness flags pass
+melonds length: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds length: zero heap growth and all ROM correctness flags pass
+melonds physics-backports: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds physics-backports: zero heap growth and all ROM correctness flags pass
+melonds physics-draw-itcm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds physics-draw-itcm: zero heap growth and all ROM correctness flags pass
+melonds physics-itcm: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds physics-itcm: zero heap growth and all ROM correctness flags pass
+melonds reciprocal: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds reciprocal: zero heap growth and all ROM correctness flags pass
+melonds render-backports: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds render-backports: zero heap growth and all ROM correctness flags pass
+melonds selected: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds selected: zero heap growth and all ROM correctness flags pass
+melonds software-control: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds software-control: zero heap growth and all ROM correctness flags pass
+melonds broad-itcm: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds canvas-arm-o2: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds canvas-thumb-o2: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds combined: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds ds-arm-fast: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds ds-thumb-fast: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds ds-thumb-fast-nolto: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds gate: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds length: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds physics-backports: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds physics-draw-itcm: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds physics-itcm: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds reciprocal: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds render-backports: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds selected: recorded scene, hit-test, final-state, and render-work evidence matches ds-arm
+melonds software-control: explicit state-changing control; excluded from ds-arm equivalence gate

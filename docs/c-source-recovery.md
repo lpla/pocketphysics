@@ -24,6 +24,9 @@ guards and two-clean-build comparison.
 This is a source-recovery result, not a performance change. The release ROM is
 unchanged, so these substitutions cannot themselves improve its runtime speed.
 The modern and improved build profiles do not consume these historical patches.
+The [validation dataset](../research/results/c-source-recovery/) records nine
+fresh melonDS runs with byte-identical benchmark ROMs and measurement rows,
+plus stricter reanalysis of the existing 17-profile optimization screen.
 
 ## Inputs and Configuration
 
