@@ -15,8 +15,9 @@ source-level binary identity are measured separately.
 
 A historical source build is accepted only when all of the following hold:
 
-1. Executable sections are produced from C, C++, or reviewed assembly with
-   named functions and maintainable control flow.
+1. Application and reconstructed dependency sections are produced from C, C++,
+   or named mnemonic assembly. Precompiled SDK startup and runtime inputs are
+   disclosed separately; replacing them is required for an all-source result.
 2. Release ARM payloads are not embedded through binary includes, opaque blobs,
    or data-only assembly directives.
 3. Generated assets are traceable to repository inputs and documented tools.
@@ -67,8 +68,9 @@ toolchain attribution.
 ## Exact Source Build
 
 [`build_v06_exact.sh`](../tools/repro/build_v06_exact.sh) constructs the
-application tree from Git, downloads three checksum-locked historical source
-and toolchain inputs, builds every dependency and both processors, links the
+application tree from Git, downloads five checksum-locked historical source
+and toolchain inputs, rebuilds the seven application dependency libraries and
+both processors using the pinned SDK's precompiled runtimes, links the
 reconstructed sections, and packages the ROM with ndstool 1.36. It checks the
 pre-reconstruction ARM9 link, final ARM9, ARM7, and ROM hashes before returning.
 
@@ -134,6 +136,12 @@ and relocation targets; it is not used as an instruction encoding mechanism.
 The source-integrity audit rejects binary files, `.incbin`, and `.word` in the
 recovered assembly corpus.
 
+This audit is lexical. It does not independently distinguish a `.long` data
+literal from an instruction encoding, recover high-level semantics, or prove
+that linked compiler/runtime libraries were rebuilt. The
+[C-source recovery report](c-source-recovery.md) records stronger object-level
+checks for the libraries recovered to C.
+
 ## Current State
 
 | Milestone | Status |
@@ -142,11 +150,17 @@ recovered assembly corpus.
 | Historical packaging reproduction | Complete |
 | Safe instrumentation of the release oracle | Complete |
 | Maintainable modern source build | Complete |
-| Complete historical dependency and flag attribution | Complete |
-| Byte-identical ARM9 compilation from source | Complete |
-| Byte-identical ARM7 compilation from source | Complete |
-| Byte-identical final ROM from source compilation | Complete |
+| Reproducible historical dependency configuration | Sufficient for exact mixed-source reconstruction |
+| Byte-identical ARM9 and ARM7 from C/C++ and recovered assembly | Complete |
+| Byte-identical final ROM from mixed-source reconstruction | Complete |
+| zlib/libpng archive members compiled from C | 21 of 27; see object-level evidence |
+| Replacement of residual assembly with maintainable high-level source | Incomplete |
+| Removal of ARM9 post-link section replacement | Incomplete |
+| Source rebuild of startup and compiler runtime libraries | Incomplete |
 
 The accepted result was reproduced twice from clean trees. Future edits remain
 subordinate to the same release hashes and are rejected automatically when any
-source, archive-order, section-layout, or packaging change alters them.
+source, archive-order, section-layout, or packaging change alters them. An exact
+ROM hash is not, by itself, evidence that every implementation has been recovered
+to high-level source. No whole-program recovery percentage is asserted without
+an executable-byte provenance map that includes the runtime boundary.

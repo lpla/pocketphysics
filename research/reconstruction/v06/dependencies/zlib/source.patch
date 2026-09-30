@@ -1,0 +1,12 @@
+--- a/crc32.c
++++ b/crc32.c
+@@ -377,2 +377,2 @@
+-    unsigned long even[GF2_DIM];    /* even-power-of-two zeros operator */
+-    unsigned long odd[GF2_DIM];     /* odd-power-of-two zeros operator */
++    unsigned long odd[GF2_DIM];     /* odd-power-of-two zeros operator */
++    unsigned long even[GF2_DIM];    /* even-power-of-two zeros operator */
+--- a/zconf.h
++++ b/zconf.h
+@@ -287 +287 @@
+-#if 0           /* HAVE_UNISTD_H -- this line is updated by ./configure */
++#if 1           /* HAVE_UNISTD_H -- this line is updated by ./configure */

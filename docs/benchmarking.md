@@ -36,7 +36,7 @@ Timing rows are rejected unless all of these hold:
 - Every repetition creates and retains exactly 27 objects.
 - Ordered shape/type topology checksums are stable.
 - Final world checksums are stable within each build.
-- Position sums remain within the documented numeric-mode tolerance.
+- Initial scene position sums remain within the numeric-mode tolerance.
 - Visible-object and line-quad counts are nonzero.
 - Timer-read calibration is plausible.
 - The improved build has zero measured hit-test heap growth.
@@ -49,6 +49,24 @@ Timing rows are rejected unless all of these hold:
 The selected fixed-point build ends with checksum `8c4d9050` in melonDS.
 The floating modern build intentionally follows a different numeric trajectory;
 its behavioral bounds and topology still pass.
+
+The optimization screen additionally requires zero measured heap growth and
+successful ROM correctness flags for every profile. State-preserving profiles
+must match `ds-arm` in recorded scene, hit-test, final-state, and render-work
+checksums and scalar counts. The software-math control is explicitly excluded
+from the equivalence gate because its numeric path changes the trajectory.
+These checks are enabled by `--require-correctness`, `--equivalent-to ds-arm`,
+and `--different-state-label software-control` in the analyzer. Repeatedly
+producing the same wrong state is not sufficient to pass this comparison.
+
+Coverage is bounded: one 27-object scene, integer-sampled state, and aggregate
+checksums do not establish correctness for arbitrary sketches, joint graphs,
+extreme coordinates, save/load cycles, or allocation failure. The historical
+overlay hashes shape, type, and integer position; the modern benchmark also
+hashes visibility, rotation, circle radius, and polygon vertices. Their final
+hash values are therefore not directly comparable across those two harnesses.
+The three-role gates compare initial topology/position bounds and within-role
+stability, not full cross-role final-state equivalence.
 
 ## Record Format
 

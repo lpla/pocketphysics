@@ -7,6 +7,9 @@ OUT="${OUT:-$ROOT/research-artifacts/benchmarks/${EMULATOR}-$(date -u +%Y%m%dT%H
 REPEATS="${REPEATS:-3}"
 DURATION="${DURATION:-12}"
 MAX_TIMING_SPREAD_PERCENT="${MAX_TIMING_SPREAD_PERCENT:-0}"
+REQUIRE_CORRECTNESS="${REQUIRE_CORRECTNESS:-0}"
+EQUIVALENT_TO="${EQUIVALENT_TO:-}"
+DIFFERENT_STATE_LABELS="${DIFFERENT_STATE_LABELS:-}"
 
 default_historical="$ROOT/research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds"
 default_modern="$ROOT/research-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds"
@@ -99,12 +102,23 @@ docker run --rm --platform linux/amd64 --entrypoint bash \
     "$IMAGE" \
     tools/repro/run_inrom_container.sh "${container_specs[@]}"
 
+analysis_args=()
+if [[ "$REQUIRE_CORRECTNESS" == "1" ]]; then
+    analysis_args+=(--require-correctness)
+fi
+if [[ -n "$EQUIVALENT_TO" ]]; then
+    analysis_args+=(--equivalent-to "$EQUIVALENT_TO")
+fi
+for label in $DIFFERENT_STATE_LABELS; do
+    analysis_args+=(--different-state-label "$label")
+done
 python3 "$ROOT/tools/repro/analyze_inrom.py" \
     "$OUT/results.csv" \
     "$OUT/summary.csv" \
     "$OUT/assertions.txt" \
     --expected-repeats "$REPEATS" \
-    --max-timing-spread-percent "$MAX_TIMING_SPREAD_PERCENT"
+    --max-timing-spread-percent "$MAX_TIMING_SPREAD_PERCENT" \
+    "${analysis_args[@]}"
 
 python3 - "$OUT/metadata.json" <<EOF
 import json
@@ -122,6 +136,9 @@ metadata = {
     "duration_limit_seconds": int(${DURATION@Q}),
     "repeats": int(${REPEATS@Q}),
     "max_timing_spread_percent": float(${MAX_TIMING_SPREAD_PERCENT@Q}),
+    "require_correctness": ${REQUIRE_CORRECTNESS@Q} == "1",
+    "equivalent_to": ${EQUIVALENT_TO@Q} or None,
+    "different_state_labels": ${DIFFERENT_STATE_LABELS@Q}.split(),
     "git_commit": subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=root, text=True
     ).strip(),

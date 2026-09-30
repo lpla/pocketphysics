@@ -55,9 +55,11 @@ tools/repro/build_v06_exact.sh
 The script performs these steps:
 
 1. Reconstruct the application tree from Git revisions `e9b621e` and `3e538e0`.
-2. Download and verify the 2007 SDK, devkitARM r21, and libnds source revision.
+2. Download and verify the 2007 SDK, devkitARM r21, libnds source revision,
+   zlib 1.2.3, and libpng 1.2.8.
 3. Build libnds, libfat, libpng, zlib, TinyXML, uLibrary, and Box2D from the
-   tracked C, C++, and mnemonic assembly corpus.
+   tracked/downloaded C, C++, and mnemonic assembly corpus. Check the 21
+   recovered C objects against normalized historical ELF identities.
 4. Clean-build ARM7 and ARM9 with the recovered flags and object order.
 5. Guard the ordinary ARM9 link hash, then link the reviewed residual mnemonic
    sections at their recovered addresses.
@@ -79,6 +81,9 @@ The source corpus and assembly policy are documented in
 [`research/reconstruction/v06`](../research/reconstruction/v06/README.md).
 `audit_reconstruction_source.py` rejects embedded binaries, binary includes,
 and `.word`-encoded recovered assembly.
+It is a lexical check, not a high-level recovery proof. Startup, libgcc, newlib,
+and libstdc++ are still precompiled inputs from the pinned toolchain archives.
+See [C-Source Recovery](c-source-recovery.md) for the remaining boundaries.
 
 ## Archival Repack Control
 

@@ -1,0 +1,154 @@
+# Historical Library C-Source Recovery
+
+## Result and Scope
+
+The historical build now compiles 21 zlib/libpng archive members from upstream
+C instead of reconstructed assembly. This removes 28,358 lines in 21 `.S`
+files. The replacement objects contain 74,184 bytes of executable sections
+(including their literal pools) and 99,104 allocated bytes in total. These are
+archive-level counts, not a whole-ROM recovery percentage.
+
+Thirteen of these members are included in the ARM9 link, contributing 47,540
+`.text` bytes. The other eight improve archive source coverage but are not
+credited as recovered release-ROM code. The ARM9 linker map, generated as
+`src/arm9/build/.map` in each build directory, identifies the included members.
+Both processors and the packaged ROM remain subject to their original hash
+guards and two-clean-build comparison.
+
+| Component | C members / archive members | Member coverage | Residual assembly |
+| --- | ---: | ---: | --- |
+| zlib 1.2.3 | 10 / 12 | 83.3% | `deflate`, `inftrees` |
+| libpng 1.2.8 | 11 / 15 | 73.3% | `pngerror`, `pngrtran`, `pngwrite`, `pngwutil` |
+| Combined | 21 / 27 | 77.8% | Six members |
+
+This is a source-recovery result, not a performance change. The release ROM is
+unchanged, so these substitutions cannot themselves improve its runtime speed.
+The modern and improved build profiles do not consume these historical patches.
+
+## Inputs and Configuration
+
+The [input lock](../research/provenance/input-locks.csv) pins upstream zlib
+1.2.3 from the zlib fossils archive and libpng tag `v1.2.8` from the upstream
+repository. Source is downloaded and verified before extraction. The historical
+SDK supplies devkitARM r20 GCC 4.1.1 for these C objects; devkitARM r21 still
+assembles the residual objects and links the program. Archive order is explicit.
+
+The recovered C configurations are:
+
+```text
+zlib:   -Os -DNO_vsnprintf -DZ_BUFSIZE=4096 -DMAXSEG_64K
+libpng: -Os -DMAXSEG_64K -DPNG_NO_MNG_FEATURES
+        -DPNG_USER_WIDTH_MAX=10000 -DPNG_USER_HEIGHT_MAX=10000
+```
+
+These settings are experimentally sufficient for the matched objects. They are
+not a claim to have recovered an original author-written build command.
+
+The [zlib patch](../research/reconstruction/v06/dependencies/zlib/source.patch)
+enables the upstream `HAVE_UNISTD_H` configuration and reverses the declaration
+order of the two local CRC-combination arrays. The latter changes GCC's stack
+layout without changing the CRC algorithm.
+
+The [libpng patch](../research/reconstruction/v06/dependencies/libpng/source.patch)
+reverses two local shift-array declarations and reproduces the historical
+`png_zalloc` implementation's absence of the upstream multiplication-overflow
+guard. That omission is a historical defect deliberately retained for binary
+identity, not a recommended optimization or a patch for modern deployments.
+Use the historical build only as a research/reference specimen, particularly
+when processing untrusted files.
+
+Disassembly localized the `pngget` mismatch to
+`png_get_mmx_bitdepth_threshold`: disabling MNG removes a preceding byte field
+and changes its access offset from 597 to 596. The same configuration resolves
+`pngset` and `pngrutil`; restoring the 10,000-pixel limits resolves the remaining
+constants in `pngread`. This associates matches with source-level settings
+rather than edits to generated instruction bytes.
+
+## Object-Level Evidence
+
+The reference object identities come from the libraries distributed with
+uLibrary v1.11. Their archive hashes are retained in the manifests. Those
+binary libraries are comparison oracles, not build inputs; the published
+build requires neither library archive nor a release ROM download.
+
+- [zlib object identities](../research/reconstruction/v06/dependencies/zlib/c-object-identities.json)
+- [libpng object identities](../research/reconstruction/v06/dependencies/libpng/c-object-identities.json)
+- [ELF identity verifier](../tools/repro/verify_recovered_objects.py)
+
+| Member | Executable-section bytes | Included in ARM9 |
+| --- | ---: | --- |
+| `adler32` | 948 | Yes |
+| `compress` | 212 | No |
+| `crc32` | 2,236 | Yes |
+| `gzio` | 4,912 | No |
+| `infback` | 3,812 | No |
+| `inffast` | 1,216 | Yes |
+| `inflate` | 7,604 | Yes |
+| `trees` | 8,032 | No |
+| `uncompr` | 180 | No |
+| `zutil` | 100 | Yes |
+| `png` | 2,336 | Yes |
+| `pngget` | 3,136 | Yes |
+| `pngmem` | 632 | Yes |
+| `pngpread` | 7,384 | No |
+| `pngread` | 6,812 | Yes |
+| `pngrio` | 216 | Yes |
+| `pngrutil` | 14,264 | Yes |
+| `pngset` | 6,324 | Yes |
+| `pngtrans` | 1,716 | Yes |
+| `pngwio` | 300 | No |
+| `pngwtran` | 1,812 | No |
+
+The canonical identity includes ELF header flags; every allocated section's
+bytes, type, flags, size, alignment, and entry size; normalized relocations
+including referenced-symbol binding/visibility; and exported symbol metadata.
+NOBITS sections contribute layout but have no stored byte payload. Symbol-table
+indexes and optional section-symbol names are normalized. Debug data, file
+symbols, compiler comments, and nonallocated ARM attributes are excluded.
+Thus the claim is link-relevant identity under the pinned toolchain, not raw
+object-file identity across assemblers and compilers.
+
+Tests independently mutate code, relocation type, exported-symbol value,
+undefined-symbol binding, alignment, and ELF flags. They also check truncated
+objects, unsupported architecture, and invalid relocation symbols. Changes to
+debug metadata must not change the identity.
+
+The per-object gate runs before archive construction. Whole-ROM verification
+then catches link-layout or packaging differences outside that normalized
+identity. This second layer is essential, especially for mixed C and assembly
+libraries and the historical ARM interworking conventions.
+
+## Reproduction
+
+From the repository root, with Docker, Python 3, curl, and full Git history:
+
+```sh
+tools/repro/test_source_patches.sh
+tools/repro/test_v06_exact.sh
+```
+
+The second command builds twice in separate clean trees, checks the object
+identities during each build, checks the four payload/package hashes, and
+byte-compares both generated ELF files and ROM outputs. The final 894,016-byte
+ROM must hash to:
+
+```text
+9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
+```
+
+## Remaining Recovery Work
+
+Twenty uppercase `.S` files remain in the reconstruction corpus: six zlib/libpng
+members, six libnds objects, two TinyXML units, two uLibrary units, two Box2D
+components, the ARM9 residual-region file, and a data-only libfat table. Original
+low-level assembly in upstream dependencies is a separate category.
+
+The next source-recovery targets are the six remaining library members and the
+Box2D/TinyXML substitutions. Close C candidates for `inftrees` and `pngrtran`
+still differ in stack-slot allocation; no instruction-byte edits are accepted
+as substitutes for recovering a compiler-reproducible source/configuration.
+ARM9 section replacement and the SDK startup/runtime archives also remain.
+
+An executable-byte provenance map covering these boundaries is needed before
+reporting a meaningful whole-program percentage. Library member percentages
+above must not be presented as completion of the entire reconstruction.

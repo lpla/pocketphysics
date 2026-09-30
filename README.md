@@ -22,11 +22,17 @@ testable claims.
 | Modern source port | v0.6 C++ source on checksum-locked BlocksDS dependencies | `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06` |
 | Improved source port | Modern port with measured correctness and performance changes | `cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45` |
 
-The source reconstruction is the canonical exact build. It starts from
-checksum-locked historical tools and source, never from the release ROM or
-extracted payloads. Recovered executable regions are reviewed ARM/Thumb
-mnemonics with symbols and relocations, not embedded bytes or `.word` streams.
-The archival repack remains only as an independent packaging control.
+The historical reconstruction is the canonical exact build. It compiles C/C++
+and recovered ARM/Thumb assembly with checksum-locked historical tools, without
+reading the release ROM or extracted payloads. Binary identity is complete;
+high-level source recovery is not. Residual assembly and section replacements
+remain, and the pinned SDK supplies precompiled startup and compiler runtime
+libraries. The archival repack is an independent packaging control.
+
+[Library C-source recovery](docs/c-source-recovery.md) now replaces 21 historical
+assembly objects with upstream C and small documented patches, while preserving
+the release hashes. The report distinguishes archive coverage from code
+actually linked into the ROM and inventories the remaining recovery work.
 
 ## Reproduce
 
@@ -64,6 +70,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 
 - [Reproducibility model and build identities](docs/reproducibility.md)
 - [Historical reconstruction method and release address map](docs/reverse-engineering.md)
+- [C-source recovery and remaining assembly](docs/c-source-recovery.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)

@@ -29,7 +29,9 @@ required before performance is considered:
   cached polygon transforms, direct trig lookup, and corrected uLibrary calls.
 
 The benchmark rejects a timing result unless topology, sample counts, workload
-checksums, final state bounds, and allocation assertions pass.
+checksums, initial scene position bounds, and allocation assertions pass. The
+profile screen also compares recorded state and render work against `ds-arm`,
+with the software-math control explicitly exempted from state equivalence.
 
 ## Restored Nintendo DS Math Path
 
@@ -135,6 +137,12 @@ and complete-frame time by 0.015% relative to backports plus physics ITCM while
 leaving hit-test time unchanged. The gains are small but repeat exactly in
 melonDS; physical hardware remains the final decision point. No candidate in
 this table is rejected because of a DeSmuME result.
+
+This narrow ITCM placement remains provisional: repeated deterministic emulator
+runs establish repeatability of this specimen, not independence from binary
+layout or significance across different sketches. A 0.004% physics difference
+is not evidence of a general speedup. Broader scenes and physical-console runs
+are needed before treating these small placement effects as robust gains.
 
 ## Selection Rule
 

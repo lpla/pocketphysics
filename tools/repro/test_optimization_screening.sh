@@ -69,6 +69,9 @@ for emulator in $EMULATORS; do
     esac
 
     EMULATOR="$emulator" \
+    REQUIRE_CORRECTNESS=1 \
+    EQUIVALENT_TO=ds-arm \
+    DIFFERENT_STATE_LABELS=software-control \
     REPEATS="$REPEATS" \
     DURATION="$duration" \
     MAX_TIMING_SPREAD_PERCENT="$MAX_TIMING_SPREAD_PERCENT" \

@@ -9,6 +9,8 @@ IMAGE="${EXACT_IMAGE:-pocketphysics-devkitarm-r21-exact}"
 R20_SDK="$DOWNLOADS/devkitPro-20070503-linux.tar.gz"
 R21_TOOLCHAIN="$DOWNLOADS/devkitARM_r21linux.tar.bz2"
 LIBNDS_SOURCE="$DOWNLOADS/libnds-df7b1022.tar.gz"
+ZLIB_SOURCE="$DOWNLOADS/zlib-1.2.3.tar.gz"
+PNG_SOURCE="$DOWNLOADS/libpng-1.2.8.tar.gz"
 
 fetch() {
     local url="$1"
@@ -41,12 +43,22 @@ fetch \
     'https://github.com/devkitPro/libnds/archive/df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb.tar.gz' \
     "$LIBNDS_SOURCE" \
     'bdf7639b54acd9a8354b20a2a232493472229f182a471f1b51c1ae93ba222d2b'
+fetch \
+    'https://zlib.net/fossils/zlib-1.2.3.tar.gz' \
+    "$ZLIB_SOURCE" \
+    '1795c7d067a43174113fdf03447532f373e1c6c57c08d61d9e4e9be5e244b05e'
+fetch \
+    'https://codeload.github.com/pnggroup/libpng/tar.gz/refs/tags/v1.2.8' \
+    "$PNG_SOURCE" \
+    'd3a07a78927fa23ca8bd8c13938011e0d92b6736207e3efd093a86edcde8fc02'
 
 rm -rf "$OUT"
 mkdir -p "$OUT/inputs" "$OUT/src"
 cp "$R20_SDK" "$OUT/inputs/devkitPro-20070503-linux.tar.gz"
 cp "$R21_TOOLCHAIN" "$OUT/inputs/devkitARM_r21linux.tar.bz2"
 cp "$LIBNDS_SOURCE" "$OUT/inputs/libnds-source.tar.gz"
+cp "$ZLIB_SOURCE" "$OUT/inputs/zlib-source.tar.gz"
+cp "$PNG_SOURCE" "$OUT/inputs/libpng-source.tar.gz"
 
 git -C "$ROOT" archive e9b621e arm7 arm9 generic | tar -x -C "$OUT/src"
 git -C "$ROOT" show 3e538e0:arm9/source/PPBoundaryListener.cpp \

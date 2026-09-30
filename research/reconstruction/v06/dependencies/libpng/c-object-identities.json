@@ -1,0 +1,62 @@
+{
+  "objects": {
+    "png.o": {
+      "allocated_bytes": 3064,
+      "identity_sha256": "5009a2b372914c7fed83cb21a11fe0741ab89380aa434a5baf6f9268b4642c2d",
+      "text_bytes": 2336
+    },
+    "pngget.o": {
+      "allocated_bytes": 3272,
+      "identity_sha256": "9d8daa1445921161b8883fa528d8d1de26551e90a49740b858c89295fca18417",
+      "text_bytes": 3136
+    },
+    "pngmem.o": {
+      "allocated_bytes": 648,
+      "identity_sha256": "366d9ada338b4cce817605648d35c0284c797b016cc035b59d2a0a185cb87a19",
+      "text_bytes": 632
+    },
+    "pngpread.o": {
+      "allocated_bytes": 7916,
+      "identity_sha256": "ab865692b9c508aed7c91abfcce1a40be47083a2851e7aab68486916330fd20d",
+      "text_bytes": 7384
+    },
+    "pngread.o": {
+      "allocated_bytes": 7672,
+      "identity_sha256": "a1fbacac563232a2ec3d03861043f20807aa8665218afb9270374844f47ad1f7",
+      "text_bytes": 6812
+    },
+    "pngrio.o": {
+      "allocated_bytes": 376,
+      "identity_sha256": "c8a0834a74e0eb778b639c6ef0544b7eede2755674bdc5e1ee9709f64e57c6a6",
+      "text_bytes": 216
+    },
+    "pngrutil.o": {
+      "allocated_bytes": 18408,
+      "identity_sha256": "9b8cdf3e868a6b74ad715846d680b56361190a9d15b89358c89427d7a29f4e11",
+      "text_bytes": 14264
+    },
+    "pngset.o": {
+      "allocated_bytes": 7404,
+      "identity_sha256": "73363a9e206d2a056aa1992a12c83195ab239c96ebf0fd0a6b276cfe425b4e36",
+      "text_bytes": 6324
+    },
+    "pngtrans.o": {
+      "allocated_bytes": 2484,
+      "identity_sha256": "a1a2153cf6e940d2b5be3b370eb80cf0ecce8998cd4f9311a5501fbcf916df74",
+      "text_bytes": 1716
+    },
+    "pngwio.o": {
+      "allocated_bytes": 452,
+      "identity_sha256": "ef10958b6a6a6c96611a861a6d9b92add92fc6437ee4165801c4ae31dca0f0ff",
+      "text_bytes": 300
+    },
+    "pngwtran.o": {
+      "allocated_bytes": 1812,
+      "identity_sha256": "b252f47602b9f2e2589cf65a18eceb607084eab84a8d54306f2a244f3e2b683d",
+      "text_bytes": 1812
+    }
+  },
+  "reference": "Library objects distributed with uLibrary v1.11, compiled by devkitARM r20; used only as comparison oracles.",
+  "reference_archive_sha256": "c28ea3df43e76241c97b229777dbddc2f615de4f1db3bedbab3aec724e1f3d99",
+  "schema": 1
+}

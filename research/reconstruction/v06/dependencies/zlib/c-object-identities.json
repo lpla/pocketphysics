@@ -1,0 +1,57 @@
+{
+  "objects": {
+    "adler32.o": {
+      "allocated_bytes": 948,
+      "identity_sha256": "e0e61d76d59d04c8423481ec4c422d00a883a6c9d54cd790a12b79a48f923eed",
+      "text_bytes": 948
+    },
+    "compress.o": {
+      "allocated_bytes": 220,
+      "identity_sha256": "e39c7495b0b66a357468720e685e1f3f10cadb6f19cecda5de6eb53402479af8",
+      "text_bytes": 212
+    },
+    "crc32.o": {
+      "allocated_bytes": 10428,
+      "identity_sha256": "a386fce0644dccb5acdc3603edca22a7b0c1492fa50b04f69b3989ffadde3cae",
+      "text_bytes": 2236
+    },
+    "gzio.o": {
+      "allocated_bytes": 4960,
+      "identity_sha256": "b1f5dc393100bc0247df4c1435c650fbeb03d10b6fa4876e2f95b5554bb4370a",
+      "text_bytes": 4912
+    },
+    "infback.o": {
+      "allocated_bytes": 6306,
+      "identity_sha256": "b5b4c438bcb3741f51cc8df00f8ffd73fb236f888b3aeb1aaa3f69ca520c3cd7",
+      "text_bytes": 3812
+    },
+    "inffast.o": {
+      "allocated_bytes": 1300,
+      "identity_sha256": "1a45289ac7c35cb74e4ef44f90b1c345bc1c90482c7277c790505b345bb99804",
+      "text_bytes": 1216
+    },
+    "inflate.o": {
+      "allocated_bytes": 10266,
+      "identity_sha256": "790bcf24a079f6b8f43471fbdcd8455ee502bcc6e058e66191aa01840062ae46",
+      "text_bytes": 7604
+    },
+    "trees.o": {
+      "allocated_bytes": 10700,
+      "identity_sha256": "b4f5442586c0843dfa034ca235a05bec576500c8ee6020cd72117d02654ac31d",
+      "text_bytes": 8032
+    },
+    "uncompr.o": {
+      "allocated_bytes": 188,
+      "identity_sha256": "cd3fb5077577793dea131697ceffe847731e11d68de7d607585a2caa6ef127f8",
+      "text_bytes": 180
+    },
+    "zutil.o": {
+      "allocated_bytes": 280,
+      "identity_sha256": "475f3d5e26b1f82415308c524524ab46b1f47363ee7d8b479a875ab1252b086a",
+      "text_bytes": 100
+    }
+  },
+  "reference": "Library objects distributed with uLibrary v1.11, compiled by devkitARM r20; used only as comparison oracles.",
+  "reference_archive_sha256": "1185be41bcbeee3a3fc111c3051eb7b5f0940f0976189323890ab5339ab9657d",
+  "schema": 1
+}

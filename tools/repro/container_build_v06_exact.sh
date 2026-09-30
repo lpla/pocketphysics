@@ -72,20 +72,47 @@ cp "$BUILD/libnds/lib/libnds7.a" "$DEVKITPRO/libnds/lib/libnds7.a"
 cp "$BUILD/libnds/lib/libnds9.a" "$DEVKITPRO/libnds/lib/libnds9.a"
 cp -a "$RECON/dependencies/libnds/include/." "$DEVKITPRO/libnds/include/"
 
-printf '%s\n' '[2/8] Assembling historical libpng and zlib archives from mnemonic source'
+printf '%s\n' '[2/8] Building historical libpng and zlib from C and residual assembly'
 PNG_BUILD="$BUILD/libpng"
 ZLIB_BUILD="$BUILD/zlib"
-mkdir -p "$PNG_BUILD" "$ZLIB_BUILD"
+mkdir -p "$PNG_BUILD/source" "$ZLIB_BUILD/source"
+tar -xzf "$WORK/inputs/libpng-source.tar.gz" -C "$PNG_BUILD/source" --strip-components=1
+tar -xzf "$WORK/inputs/zlib-source.tar.gz" -C "$ZLIB_BUILD/source" --strip-components=1
+patch --fuzz=0 -d "$ZLIB_BUILD/source" -p1 < "$RECON/dependencies/zlib/source.patch"
+patch --fuzz=0 -d "$PNG_BUILD/source" -p1 < "$RECON/dependencies/libpng/source.patch"
+r20_cc="$SDK_R20/devkitARM/bin/arm-eabi-gcc"
 png_members=(png pngset pngget pngrutil pngtrans pngwutil pngread pngrio pngwio pngwrite pngrtran pngwtran pngmem pngerror pngpread)
 zlib_members=(adler32 compress crc32 gzio uncompr deflate trees zutil inflate infback inftrees inffast)
 for member in "${png_members[@]}"; do
-    "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
-        "$RECON/dependencies/libpng/$member.S" -o "$PNG_BUILD/$member.o"
+    case "$member" in
+        png|pngget|pngmem|pngpread|pngread|pngrio|pngrutil|pngset|pngtrans|pngwio|pngwtran)
+            "$r20_cc" -Os -DMAXSEG_64K -DPNG_NO_MNG_FEATURES \
+                -DPNG_USER_WIDTH_MAX=10000 -DPNG_USER_HEIGHT_MAX=10000 \
+                -I"$ZLIB_BUILD/source" \
+                -c "$PNG_BUILD/source/$member.c" -o "$PNG_BUILD/$member.o"
+            ;;
+        *)
+            "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
+                "$RECON/dependencies/libpng/$member.S" -o "$PNG_BUILD/$member.o"
+            ;;
+    esac
 done
 for member in "${zlib_members[@]}"; do
-    "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
-        "$RECON/dependencies/zlib/$member.S" -o "$ZLIB_BUILD/$member.o"
+    case "$member" in
+        deflate|inftrees)
+            "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
+                "$RECON/dependencies/zlib/$member.S" -o "$ZLIB_BUILD/$member.o"
+            ;;
+        *)
+            "$r20_cc" -Os -DNO_vsnprintf -DZ_BUFSIZE=4096 -DMAXSEG_64K \
+                -c "$ZLIB_BUILD/source/$member.c" -o "$ZLIB_BUILD/$member.o"
+            ;;
+    esac
 done
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/libpng/c-object-identities.json" "$PNG_BUILD"
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/zlib/c-object-identities.json" "$ZLIB_BUILD"
 png_objects=()
 for member in "${png_members[@]}"; do png_objects+=("$PNG_BUILD/$member.o"); done
 zlib_objects=()

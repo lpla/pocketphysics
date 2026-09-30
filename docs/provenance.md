@@ -19,10 +19,14 @@ locked to `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6`.
 The mirror is binary archival input, not recovered source or a source-identical
 build claim, and it is not stored in the Git tree.
 
-The exact source build does not download either release URL. It downloads only
-the checksum-locked 2007 SDK, devkitARM r21, and libnds source revision listed
-in the input lock; all remaining source is reconstructed from Git or tracked in
+The exact source build does not download either release URL. It downloads
+the checksum-locked 2007 SDK, devkitARM r21, libnds source revision, zlib 1.2.3,
+and libpng 1.2.8 listed in the input lock. Remaining application/dependency
+source is reconstructed from Git or tracked in
 [`research/reconstruction/v06`](../research/reconstruction/v06/README.md).
+The SDK/toolchain archives also supply precompiled startup objects, libgcc,
+newlib, and libstdc++; these are not currently rebuilt from source. They are
+distinct from the reconstructed third-party archives and from release payloads.
 
 ## Tracked Binary Inventory
 
@@ -52,8 +56,10 @@ tools/repro/audit_reconstruction_source.py
 ```
 
 It rejects NUL-bearing files, object/archive/ROM extensions, binary includes,
-and `.word` instruction transcriptions. The accepted corpus contains only text
-source, patches, linker scripts, object-order metadata, and documentation.
+and `.word` in recovered uppercase `.S` files. The accepted corpus contains text
+source, patches, linker scripts, object-order metadata, and documentation. This
+lexical test does not establish that `.long` directives are data or that all
+executable bytes have high-level source provenance.
 
 Notable preserved files:
 
@@ -70,7 +76,9 @@ Notable preserved files:
 
 ROMs, ELF files, extracted release payloads, toolchains, downloaded archives,
 container caches, and raw emulator logs are ignored under `research-artifacts`.
-They can be recreated and are not source inputs.
+Generated outputs can be recreated. Downloaded source/toolchain archives are
+cached build inputs whose hashes are locked separately; their presence in an
+ignored directory does not make them generated source or evidence of recovery.
 
 Compact evidence intended for review is tracked under `research/results`:
 

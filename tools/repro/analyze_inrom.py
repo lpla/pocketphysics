@@ -60,6 +60,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("assertions", type=Path)
     parser.add_argument("--expected-repeats", type=int, required=True)
     parser.add_argument("--max-timing-spread-percent", type=float, default=0.0)
+    parser.add_argument("--require-correctness", action="store_true",
+                        help="require zero heap growth and successful ROM correctness flags for every label")
+    parser.add_argument("--equivalent-to", help="reference label for state-preserving optimization experiments")
+    parser.add_argument("--different-state-label", action="append", default=[],
+                        help="explicitly excluded state-changing control (repeatable)")
     return parser.parse_args()
 
 
@@ -159,6 +164,16 @@ def main() -> int:
             int(row["mean_ticks"]) for row in require_metric(label, metric)
         )
 
+    if args.different_state_label and not args.equivalent_to:
+        raise AssertionError("State exceptions require --equivalent-to")
+    requested_labels = set(args.different_state_label)
+    if args.equivalent_to:
+        requested_labels.add(args.equivalent_to)
+    if not requested_labels <= labels:
+        raise AssertionError(f"Unknown comparison labels: {requested_labels - labels}")
+    if args.equivalent_to in args.different_state_label:
+        raise AssertionError("The reference cannot be excluded from state comparison")
+
     for label in sorted(labels):
         for metric in sorted(REQUIRED_METRICS):
             metric_rows = require_metric(label, metric)
@@ -235,6 +250,36 @@ def main() -> int:
             f"{emulator} {label}: complete touch/physics/render workload; "
             f"timing spread <= {args.max_timing_spread_percent:.6f}%"
         )
+
+        if args.require_correctness:
+            if scalar(label, "hit_test_heap_delta_bytes") != 0:
+                raise AssertionError(f"{label} retained hit-test heap growth")
+            for metric in ("behavior_pass", "hit_test_heap_fixed_pass", "overall_pass"):
+                if scalar(label, metric) != 1:
+                    raise AssertionError(f"{label} failed {metric}")
+            for metric in TIMED_METRICS | {"things_final", "hit_test_heap_delta_bytes", "behavior_pass", "hit_test_heap_fixed_pass", "overall_pass"}:
+                if any(row["pass"] != "1" for row in require_metric(label, metric)):
+                    raise AssertionError(f"{label} emitted a failure flag for {metric}")
+            assertions.append(f"{emulator} {label}: zero heap growth and all ROM correctness flags pass")
+
+    if args.equivalent_to:
+        reference = args.equivalent_to
+        state_metrics = {
+            "scene_things_created", "scene_position_sum_x", "scene_position_sum_y",
+            "things_final", "visible_things_rendered", "line_quads_rendered",
+        }
+        checksum_metrics = state_metrics | TIMED_METRICS
+        for label in sorted(labels - {reference} - set(args.different_state_label)):
+            for metric in checksum_metrics:
+                reference_hash = require_metric(reference, metric)[0]["checksum"]
+                if require_metric(label, metric)[0]["checksum"] != reference_hash:
+                    raise AssertionError(f"{label} {metric} checksum differs from {reference}")
+            for metric in state_metrics:
+                if scalar(label, metric) != scalar(reference, metric):
+                    raise AssertionError(f"{label} {metric} state differs from {reference}")
+            assertions.append(f"{emulator} {label}: recorded scene, hit-test, final-state, and render-work evidence matches {reference}")
+        for label in sorted(args.different_state_label):
+            assertions.append(f"{emulator} {label}: explicit state-changing control; excluded from {reference} equivalence gate")
 
     if ROLE_LABELS <= labels:
         topology = {

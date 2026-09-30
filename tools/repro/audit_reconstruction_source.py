@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Reject binary payloads and encoded instruction streams in recovered source."""
+"""Check the archival text boundary and prohibited assembly directive spellings.
+
+This lexical check cannot prove whether a data directive encodes instructions.
+Instruction/data classification requires separate binary and control-flow review.
+"""
 
 from __future__ import annotations
 
@@ -61,7 +65,8 @@ def main() -> int:
     print(
         "Reconstruction source audit passed: "
         f"{files} text files, {source_bytes} bytes, "
-        f"{assembly_files} assembly files, {long_directives} .long data/relocation directives."
+        f"{assembly_files} recovered assembly files, {long_directives} .long directives "
+        "(semantic classification is not checked)."
     )
     return 0
 

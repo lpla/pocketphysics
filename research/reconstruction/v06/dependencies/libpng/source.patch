@@ -1,0 +1,13 @@
+--- a/png.c
++++ b/png.c
+@@ -150,5 +149,0 @@
+-   if (items > PNG_UINT_32_MAX/size)
+-   {
+-     png_warning (png_ptr, "Potential overflow in png_zalloc()");
+-     return (NULL);
+-   }
+--- a/pngwtran.c
++++ b/pngwtran.c
+@@ -223 +223 @@
+-      int shift_start[4], shift_dec[4];
++      int shift_dec[4], shift_start[4];

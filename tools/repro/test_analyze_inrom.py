@@ -159,7 +159,7 @@ def valid_rows() -> list[dict[str, str | int]]:
 
 
 class AnalyzerTests(unittest.TestCase):
-    def run_analyzer(self, rows: list[dict[str, str | int]]) -> subprocess.CompletedProcess[str]:
+    def run_analyzer(self, rows: list[dict[str, str | int]], *options: str) -> subprocess.CompletedProcess[str]:
         with tempfile.TemporaryDirectory() as raw_tmp:
             tmp = Path(raw_tmp)
             results = tmp / "results.csv"
@@ -176,6 +176,7 @@ class AnalyzerTests(unittest.TestCase):
                     str(tmp / "assertions.txt"),
                     "--expected-repeats",
                     "1",
+                    *options,
                 ],
                 text=True,
                 capture_output=True,
@@ -199,6 +200,68 @@ class AnalyzerTests(unittest.TestCase):
         result = self.run_analyzer(rows)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("non-PPBENCH", result.stderr)
+
+    def profile_rows(self) -> list[dict[str, str | int]]:
+        control = [dict(row, label="control") for row in valid_rows()
+                   if row["label"] == "bench-improved"]
+        return control + [dict(row, label="candidate", rom_sha256="f" * 64) for row in control]
+
+    def test_equivalent_profiles_pass(self) -> None:
+        result = self.run_analyzer(self.profile_rows(), "--require-correctness", "--equivalent-to", "control")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_stable_but_wrong_checksum_fails(self) -> None:
+        rows = self.profile_rows()
+        for row in rows:
+            if row["label"] == "candidate" and row["metric"] == "physics_step":
+                row["checksum"] = "deadbeef"
+        result = self.run_analyzer(rows, "--equivalent-to", "control")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("checksum differs from control", result.stderr)
+
+    def test_profile_leak_fails(self) -> None:
+        rows = self.profile_rows()
+        for row in rows:
+            if row["label"] == "candidate" and row["metric"] == "hit_test_heap_delta_bytes":
+                row["total_ticks"] = 24
+        result = self.run_analyzer(rows, "--require-correctness")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("retained hit-test heap growth", result.stderr)
+
+    def test_profile_failure_flag_fails(self) -> None:
+        rows = self.profile_rows()
+        for row in rows:
+            if row["label"] == "candidate" and row["metric"] == "physics_step":
+                row["pass"] = 0
+        result = self.run_analyzer(rows, "--require-correctness")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("failure flag for physics_step", result.stderr)
+
+    def test_render_work_change_fails(self) -> None:
+        rows = self.profile_rows()
+        for row in rows:
+            if row["label"] == "candidate" and row["metric"] == "line_quads_rendered":
+                row["total_ticks"] -= 1
+        result = self.run_analyzer(rows, "--equivalent-to", "control")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("state differs from control", result.stderr)
+
+    def test_state_exception_is_explicit_and_validated(self) -> None:
+        rows = self.profile_rows()
+        for row in rows:
+            if row["label"] == "candidate" and row["metric"] == "physics_step":
+                row["checksum"] = "deadbeef"
+        result = self.run_analyzer(rows, "--equivalent-to", "control", "--different-state-label", "candidate")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.run_analyzer(rows, "--equivalent-to", "control", "--different-state-label", "typo")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Unknown comparison labels", result.stderr)
+        result = self.run_analyzer(rows, "--different-state-label", "candidate")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("State exceptions require", result.stderr)
+        result = self.run_analyzer(rows, "--equivalent-to", "control", "--different-state-label", "control")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("reference cannot be excluded", result.stderr)
 
     def test_improved_cadence_regression_fails(self) -> None:
         rows = valid_rows()
