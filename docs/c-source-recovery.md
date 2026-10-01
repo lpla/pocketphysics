@@ -30,6 +30,17 @@ benchmark ROMs and measurement rows, plus stricter reanalysis of the existing
 17-profile optimization screen. It also records the two-clean-build identity
 check after the additional `inftrees` recovery.
 
+A subsequent clean-revision experiment at
+`ab46edede8e6e1c6d4d82fc4682d66343e6c0c6c` rebuilt all three instrumented ROMs
+and repeated the nine-run comparison after the 22nd member was recovered.
+All 207 normalized rows and the ROM identity manifest are byte-identical to
+the earlier comparison. The [public evidence release](https://github.com/lpla/pocketphysics/releases/tag/source-recovery-c22)
+contains the raw emulator logs, results, assertions, and clean-tree metadata.
+Its `melonds-c22-validation.tar.gz` archive has SHA-256
+`d0af71125d1f90143ff4789edba1d2d456ecc01818fb015d9f2c3d869a5e0d1e`.
+The independent [hosted workflow](https://github.com/lpla/pocketphysics/actions/runs/36713028099)
+also passed the full build/test suite and one-run-per-role melonDS comparison.
+
 ## Inputs and Configuration
 
 The [input lock](../research/provenance/input-locks.csv) pins upstream zlib
@@ -59,7 +70,8 @@ algorithms.
 For `inftrees`, declaration order alone left 45 differing `.text` bytes, all
 in stack offsets. Disabling loop induction-variable canonicalization reduced
 that count to 17 but still failed the identity gate. The accepted combination
-disables structure alias analysis and tree copy propagation instead: all
+disables structural alias analysis and tree copy propagation instead, using
+the [GCC 4.1.1 optimization controls](https://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Optimize-Options.html): all
 1,440 `.text` bytes, 300 read-only-data bytes, relocations, and exported-symbol
 metadata then match. The linker includes this member at ARM9 address
 `0x02072bfc`. Near matches are not accepted or patched after compilation.
