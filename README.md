@@ -37,9 +37,12 @@ actually linked into the ROM and inventories the remaining recovery work.
 The [runtime recovery report](docs/runtime-source-recovery.md) records the
 independent identity gates for 1,774 runtime archive-member instances and 12
 startup/CRT objects.
+The [libnds source-recovery report](docs/libnds-source-recovery.md) adds five
+exact C objects, including the touchscreen implementation, and removes the
+reconstructed dependency boundary from the ARM7 link.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-87.1% of both processors' executable-section bytes to source-compiled
-implementations. The remaining 12.9% still contains unresolved reconstruction;
+87.8% of both processors' executable-section bytes to source-compiled
+implementations. The remaining 12.2% still contains unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
@@ -80,6 +83,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical reconstruction method and release address map](docs/reverse-engineering.md)
 - [C-source recovery and remaining assembly](docs/c-source-recovery.md)
 - [Historical runtime source rebuild](docs/runtime-source-recovery.md)
+- [Historical libnds source recovery](docs/libnds-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

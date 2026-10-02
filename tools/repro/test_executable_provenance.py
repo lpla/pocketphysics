@@ -28,7 +28,10 @@ Linker script and memory map
             map_rows("no linker map")
 
     def test_residual_boundaries_and_runtime_are_distinct(self):
-        self.assertEqual(classify("arm9", "/sdk/libnds9.a(card.o)", set()), "residual_reconstruction")
+        self.assertEqual(classify("arm9", "/sdk/libnds9.a(console.o)", set()), "residual_reconstruction")
+        self.assertEqual(classify("arm9", "/sdk/libnds9.a(card.o)", set()), "source_dependency")
+        for name in ("card.o", "clock.o", "touch.o", "userSettings.o"):
+            self.assertEqual(classify("arm7", "/sdk/libnds7.a(" + name + ")", set()), "source_dependency")
         self.assertEqual(classify("arm9", "/sdk/libnds9.a(videoGL.o)", set()), "source_dependency")
         self.assertEqual(classify("arm9", "/sdk/libc.a(lib_a-malloc.o)", set()), "source_runtime")
         self.assertEqual(classify("arm7", "main.o", {"main.o"}), "source_application")

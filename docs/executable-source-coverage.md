@@ -12,16 +12,16 @@ source. The current outputs have no unattributed executable-section bytes.
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
 | Source-compiled application | 23,416 | 87,224 | 110,640 |
-| Source-compiled dependencies | 1,108 | 347,920 | 349,028 |
+| Source-compiled dependencies | 4,340 | 349,568 | 353,908 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
-| Residual dependency reconstruction | 3,232 | 22,704 | 25,936 |
+| Residual dependency reconstruction | 0 | 21,056 | 21,056 |
 | Residual ARM9 section replacement | 0 | 61,364 | 61,364 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **588,200 bytes (87.1%)**.
-Residual reconstruction accounts for **87,300 bytes (12.9%)**. The remaining
+Source-compiled implementations account for **593,080 bytes (87.8%)**.
+Residual reconstruction accounts for **82,420 bytes (12.2%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.

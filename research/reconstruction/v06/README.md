@@ -35,7 +35,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | Component | Reconstructed form |
 | --- | --- |
 | Pocket Physics ARM7 and ARM9 application | Git revision `e9b621e`, seven files restored from `3e538e0`, and the reviewed `application.patch` |
-| libnds | Upstream revision `df7b1022`, historical headers, and six mnemonic assembly objects for host-sensitive compiler output |
+| libnds | Upstream revision `df7b1022`, recovered C declaration/compiler settings, historical headers, and one residual ARM9 console object |
 | libfat | Historical C/assembly source with the recovered source and archive member order |
 | libpng 1.2.8 | Upstream C for all 15 archive members with recovered configuration and source patches |
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
@@ -54,7 +54,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Fifteen uppercase `.S` files remain in this corpus, including
+remaining work. Ten uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy

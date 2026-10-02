@@ -1,0 +1,73 @@
+--- a/source/arm7/clock.c
++++ b/source/arm7/clock.c
+@@ -62,7 +62,7 @@
+ //---------------------------------------------------------------------------------
+ 	u32 i;
+ 	for (i = 0; i < length; i++) {
+-		int high, low;
++		int low, high;
+ 		swiDivMod(data[i], 10, &high, &low);
+ 		data[i] = (high<<4) | low;
+ 	}
+@@ -151,7 +151,7 @@
+ //---------------------------------------------------------------------------------
+ void rtcGetTimeAndDate(uint8 * time) {
+ //---------------------------------------------------------------------------------
+-	uint8 command, status;
++	uint8 status, command;
+ 
+ 	command = READ_TIME_AND_DATE;
+ 	rtcTransaction(&command, 1, time, 7);
+@@ -184,7 +184,7 @@
+ //---------------------------------------------------------------------------------
+ void rtcGetTime(uint8 * time) {
+ //---------------------------------------------------------------------------------
+-	uint8 command, status;
++	uint8 status, command;
+ 
+ 	command = READ_TIME;
+ 	rtcTransaction(&command, 1, time, 3);
+--- a/source/arm7/touch.c
++++ b/source/arm7/touch.c
+@@ -277,7 +277,7 @@
+ touchPosition touchReadXY() {
+ //---------------------------------------------------------------------------------
+ 
+-	int16 dist_max_y, dist_max_x, dist_max;
++	int16 dist_max, dist_max_x, dist_max_y;
+ 	u8 error, error_where, first_check, i;
+ 
+ 	touchPosition touchPos = { 0, 0, 0, 0, 0, 0 };
+--- a/source/arm7/userSettings.c
++++ b/source/arm7/userSettings.c
+@@ -31,11 +31,13 @@
+ void readUserSettings() {
+ //---------------------------------------------------------------------------------
+ 
++	PERSONAL_DATA slot2;
+ 	PERSONAL_DATA slot1;
+-	PERSONAL_DATA slot2;
+ 
+-	short slot1count, slot2count;
+-	short slot1CRC, slot2CRC;
++	short slot2CRC;
++	short slot1count;
++	short slot2count;
++	short slot1CRC;
+ 
+ 	uint32 userSettingsBase;
+ 	readFirmware( 0x20, &userSettingsBase,2);
+--- a/source/common/card.c
++++ b/source/common/card.c
+@@ -208,10 +208,10 @@
+     if(type == 2) {
+         static const uint32 offset0 = (8*1024-1);        //      8KB
+         static const uint32 offset1 = (2*8*1024-1);      //      16KB
+-        u8 buf1;     //      +0k data        read -> write
+         u8 buf2;     //      +8k data        read -> read
+         u8 buf3;     //      +0k ~data          write
+         u8 buf4;     //      +8k data new    comp buf2
++        u8 buf1;     //      +0k data        read -> write
+         cardReadEeprom(offset0,&buf1,1,type);
+         cardReadEeprom(offset1,&buf2,1,type);
+         buf3=~buf1;

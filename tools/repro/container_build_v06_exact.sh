@@ -45,30 +45,31 @@ bash "$ROOT/tools/repro/build_r21_runtime.sh" "$WORK/inputs" "$BUILD/runtime" "$
 printf '%s\n' '[1/8] Building libnds from its historical source revision with devkitARM r20'
 mkdir -p "$BUILD/libnds"
 tar -xzf "$WORK/inputs/libnds-source.tar.gz" -C "$BUILD/libnds" --strip-components=1
+patch --fuzz=0 -d "$BUILD/libnds" -p1 < "$RECON/dependencies/libnds/source.patch"
 make -C "$BUILD/libnds" \
     DEVKITPRO="$SDK_R20" \
     DEVKITARM="$SDK_R20/devkitARM" \
     lib/libnds7.a lib/libnds9.a
-LIBNDS7_RECON="$BUILD/libnds7-reconstructed"
-mkdir -p "$LIBNDS7_RECON"
-for member in card clock touch userSettings; do
-    "$TOOL-gcc" -w -c -mcpu=arm7tdmi -mthumb-interwork \
-        "$RECON/dependencies/libnds/reconstructed/$member.S" \
-        -o "$LIBNDS7_RECON/$member.o"
-done
+# Only touch requires a producer-pass override; keep other members unchanged.
+"$SDK_R20/devkitARM/bin/arm-eabi-gcc" -g -Wall -O2 \
+    -fomit-frame-pointer -ffast-math -fno-tree-fre \
+    -mthumb -mthumb-interwork -DARM7 -mcpu=arm7tdmi -mtune=arm7tdmi \
+    -I"$BUILD/libnds/include" -c "$BUILD/libnds/source/arm7/touch.c" \
+    -o "$BUILD/libnds/build/arm7/touch.o"
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/libnds/c-object-identities.json" "$BUILD/libnds/build"
 "$TOOL-ar" r "$BUILD/libnds/lib/libnds7.a" \
-    "$LIBNDS7_RECON/card.o" "$LIBNDS7_RECON/clock.o" \
-    "$LIBNDS7_RECON/touch.o" "$LIBNDS7_RECON/userSettings.o"
+    "$BUILD/libnds/build/arm7/touch.o"
 "$TOOL-ranlib" "$BUILD/libnds/lib/libnds7.a"
 LIBNDS9_RECON="$BUILD/libnds9-reconstructed"
 mkdir -p "$LIBNDS9_RECON"
-for member in card console; do
+for member in console; do
     "$TOOL-gcc" -w -c -mcpu=arm946e-s -mthumb-interwork \
         "$RECON/dependencies/libnds/reconstructed/${member}9.S" \
         -o "$LIBNDS9_RECON/$member.o"
 done
 "$TOOL-ar" r "$BUILD/libnds/lib/libnds9.a" \
-    "$LIBNDS9_RECON/card.o" "$LIBNDS9_RECON/console.o"
+    "$LIBNDS9_RECON/console.o"
 "$TOOL-ranlib" "$BUILD/libnds/lib/libnds9.a"
 cp "$BUILD/libnds/lib/libnds7.a" "$DEVKITPRO/libnds/lib/libnds7.a"
 cp "$BUILD/libnds/lib/libnds9.a" "$DEVKITPRO/libnds/lib/libnds9.a"

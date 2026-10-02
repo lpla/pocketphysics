@@ -41,6 +41,12 @@ Its `melonds-c22-validation.tar.gz` archive has SHA-256
 The independent [hosted workflow](https://github.com/lpla/pocketphysics/actions/runs/36713028099)
 also passed the full build/test suite and one-run-per-role melonDS comparison.
 
+After completing all libpng members and rebuilding the target runtimes,
+the [runtime/libpng validation dataset](../research/results/runtime-source-recovery/)
+records a further clean-revision, nine-run comparison at `55db9bca`. Again,
+all 207 measurement rows and the instrumented ROM manifest are byte-identical.
+Its independently hosted full-development-loop workflow also passed.
+
 ## Inputs and Configuration
 
 The [input lock](../research/provenance/input-locks.csv) pins upstream zlib
@@ -186,8 +192,12 @@ ROM must hash to:
 
 ## Remaining Recovery Work
 
-Fifteen uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, six libnds objects, two TinyXML units, two uLibrary units, two Box2D
+Five additional [libnds archive members](libnds-source-recovery.md) now compile
+from C, removing the reconstructed dependency boundary in the ARM7 link. Their
+6,564 executable-section bytes include 4,880 bytes linked into the release.
+
+Ten uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, one libnds object, two TinyXML units, two uLibrary units, two Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
@@ -198,7 +208,7 @@ replacement also remains. The [runtime source rebuild](runtime-source-recovery.m
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 87.1%
+processors, runtime/startup, and post-link replacements. It attributes 87.8%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above
