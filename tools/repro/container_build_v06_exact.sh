@@ -40,6 +40,8 @@ cp -a "$SDK_R20" /opt/pocketphysics-r21/devkitPro
 rm -rf "$DEVKITPRO/devkitARM"
 tar -xjf "$WORK/inputs/devkitARM_r21linux.tar.bz2" -C "$DEVKITPRO"
 
+bash "$ROOT/tools/repro/build_r21_runtime.sh" "$WORK/inputs" "$BUILD/runtime" "$DEVKITARM"
+
 printf '%s\n' '[1/8] Building libnds from its historical source revision with devkitARM r20'
 mkdir -p "$BUILD/libnds"
 tar -xzf "$WORK/inputs/libnds-source.tar.gz" -C "$BUILD/libnds" --strip-components=1
@@ -85,16 +87,19 @@ png_members=(png pngset pngget pngrutil pngtrans pngwutil pngread pngrio pngwio 
 zlib_members=(adler32 compress crc32 gzio uncompr deflate trees zutil inflate infback inftrees inffast)
 for member in "${png_members[@]}"; do
     case "$member" in
-        png|pngget|pngmem|pngpread|pngread|pngrio|pngrutil|pngset|pngtrans|pngwio|pngwtran)
+        png|pngerror|pngget|pngmem|pngpread|pngread|pngrio|pngrtran|pngrutil|pngset|pngtrans|pngwio|pngwrite|pngwtran|pngwutil)
+            member_flags=()
+            if [ "$member" = pngrtran ]; then
+                member_flags=(-DPNG_DITHER_RED_BITS=3 -DPNG_DITHER_GREEN_BITS=3 \
+                    -DPNG_DITHER_BLUE_BITS=3 -DPNG_MAX_GAMMA_8=10)
+            fi
             "$r20_cc" -Os -DMAXSEG_64K -DPNG_NO_MNG_FEATURES \
                 -DPNG_USER_WIDTH_MAX=10000 -DPNG_USER_HEIGHT_MAX=10000 \
+                "${member_flags[@]}" \
                 -I"$ZLIB_BUILD/source" \
                 -c "$PNG_BUILD/source/$member.c" -o "$PNG_BUILD/$member.o"
             ;;
-        *)
-            "$TOOL-gcc" -w -c -mcpu=arm9tdmi -mthumb-interwork \
-                "$RECON/dependencies/libpng/$member.S" -o "$PNG_BUILD/$member.o"
-            ;;
+        *) echo "Unknown libpng source member: $member" >&2; exit 1 ;;
     esac
 done
 for member in "${zlib_members[@]}"; do

@@ -3,9 +3,11 @@
 This directory contains the source corpus needed to reproduce the public 2008
 Pocket Physics v0.6 ROM byte for byte using mixed C/C++ and mnemonic assembly.
 The release ROM, extracted processor payloads, and historical application or
-third-party library objects are not build inputs. Precompiled startup and
-compiler runtime libraries supplied by the pinned SDK are build inputs; their
-source rebuild remains outside the current reconstruction.
+third-party library objects are not build inputs. Startup and the compiler
+runtime libraries used by both processors are rebuilt from source, verified,
+and installed after the SDK's precompiled target archives/objects are removed.
+The SDK compiler, assembler, linker, and packager executables remain bootstrap
+tools, not recovered program code.
 
 ## Result
 
@@ -24,7 +26,7 @@ Run the acceptance test from a full Git checkout:
 tools/repro/test_v06_exact.sh
 ```
 
-The test downloads five checksum-locked historical inputs, performs two clean
+The test downloads nine checksum-locked historical inputs, performs two clean
 container builds in separate output trees, checks the four expected hashes in
 each build, and byte-compares the generated binaries and ELF files.
 
@@ -35,13 +37,13 @@ each build, and byte-compares the generated binaries and ELF files.
 | Pocket Physics ARM7 and ARM9 application | Git revision `e9b621e`, seven files restored from `3e538e0`, and the reviewed `application.patch` |
 | libnds | Upstream revision `df7b1022`, historical headers, and six mnemonic assembly objects for host-sensitive compiler output |
 | libfat | Historical C/assembly source with the recovered source and archive member order |
-| libpng 1.2.8 | Upstream C for 11 of 15 archive members; historical configuration, two small source changes, and four residual assembly members |
+| libpng 1.2.8 | Upstream C for all 15 archive members with recovered configuration and source patches |
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source plus mnemonic assembly for the two host-sensitive translation units |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
 | Box2D r132/r134 hybrid | C++ source for 32 archive members; the final convex-decomposition member is linked from two mnemonic components and one recovered C++ function |
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
-| Startup, libgcc, newlib, libstdc++ | Precompiled inputs from the pinned SDK/toolchain archives |
+| Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
 The residual regions cover compiler/runtime-sensitive code and a four-byte
 initializer. They are applied only after the ordinary application
@@ -52,7 +54,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Nineteen uppercase `.S` files remain in this corpus, including
+remaining work. Fifteen uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy
@@ -71,9 +73,10 @@ tools/repro/audit_reconstruction_source.py
 
 This guard rejects selected binary extensions, NUL-bearing files, `.incbin`,
 and `.word` in recovered `.S` files. It does not classify `.long` expressions
-as data or instructions, prove semantic equivalence, or inspect linked SDK
-runtimes. The tracked-binary inventory is a separate file-level check, not a
-proof of complete source recovery.
+as data or instructions or prove semantic equivalence. The
+[runtime identity gate](../../../tools/repro/verify_runtime_objects.py) separately
+checks the source-built target runtime. The tracked-binary inventory is a
+separate file-level check, not a proof of complete source recovery.
 
 ## Build Inputs
 
@@ -86,7 +89,10 @@ The exact URLs and SHA-256 checksums are recorded in
   1.36;
 - upstream libnds revision `df7b1022`;
 - upstream zlib 1.2.3;
-- upstream libpng tag `v1.2.8`.
+- upstream libpng tag `v1.2.8`;
+- upstream newlib 1.15.0;
+- upstream GCC 4.1.2 core and C++ sources;
+- devkitPro producer revision `8007fd4bcb992f8aa9376331104d8bc8d3c7cf45`.
 
 All other source is tracked in this directory or reconstructed from the named
 Git revisions by [`build_v06_exact.sh`](../../../tools/repro/build_v06_exact.sh).

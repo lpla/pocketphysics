@@ -31,12 +31,15 @@ build claim, and it is not stored in the Git tree.
 
 The exact source build does not download either release URL. It downloads
 the checksum-locked 2007 SDK, devkitARM r21, libnds source revision, zlib 1.2.3,
-and libpng 1.2.8 listed in the input lock. Remaining application/dependency
+libpng 1.2.8, GCC/newlib sources, and historical producer revision listed in
+the input lock. Remaining application/dependency
 source is reconstructed from Git or tracked in
 [`research/reconstruction/v06`](../research/reconstruction/v06/README.md).
-The SDK/toolchain archives also supply precompiled startup objects, libgcc,
-newlib, and libstdc++; these are not currently rebuilt from source. They are
-distinct from the reconstructed third-party archives and from release payloads.
+The SDK/toolchain executables provide the bootstrap compiler, assembler,
+linker, and packager. Their precompiled target startup objects and runtime
+archives are removed before the final link and replaced by verified source
+rebuilds. The [runtime recovery report](runtime-source-recovery.md) describes
+that boundary and the independent object-level acceptance gate.
 
 ## Tracked Binary Inventory
 

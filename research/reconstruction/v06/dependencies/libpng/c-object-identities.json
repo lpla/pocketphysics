@@ -5,6 +5,11 @@
       "identity_sha256": "5009a2b372914c7fed83cb21a11fe0741ab89380aa434a5baf6f9268b4642c2d",
       "text_bytes": 2336
     },
+    "pngerror.o": {
+      "allocated_bytes": 1208,
+      "identity_sha256": "6bea95634a2f379e9931015b00338d072478ff30ab4686d746510eee660f97da",
+      "text_bytes": 1064
+    },
     "pngget.o": {
       "allocated_bytes": 3272,
       "identity_sha256": "9d8daa1445921161b8883fa528d8d1de26551e90a49740b858c89295fca18417",
@@ -30,6 +35,11 @@
       "identity_sha256": "c8a0834a74e0eb778b639c6ef0544b7eede2755674bdc5e1ee9709f64e57c6a6",
       "text_bytes": 216
     },
+    "pngrtran.o": {
+      "allocated_bytes": 22752,
+      "identity_sha256": "b59e69297f41ca6175d4a85bc0376b0689aaf7cf2eae0f348599f1ec4af96a64",
+      "text_bytes": 22460
+    },
     "pngrutil.o": {
       "allocated_bytes": 18408,
       "identity_sha256": "9b8cdf3e868a6b74ad715846d680b56361190a9d15b89358c89427d7a29f4e11",
@@ -50,10 +60,20 @@
       "identity_sha256": "ef10958b6a6a6c96611a861a6d9b92add92fc6437ee4165801c4ae31dca0f0ff",
       "text_bytes": 300
     },
+    "pngwrite.o": {
+      "allocated_bytes": 7024,
+      "identity_sha256": "6186646e18fda6cb5495e940dc28fc3c42ca8482be218e8d10c03a57a705b601",
+      "text_bytes": 6032
+    },
     "pngwtran.o": {
       "allocated_bytes": 1812,
       "identity_sha256": "b252f47602b9f2e2589cf65a18eceb607084eab84a8d54306f2a244f3e2b683d",
       "text_bytes": 1812
+    },
+    "pngwutil.o": {
+      "allocated_bytes": 14944,
+      "identity_sha256": "c2bfc8a122117e7a9de83ed96e51c3f40cf9f2d8f805f92d330cac0492f9f5b5",
+      "text_bytes": 12864
     }
   },
   "reference": "Library objects distributed with uLibrary v1.11, compiled by devkitARM r20; used only as comparison oracles.",

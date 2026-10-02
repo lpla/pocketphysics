@@ -11,6 +11,10 @@ R21_TOOLCHAIN="$DOWNLOADS/devkitARM_r21linux.tar.bz2"
 LIBNDS_SOURCE="$DOWNLOADS/libnds-df7b1022.tar.gz"
 ZLIB_SOURCE="$DOWNLOADS/zlib-1.2.3.tar.gz"
 PNG_SOURCE="$DOWNLOADS/libpng-1.2.8.tar.gz"
+NEWLIB_SOURCE="$DOWNLOADS/newlib-1.15.0.tar.gz"
+GCC_CORE_SOURCE="$DOWNLOADS/gcc-core-4.1.2.tar.bz2"
+GCC_CPP_SOURCE="$DOWNLOADS/gcc-g++-4.1.2.tar.bz2"
+PRODUCER_SOURCE="$DOWNLOADS/buildscripts-8007fd4.tar.gz"
 
 fetch() {
     local url="$1"
@@ -51,6 +55,14 @@ fetch \
     'https://codeload.github.com/pnggroup/libpng/tar.gz/refs/tags/v1.2.8' \
     "$PNG_SOURCE" \
     'd3a07a78927fa23ca8bd8c13938011e0d92b6736207e3efd093a86edcde8fc02'
+fetch 'https://sourceware.org/pub/newlib/newlib-1.15.0.tar.gz' \
+    "$NEWLIB_SOURCE" 'c4496102d38c59d1a47ddd5481af35caa1f65b76e2a94d9607737e17fd9e4465'
+fetch 'https://ftp.gnu.org/gnu/gcc/gcc-4.1.2/gcc-core-4.1.2.tar.bz2' \
+    "$GCC_CORE_SOURCE" '7be9c5df8000ae35d0928f0a254bfb5e8478cad5e5e57fd07820530c03b3711d'
+fetch 'https://ftp.gnu.org/gnu/gcc/gcc-4.1.2/gcc-g++-4.1.2.tar.bz2' \
+    "$GCC_CPP_SOURCE" '0c06aa415f10679bc334f4627242e2b383387d0d44930da2922028dbd98fa2e2'
+fetch 'https://codeload.github.com/devkitPro/buildscripts/tar.gz/8007fd4bcb992f8aa9376331104d8bc8d3c7cf45' \
+    "$PRODUCER_SOURCE" 'd79a537f25a5a4c3914aae65661bc15475db6e9a34383eef720b10bdfb54ee22'
 
 rm -rf "$OUT"
 mkdir -p "$OUT/inputs" "$OUT/src"
@@ -59,6 +71,10 @@ cp "$R21_TOOLCHAIN" "$OUT/inputs/devkitARM_r21linux.tar.bz2"
 cp "$LIBNDS_SOURCE" "$OUT/inputs/libnds-source.tar.gz"
 cp "$ZLIB_SOURCE" "$OUT/inputs/zlib-source.tar.gz"
 cp "$PNG_SOURCE" "$OUT/inputs/libpng-source.tar.gz"
+cp "$NEWLIB_SOURCE" "$OUT/inputs/newlib-1.15.0.tar.gz"
+cp "$GCC_CORE_SOURCE" "$OUT/inputs/gcc-core-4.1.2.tar.bz2"
+cp "$GCC_CPP_SOURCE" "$OUT/inputs/gcc-g++-4.1.2.tar.bz2"
+cp "$PRODUCER_SOURCE" "$OUT/inputs/buildscripts-source.tar.gz"
 
 git -C "$ROOT" archive e9b621e arm7 arm9 generic | tar -x -C "$OUT/src"
 git -C "$ROOT" show 3e538e0:arm9/source/PPBoundaryListener.cpp \

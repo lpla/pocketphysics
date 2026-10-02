@@ -35,6 +35,8 @@ python3 "$ROOT/tools/repro/patch_box2d_source.py" "$OUT/deps/box2d-2.0.1"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_instrument_exact.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_apply_reconstructed_sections.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_verify_recovered_objects.py"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_verify_runtime_objects.py"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_executable_provenance.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_fetch_locked.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_analyze_inrom.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 -m py_compile "$ROOT"/tools/repro/*.py

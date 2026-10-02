@@ -2,14 +2,14 @@
 
 ## Result and Scope
 
-The historical build now compiles 22 zlib/libpng archive members from upstream
-C instead of reconstructed assembly. This removes 28,875 lines in 22 `.S`
-files. The replacement objects contain 75,624 bytes of executable sections
-(including their literal pools) and 100,844 allocated bytes in total. These are
+The historical build now compiles 26 zlib/libpng archive members from upstream
+C instead of reconstructed assembly. This removes 42,034 lines in 26 `.S`
+files. The replacement objects contain 118,044 bytes of executable sections
+(including their literal pools) and 146,772 allocated bytes in total. These are
 archive-level counts, not a whole-ROM recovery percentage.
 
-Fourteen of these members are included in the ARM9 link, contributing 48,980
-`.text` bytes. The other eight improve archive source coverage but are not
+Sixteen of these members are included in the ARM9 link, contributing 72,504
+`.text` bytes. The other ten improve archive source coverage but are not
 credited as recovered release-ROM code. The ARM9 linker map, generated as
 `src/arm9/build/.map` in each build directory, identifies the included members.
 Both processors and the packaged ROM remain subject to their original hash
@@ -18,8 +18,8 @@ guards and two-clean-build comparison.
 | Component | C members / archive members | Member coverage | Residual assembly |
 | --- | ---: | ---: | --- |
 | zlib 1.2.3 | 11 / 12 | 91.7% | `deflate` |
-| libpng 1.2.8 | 11 / 15 | 73.3% | `pngerror`, `pngrtran`, `pngwrite`, `pngwutil` |
-| Combined | 22 / 27 | 81.5% | Five members |
+| libpng 1.2.8 | 15 / 15 | 100% | None |
+| Combined | 26 / 27 | 96.3% | `deflate` |
 
 This is a source-recovery result, not a performance change. The release ROM is
 unchanged, so these substitutions cannot themselves improve its runtime speed.
@@ -60,6 +60,10 @@ libpng: -Os -DMAXSEG_64K -DPNG_NO_MNG_FEATURES
 These settings are experimentally sufficient for the matched objects. They are
 not a claim to have recovered an original author-written build command.
 `inftrees.c` additionally uses `-fno-tree-salias -fno-tree-copy-prop`.
+`pngrtran.c` additionally defines `PNG_DITHER_RED_BITS`,
+`PNG_DITHER_GREEN_BITS`, and `PNG_DITHER_BLUE_BITS` as 3, and
+`PNG_MAX_GAMMA_8` as 10. These are per-translation-unit definitions; applying
+them to the other members does not reproduce their identities.
 
 The [zlib patch](../research/reconstruction/v06/dependencies/zlib/source.patch)
 enables the upstream `HAVE_UNISTD_H` configuration and reverses the declaration
@@ -91,6 +95,18 @@ and changes its access offset from 597 to 596. The same configuration resolves
 constants in `pngread`. This associates matches with source-level settings
 rather than edits to generated instruction bytes.
 
+The four final libpng recoveries account for 13,159 of the removed assembly
+lines. `png_error` expands the upstream private error handler into its caller,
+with its two 16-byte local arrays in the historical stack order.
+`png_set_dither` retains the upstream algorithm but orders its five local
+declarations as `max_d`, `hash`, `t`, `i`, `num_new_palette`. `pngwrite` and
+`pngwutil` reproduce numbered zlib diagnostics using ordinary 100-byte C
+buffers and `sprintf`; the last diagnostic includes the input/output/state
+values. Both `png_write_sCAL` variants declare `hbuf` before `wbuf`.
+The complete object gates, rather than similarity scores, accept these changes.
+They preserve the historical implementation, including its error formatting;
+they are not proposed error-handling practices for the modern port.
+
 ## Object-Level Evidence
 
 The reference object identities come from the libraries distributed with
@@ -116,16 +132,20 @@ build requires neither library archive nor a release ROM download.
 | `uncompr` | 180 | No |
 | `zutil` | 100 | Yes |
 | `png` | 2,336 | Yes |
+| `pngerror` | 1,064 | Yes |
 | `pngget` | 3,136 | Yes |
 | `pngmem` | 632 | Yes |
 | `pngpread` | 7,384 | No |
 | `pngread` | 6,812 | Yes |
 | `pngrio` | 216 | Yes |
+| `pngrtran` | 22,460 | Yes |
 | `pngrutil` | 14,264 | Yes |
 | `pngset` | 6,324 | Yes |
 | `pngtrans` | 1,716 | Yes |
 | `pngwio` | 300 | No |
+| `pngwrite` | 6,032 | No |
 | `pngwtran` | 1,812 | No |
+| `pngwutil` | 12,864 | No |
 
 The canonical identity includes ELF header flags; every allocated section's
 bytes, type, flags, size, alignment, and entry size; normalized relocations
@@ -166,17 +186,20 @@ ROM must hash to:
 
 ## Remaining Recovery Work
 
-Nineteen uppercase `.S` files remain in the reconstruction corpus: five zlib/libpng
-members, six libnds objects, two TinyXML units, two uLibrary units, two Box2D
+Fifteen uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, six libnds objects, two TinyXML units, two uLibrary units, two Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
-The next source-recovery targets are the five remaining library members and the
-Box2D/TinyXML substitutions. A close C candidate for `pngrtran`
-still differs in stack-slot allocation; no instruction-byte edits are accepted
-as substitutes for recovering a compiler-reproducible source/configuration.
-ARM9 section replacement and the SDK startup/runtime archives also remain.
+The next source-recovery targets are `deflate` and the Box2D/TinyXML
+substitutions. No instruction-byte edits are accepted as substitutes for
+recovering a compiler-reproducible source/configuration. ARM9 section
+replacement also remains. The [runtime source rebuild](runtime-source-recovery.md)
+removes the precompiled startup/runtime boundary for both processor links.
 
-An executable-byte provenance map covering these boundaries is needed before
-reporting a meaningful whole-program percentage. Library member percentages
-above must not be presented as completion of the entire reconstruction.
+The [executable-byte inventory](executable-source-coverage.md) now covers both
+processors, runtime/startup, and post-link replacements. It attributes 87.1%
+of executable-section bytes to source-compiled implementations, including
+original low-level assembly. That byte coverage is not a C-only percentage or
+an estimate of remaining research effort. Library member percentages above
+must not be presented as completion of the entire reconstruction.

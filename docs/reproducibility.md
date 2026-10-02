@@ -26,6 +26,8 @@ Important controls include:
 
 - Public release ZIP and both release ROM hashes.
 - devkitPro 2007-05-03 SDK, devkitARM r21, and libnds source revision hashes.
+- GCC 4.1.2 core/C++ sources, newlib 1.15.0, and the historical devkitPro
+  producer revision containing the target-runtime patches and DS startup.
 - Debian base image digest and dated signed package snapshots.
 - BlocksDS image digest and exact package archive hashes.
 - Box2D, TinyXML, and convex-decomposition source hashes.
@@ -61,15 +63,18 @@ The script performs these steps:
 
 1. Reconstruct the application tree from Git revisions `e9b621e` and `3e538e0`.
 2. Download and verify the 2007 SDK, devkitARM r21, libnds source revision,
-   zlib 1.2.3, and libpng 1.2.8.
-3. Build libnds, libfat, libpng, zlib, TinyXML, uLibrary, and Box2D from the
-   tracked/downloaded C, C++, and mnemonic assembly corpus. Check the 21
+   zlib 1.2.3, libpng 1.2.8, GCC/newlib, and historical producer sources.
+3. Rebuild the target runtime and DS startup; verify 1,774 archive-member
+   instances and 12 startup/CRT objects, restore archive order, and remove the
+   SDK's precompiled target archives/objects before the application links.
+4. Build libnds, libfat, libpng, zlib, TinyXML, uLibrary, and Box2D from the
+   tracked/downloaded C, C++, and mnemonic assembly corpus. Check the 26
    recovered C objects against normalized historical ELF identities.
-4. Clean-build ARM7 and ARM9 with the recovered flags and object order.
-5. Guard the ordinary ARM9 link hash, then link the reviewed residual mnemonic
+5. Clean-build ARM7 and ARM9 with the recovered flags and object order.
+6. Guard the ordinary ARM9 link hash, then link the reviewed residual mnemonic
    sections at their recovered addresses.
-6. Package with historical ndstool 1.36, title, and icon.
-7. Refuse output unless the ARM7, ARM9, and ROM hashes match the public release.
+7. Package with historical ndstool 1.36, title, and icon.
+8. Refuse output unless the ARM7, ARM9, and ROM hashes match the public release.
 
 Payload identities:
 
@@ -86,9 +91,11 @@ The source corpus and assembly policy are documented in
 [`research/reconstruction/v06`](../research/reconstruction/v06/README.md).
 `audit_reconstruction_source.py` rejects embedded binaries, binary includes,
 and `.word`-encoded recovered assembly.
-It is a lexical check, not a high-level recovery proof. Startup, libgcc, newlib,
-and libstdc++ are still precompiled inputs from the pinned toolchain archives.
-See [C-Source Recovery](c-source-recovery.md) for the remaining boundaries.
+It is a lexical check, not a high-level recovery proof. The
+[runtime source report](runtime-source-recovery.md) documents startup, libgcc,
+newlib, and libstdc++ independently; compiler/assembler/linker/packager
+executables remain pinned bootstrap tools.
+See [C-Source Recovery](c-source-recovery.md) for the remaining program boundaries.
 
 ## Archival Repack Control
 

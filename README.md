@@ -26,13 +26,21 @@ The historical reconstruction is the canonical exact build. It compiles C/C++
 and recovered ARM/Thumb assembly with checksum-locked historical tools, without
 reading the release ROM or extracted payloads. Binary identity is complete;
 high-level source recovery is not. Residual assembly and section replacements
-remain, and the pinned SDK supplies precompiled startup and compiler runtime
-libraries. The archival repack is an independent packaging control.
+remain. Startup, newlib, libgcc, and libstdc++ are now rebuilt from locked
+upstream and historical producer sources; SDK executables remain bootstrap
+tools. The archival repack is an independent packaging control.
 
-[Library C-source recovery](docs/c-source-recovery.md) now replaces 22 historical
+[Library C-source recovery](docs/c-source-recovery.md) now replaces 26 historical
 assembly objects with upstream C and small documented patches, while preserving
 the release hashes. The report distinguishes archive coverage from code
 actually linked into the ROM and inventories the remaining recovery work.
+The [runtime recovery report](docs/runtime-source-recovery.md) records the
+independent identity gates for 1,774 runtime archive-member instances and 12
+startup/CRT objects.
+An [executable-byte inventory](docs/executable-source-coverage.md) attributes
+87.1% of both processors' executable-section bytes to source-compiled
+implementations. The remaining 12.9% still contains unresolved reconstruction;
+byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
 
@@ -71,6 +79,8 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Reproducibility model and build identities](docs/reproducibility.md)
 - [Historical reconstruction method and release address map](docs/reverse-engineering.md)
 - [C-source recovery and remaining assembly](docs/c-source-recovery.md)
+- [Historical runtime source rebuild](docs/runtime-source-recovery.md)
+- [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)

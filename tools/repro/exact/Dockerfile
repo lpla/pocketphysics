@@ -11,6 +11,8 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources \
         bzip2 \
         binutils-arm-none-eabi \
         ca-certificates \
+        gcc \
+        g++ \
         gzip \
         libc6:i386 \
         libncurses6:i386 \

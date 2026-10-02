@@ -11,3 +11,252 @@
 @@ -223 +223 @@
 -      int shift_start[4], shift_dec[4];
 +      int shift_dec[4], shift_start[4];
+--- a/pngerror.c
++++ b/pngerror.c
+@@ -17,9 +17,6 @@
+ #include "png.h"
+ 
+ static void /* PRIVATE */
+-png_default_error PNGARG((png_structp png_ptr,
+-  png_const_charp error_message));
+-static void /* PRIVATE */
+ png_default_warning PNGARG((png_structp png_ptr,
+   png_const_charp warning_message));
+ 
+@@ -32,6 +29,7 @@
+ png_error(png_structp png_ptr, png_const_charp error_message)
+ {
+ #ifdef PNG_ERROR_NUMBERS_SUPPORTED
++   char error_number[16];
+    char msg[16];
+    if (png_ptr->flags&(PNG_FLAG_STRIP_ERROR_NUMBERS|PNG_FLAG_STRIP_ERROR_TEXT))
+    {
+@@ -68,7 +66,53 @@
+ 
+    /* If the custom handler doesn't exist, or if it returns,
+       use the default handler, which will not return. */
+-   png_default_error(png_ptr, error_message);
++
++#ifndef PNG_NO_CONSOLE_IO
++#ifdef PNG_ERROR_NUMBERS_SUPPORTED
++   if (*error_message == '#')
++   {
++     int offset;
++     for (offset=0; offset<15; offset++)
++     {
++         error_number[offset] = *(error_message+offset+1);
++         if (*(error_message+offset) == ' ')
++             break;
++     }
++     if((offset > 1) && (offset < 15))
++     {
++       error_number[offset-1]='\0';
++       fprintf(stderr, "libpng error no. %s: %s\n", error_number,
++          error_message+offset);
++     }
++     else
++       fprintf(stderr, "libpng error: %s, offset=%d\n", error_message,offset);
++   }
++   else
++#endif
++   fprintf(stderr, "libpng error: %s\n", error_message);
++#endif
++
++#ifdef PNG_SETJMP_SUPPORTED
++#  ifdef USE_FAR_KEYWORD
++   {
++      jmp_buf jmpbuf;
++      png_memcpy(jmpbuf,png_ptr->jmpbuf,png_sizeof(jmp_buf));
++      longjmp(jmpbuf, 1);
++   }
++#  else
++   longjmp(png_ptr->jmpbuf, 1);
++# endif
++#else
++   /* make compiler happy */ ;
++   if (png_ptr)
++   PNG_ABORT();
++#endif
++#ifdef PNG_NO_CONSOLE_IO
++   /* make compiler happy */ ;
++   if (&error_message != NULL)
++      return;
++#endif
++
+ }
+ 
+ /* This function is called whenever there is a non-fatal error.  This function
+@@ -158,62 +202,6 @@
+    png_warning(png_ptr, msg);
+ }
+ 
+-/* This is the default error handling function.  Note that replacements for
+- * this function MUST NOT RETURN, or the program will likely crash.  This
+- * function is used by default, or if the program supplies NULL for the
+- * error function pointer in png_set_error_fn().
+- */
+-static void /* PRIVATE */
+-png_default_error(png_structp png_ptr, png_const_charp error_message)
+-{
+-#ifndef PNG_NO_CONSOLE_IO
+-#ifdef PNG_ERROR_NUMBERS_SUPPORTED
+-   if (*error_message == '#')
+-   {
+-     int offset;
+-     char error_number[16];
+-     for (offset=0; offset<15; offset++)
+-     {
+-         error_number[offset] = *(error_message+offset+1);
+-         if (*(error_message+offset) == ' ')
+-             break;
+-     }
+-     if((offset > 1) && (offset < 15))
+-     {
+-       error_number[offset-1]='\0';
+-       fprintf(stderr, "libpng error no. %s: %s\n", error_number,
+-          error_message+offset);
+-     }
+-     else
+-       fprintf(stderr, "libpng error: %s, offset=%d\n", error_message,offset);
+-   }
+-   else
+-#endif
+-   fprintf(stderr, "libpng error: %s\n", error_message);
+-#endif
+-
+-#ifdef PNG_SETJMP_SUPPORTED
+-#  ifdef USE_FAR_KEYWORD
+-   {
+-      jmp_buf jmpbuf;
+-      png_memcpy(jmpbuf,png_ptr->jmpbuf,png_sizeof(jmp_buf));
+-      longjmp(jmpbuf, 1);
+-   }
+-#  else
+-   longjmp(png_ptr->jmpbuf, 1);
+-# endif
+-#else
+-   /* make compiler happy */ ;
+-   if (png_ptr)
+-   PNG_ABORT();
+-#endif
+-#ifdef PNG_NO_CONSOLE_IO
+-   /* make compiler happy */ ;
+-   if (&error_message != NULL)
+-      return;
+-#endif
+-}
+-
+ /* This function is called when there is a warning, but the library thinks
+  * it can continue anyway.  Replacement functions don't have to do anything
+  * here if you don't want them to.  In the default configuration, png_ptr is
+--- a/pngrtran.c
++++ b/pngrtran.c
+@@ -290,11 +290,11 @@
+             [We don't understand this at all, so if someone wants to
+              work on improving it, be our guest - AED, GRP]
+             */
++         int max_d;
++         png_dsortpp hash;
++         png_dsortp t;
+          int i;
+-         int max_d;
+          int num_new_palette;
+-         png_dsortp t;
+-         png_dsortpp hash;
+ 
+          t=NULL;
+ 
+--- a/pngwrite.c
++++ b/pngwrite.c
+@@ -931,10 +931,12 @@
+       /* check for compression errors */
+       if (ret != Z_OK)
+       {
++         char diagnostic[100];
++         sprintf(diagnostic, "zlib0 error %d", ret);
+          if (png_ptr->zstream.msg != NULL)
+             png_error(png_ptr, png_ptr->zstream.msg);
+          else
+-            png_error(png_ptr, "zlib error");
++            png_error(png_ptr, diagnostic);
+       }
+ 
+       if (!(png_ptr->zstream.avail_out))
+--- a/pngwutil.c
++++ b/pngwutil.c
+@@ -213,10 +213,12 @@
+       if (ret != Z_OK)
+       {
+          /* error */
++         char diagnostic[100];
++         sprintf(diagnostic, "zlib1 error %d", ret);
+          if (png_ptr->zstream.msg != NULL)
+             png_error(png_ptr, png_ptr->zstream.msg);
+          else
+-            png_error(png_ptr, "zlib error");
++            png_error(png_ptr, diagnostic);
+       }
+       /* check to see if we need more room */
+       if (!(png_ptr->zstream.avail_out))
+@@ -312,10 +314,12 @@
+       else if (ret != Z_STREAM_END)
+       {
+          /* we got an error */
++         char diagnostic[100];
++         sprintf(diagnostic, "zlib2 error %d", ret);
+          if (png_ptr->zstream.msg != NULL)
+             png_error(png_ptr, png_ptr->zstream.msg);
+          else
+-            png_error(png_ptr, "zlib error");
++            png_error(png_ptr, diagnostic);
+       }
+    } while (ret != Z_STREAM_END);
+ 
+@@ -1558,7 +1562,7 @@
+    PNG_sCAL;
+ #endif
+    png_size_t total_len;
+-   char wbuf[32], hbuf[32];
++   char hbuf[32], wbuf[32];
+    png_byte bunit = unit;
+ 
+    png_debug(1, "in png_write_sCAL\n");
+@@ -1596,7 +1600,7 @@
+    PNG_sCAL;
+ #endif
+    png_size_t total_len;
+-   char wbuf[32], hbuf[32];
++   char hbuf[32], wbuf[32];
+    png_byte bunit = unit;
+ 
+    png_debug(1, "in png_write_sCAL_s\n");
+@@ -1859,10 +1863,12 @@
+       }
+       else if (ret != Z_STREAM_END)
+       {
++         char diagnostic[100];
++         sprintf(diagnostic, "zlib3 error %d", ret);
+          if (png_ptr->zstream.msg != NULL)
+             png_error(png_ptr, png_ptr->zstream.msg);
+          else
+-            png_error(png_ptr, "zlib error");
++            png_error(png_ptr, diagnostic);
+       }
+    } while (ret != Z_STREAM_END);
+ 
+@@ -2687,10 +2693,14 @@
+       /* check for compression errors */
+       if (ret != Z_OK)
+       {
++         char diagnostic[100];
++         sprintf(diagnostic, "zlib4 error %d in:%X avail:%d out:%X ste:%X", ret,
++            png_ptr->zstream.next_in, png_ptr->zstream.avail_in,
++            png_ptr->zstream.next_out, png_ptr->zstream.state);
+          if (png_ptr->zstream.msg != NULL)
+             png_error(png_ptr, png_ptr->zstream.msg);
+          else
+-            png_error(png_ptr, "zlib error");
++            png_error(png_ptr, diagnostic);
+       }
+ 
+       /* see if it is time to write another IDAT */

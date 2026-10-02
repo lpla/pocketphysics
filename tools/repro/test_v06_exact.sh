@@ -15,4 +15,10 @@ cmp "$BASE/first/pocketphysics.base.arm9" "$BASE/second/pocketphysics.base.arm9"
 cmp "$BASE/first/pocketphysics.base.arm9.elf" "$BASE/second/pocketphysics.base.arm9.elf"
 cmp "$BASE/first/pocketphysics.arm7.elf" "$BASE/second/pocketphysics.arm7.elf"
 
+for role in first second; do
+    PYTHONPYCACHEPREFIX="$BASE/pycache" python3 "$ROOT/tools/repro/audit_executable_provenance.py" \
+        "$BASE/$role" "$BASE/$role/executable-provenance.json"
+done
+cmp "$BASE/first/executable-provenance.json" "$BASE/second/executable-provenance.json"
+
 echo "Two clean source builds are byte-identical to each other and the public v0.6 ROM."
