@@ -73,5 +73,6 @@ bool b2Triangle::IsInside(float32 _x, float32 _y){
 		float32 u = (dot11*dot02 - dot01*dot12)*invDenom;
 		float32 v = (dot00*dot12 - dot01*dot02)*invDenom;
 		
-		return ((u>=0)&&(v>=0)&&(u+v<=1));    
+		// The release excludes points on the triangle boundary.
+		return ((u>0)&&(v>0)&&(u+v<1));
 }

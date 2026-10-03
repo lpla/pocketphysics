@@ -15,7 +15,7 @@ Two independent clean builds reproduce these identities:
 
 | Artifact | Size | SHA-256 |
 | --- | ---: | --- |
-| Pre-reconstruction ARM9 link | 827,636 B | `4eb421ef565b8a725d8fb7270e5f7102b968542f36c4b91b4ebc5eaaf7e06526` |
+| Pre-reconstruction ARM9 link | 827,636 B | `185281863e84044f546e71d044622e2c53a39b898333afca548ca19ec56535b7` |
 | Final ARM9 payload | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
 | ARM7 payload | 62,828 B | `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec` |
 | Packaged ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
@@ -45,8 +45,9 @@ each build, and byte-compares the generated binaries and ELF files.
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
-The residual regions cover compiler/runtime-sensitive code and a four-byte
-initializer. They are applied only after the ordinary application
+The residual regions cover compiler/runtime-sensitive code. The complete
+`b2Triangle` unit and its initializer now compile from C++ and no longer use
+section replacement. Residual regions are applied only after the ordinary application
 link has produced the guarded pre-reconstruction ARM9 hash above. This makes a
 change in any normal source object, dependency, archive order, or link layout
 fail before section replacement can occur. This guard constrains binary

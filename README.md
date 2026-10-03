@@ -42,9 +42,11 @@ exact C objects, including the touchscreen implementation, and removes the
 reconstructed dependency boundary from the ARM7 link.
 The [TinyXML recovery report](docs/tinyxml-source-recovery.md) completes its
 four C++ archive members by preserving the historical assertion filenames.
+The [triangle recovery report](docs/triangle-source-recovery.md) removes an
+entire Box2D compilation unit and its initializer from post-link replacement.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-90.3% of both processors' executable-section bytes to source-compiled
-implementations. The remaining 9.7% still contains unresolved reconstruction;
+90.7% of both processors' executable-section bytes to source-compiled
+implementations. The remaining 9.3% still contains unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
@@ -87,6 +89,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical runtime source rebuild](docs/runtime-source-recovery.md)
 - [Historical libnds source recovery](docs/libnds-source-recovery.md)
 - [Historical TinyXML source recovery](docs/tinyxml-source-recovery.md)
+- [Historical triangle source recovery](docs/triangle-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

@@ -12,16 +12,16 @@ source. The current outputs have no unattributed executable-section bytes.
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
 | Source-compiled application | 23,416 | 87,224 | 110,640 |
-| Source-compiled dependencies | 4,340 | 366,212 | 370,552 |
+| Source-compiled dependencies | 4,340 | 368,920 | 373,260 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
 | Residual dependency reconstruction | 0 | 4,412 | 4,412 |
-| Residual ARM9 section replacement | 0 | 61,364 | 61,364 |
+| Residual ARM9 section replacement | 0 | 58,656 | 58,656 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **609,724 bytes (90.3%)**.
-Residual reconstruction accounts for **65,776 bytes (9.7%)**. The remaining
+Source-compiled implementations account for **612,432 bytes (90.7%)**.
+Residual reconstruction accounts for **63,068 bytes (9.3%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.
@@ -30,8 +30,8 @@ The denominator is the union of allocated executable ELF sections in both
 processors. Such sections include literal pools and padding. Ordinary assets,
 read-only data outside executable sections, initialized data, zero-initialized
 storage, cartridge headers, and packaging padding are excluded. In particular,
-the four-byte reconstructed `b2Triangle` initializer is outside this denominator
-and still remains unresolved high-level-source work.
+the four-byte `b2Triangle` initializer is outside this denominator. That entry
+and its complete executable unit now compile from [C++ source](triangle-source-recovery.md).
 
 The source categories include original upstream hardware assembly where the
 CPU requires low-level operations. They must not be read as a C/C++-only

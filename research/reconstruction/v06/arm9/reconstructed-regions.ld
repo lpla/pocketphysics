@@ -46,12 +46,10 @@ SECTIONS
   .reconstructed.fn02 0x0200d678 : { *(.reconstructed.fn02) }
   .reconstructed.fn03 0x02031424 : { *(.reconstructed.fn03) }
   .reconstructed.fn04 0x0203e768 : { *(.reconstructed.fn04) }
-  .reconstructed.fn05 0x02045f98 : { *(.reconstructed.fn05) }
   .reconstructed.fn06 0x0204737c : { *(.reconstructed.fn06) }
   .reconstructed.fn07 0x020480f0 : { *(.reconstructed.fn07) }
   .reconstructed.fn08 0x0205d318 : { *(.reconstructed.fn08) }
   .reconstructed.fn09 0x0205f21c : { *(.reconstructed.fn09) }
-  .reconstructed.init_b2Triangle 0x020c8754 : { *(.reconstructed.init_b2Triangle) }
   .reconstructed.thumb_target_02009608 0x02009608 : { *(.reconstructed.thumb_target_02009608) }
   .reconstructed.thumb_target_020096d0 0x020096d0 : { *(.reconstructed.thumb_target_020096d0) }
   .reconstructed.thumb_target_0200add0 0x0200add0 : { *(.reconstructed.thumb_target_0200add0) }

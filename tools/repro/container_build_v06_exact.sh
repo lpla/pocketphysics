@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=4eb421ef565b8a725d8fb7270e5f7102b968542f36c4b91b4ebc5eaaf7e06526
+EXPECTED_BASE_ARM9=185281863e84044f546e71d044622e2c53a39b898333afca548ca19ec56535b7
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -272,6 +272,13 @@ cp /tmp/core-donor-labels.o /tmp/core-donor-labels-global-notarget.o
     /tmp/core-cfg-exact-ext.o \
     /tmp/trace-standalone.o
 BOX_ARCHIVE="$BOX/Gen/nds-fixed/lib/libbox2d.a"
+"$TOOL-g++" "${box_flags[@]}" -c "$BOX/Contrib/b2Triangle.cpp" \
+    -o "$BUILD/b2Triangle-sections.o"
+"$TOOL-ld" -r -T "$BOX/reconstructed/triangle-object-layout.ld" \
+    -o "$BUILD/b2Triangle.o" "$BUILD/b2Triangle-sections.o"
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$BOX/reconstructed/triangle-object-identity.json" "$BUILD"
+"$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2Triangle.o"
 "$TOOL-ar" r "$BOX_ARCHIVE" /tmp/b2Polygon.o
 "$TOOL-ranlib" "$BOX_ARCHIVE"
 cp "$BOX_ARCHIVE" "$DEVKITPRO/libnds/lib/libbox2d2.a"

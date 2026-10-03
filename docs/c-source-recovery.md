@@ -197,6 +197,8 @@ now compile from C, removing the reconstructed dependency boundary in the
 ARM7 link. Their 7,972 executable-section bytes include 6,288 bytes linked into
 the release. All four [TinyXML members](tinyxml-source-recovery.md) also compile
 from C++, adding 15,236 linked executable bytes from two further recoveries.
+The [triangle compilation unit](triangle-source-recovery.md) adds another
+2,708 source-compiled executable bytes and removes its post-link initializer.
 
 Seven uppercase `.S` files remain in the reconstruction corpus: one zlib
 member, two uLibrary units, two Box2D
@@ -210,7 +212,7 @@ replacement also remains. The [runtime source rebuild](runtime-source-recovery.m
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 90.3%
+processors, runtime/startup, and post-link replacements. It attributes 90.7%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above
