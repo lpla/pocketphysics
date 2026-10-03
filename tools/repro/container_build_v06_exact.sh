@@ -260,12 +260,26 @@ box_flags=(
 python3 "$ROOT/tools/repro/prepare_polygon_object.py" \
     "$BOX/reconstructed/polygon-method-layout.json" \
     "$BUILD/polygon-sections.o" "$BUILD/polygon-source.o" --objcopy "$TOOL-objcopy"
+for variant in membership constructor; do
+    control=-fno-tree-fre
+    if [ "$variant" = constructor ]; then control=-fno-tree-dominator-opts; fi
+    (
+        cd "$BOX"
+        "$TOOL-g++" "${box_flags[@]}" "$control" -c Contrib/b2Polygon.cpp \
+            -o "$BUILD/polygon-$variant-sections.o"
+    )
+    python3 "$ROOT/tools/repro/prepare_polygon_object.py" \
+        "$BOX/reconstructed/polygon-method-layout.json" \
+        "$BUILD/polygon-$variant-sections.o" "$BUILD/polygon-$variant.o" \
+        --objcopy "$TOOL-objcopy" --variant "$variant"
+done
 "$TOOL-gcc" -w -c -march=armv5te -mthumb-interwork \
     "$BOX/reconstructed/polygon-methods-residual.S" -o "$BUILD/polygon-residual.o"
 (
     cd "$BUILD"
     "$TOOL-ld" -r -T "$BOX/reconstructed/polygon-object-layout.ld" \
-        polygon-source.o polygon-residual.o -o b2Polygon.o
+        polygon-source.o polygon-membership.o polygon-constructor.o \
+        polygon-residual.o -o b2Polygon.o
 )
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$BOX/reconstructed/polygon-object-identity.json" "$BUILD"

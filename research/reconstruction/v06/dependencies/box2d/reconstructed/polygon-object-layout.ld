@@ -15,7 +15,7 @@ SECTIONS
   .text.polygon.source.11 0 : { polygon-source.o(.text._ZN10b2PolyNodeC1Ev) }
   .text.polygon.source.12 0 : { polygon-source.o(.text._ZN10b2PolyNodeC1ER6b2Vec2) }
   .text.polygon.source.13 0 : { polygon-source.o(.text._ZN10b2PolyNode23RemoveConnectionByIndexEl) }
-  .text.polygon.residual.14 0 : { polygon-residual.o(.text.polygon.residual.14) }
+  .text.polygon.source.14 0 : { polygon-membership.o(.text._ZN10b2PolyNode13IsConnectedToERS_) }
   .text.polygon.source.15 0 : { polygon-source.o(.text._ZN10b2PolyNode16RemoveConnectionERS_) }
   .text.polygon.source.16 0 : { polygon-source.o(.text._ZN10b2PolyNode13AddConnectionERS_) }
   .text.polygon.source.17 0 : { polygon-source.o(.text._ZN9b2PolygonC1ER10b2Triangle) }
@@ -34,7 +34,7 @@ SECTIONS
   .text.polygon.source.30 0 : { polygon-source.o(.text._ZN9b2PolygonC2EP5FixedS1_l) }
   .text.polygon.source.31 0 : { polygon-source.o(.text._ZN9b2PolygonC2ER10b2Triangle) }
   .text.polygon.source.32 0 : { polygon-source.o(.text._ZN9b2PolygonC2Ev) }
-  .text.polygon.residual.33 0 : { polygon-residual.o(.text.polygon.residual.33) }
+  .text.polygon.source.33 0 : { polygon-constructor.o(.text._ZN9b2PolygonC1EP6b2Vec2l) }
   .text.polygon.source.34 0 : { polygon-source.o(.text._ZN9b2PolygonC2EP6b2Vec2l) }
   .text.polygon.source.35 0 : { polygon-source.o(.text._Z10ConvexHullP6b2Vec2i) }
   .text.polygon.source.36 0 : { polygon-source.o(.text._ZN10b2PolyNodeC2Ev) }
@@ -54,5 +54,7 @@ SECTIONS
   .bss 0 : { polygon-source.o(.bss) }
   .data 0 : { polygon-source.o(.data) }
   .init_array 0 : { polygon-source.o(.init_array) }
-  /DISCARD/ : { polygon-source.o(.text.* .rodata._ZTV*) }
+  /DISCARD/ : { polygon-source.o(.text.* .rodata._ZTV*)
+                 polygon-membership.o(.text.* .rodata* .bss* .data* .init_array)
+                 polygon-constructor.o(.text.* .rodata* .bss* .data* .init_array) }
 }

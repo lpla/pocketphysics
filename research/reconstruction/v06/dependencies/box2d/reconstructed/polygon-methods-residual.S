@@ -17,63 +17,11 @@
  */
 
 /* Residual release instruction reconstruction, not recovered C++.
- * Only the nine unresolved methods are present. Calls and data pointers
+ * Only the seven unresolved methods are present. Calls and data pointers
  * use symbolic relocations; executable literal pools are data.
  */
 .syntax unified
 .arch armv5te
-.section .text.polygon.residual.14,"ax",%progbits
-.balign 4
-.arm
-.global _ZN10b2PolyNode13IsConnectedToERS_
-.type _ZN10b2PolyNode13IsConnectedToERS_, %function
-_ZN10b2PolyNode13IsConnectedToERS_:
-.L0203ef60:
-    stmdb sp!, {r4, lr}
-.L0203ef64:
-    ldr r4, [r0, #136]
-.L0203ef68:
-    cmp r4, #0
-.L0203ef6c:
-    ble .L0203efa8
-.L0203ef70:
-    ldr lr, [r1]
-.L0203ef74:
-    mov ip, #0
-.L0203ef78:
-    ldr r2, [r0, #8]
-.L0203ef7c:
-    add ip, ip, #1
-.L0203ef80:
-    ldr r3, [r2]
-.L0203ef84:
-    add r0, r0, #4
-.L0203ef88:
-    cmp r3, lr
-.L0203ef8c:
-    bne .L0203efa0
-.L0203ef90:
-    ldr r2, [r2, #4]
-.L0203ef94:
-    ldr r3, [r1, #4]
-.L0203ef98:
-    cmp r2, r3
-.L0203ef9c:
-    beq .L0203efb0
-.L0203efa0:
-    cmp r4, ip
-.L0203efa4:
-    bne .L0203ef78
-.L0203efa8:
-    mov r0, #0
-.L0203efac:
-    ldmia sp!, {r4, pc}
-.L0203efb0:
-    mov r0, #1
-.L0203efb4:
-    ldmia sp!, {r4, pc}
-.size _ZN10b2PolyNode13IsConnectedToERS_, .-_ZN10b2PolyNode13IsConnectedToERS_
-
 .section .text.polygon.residual.23,"ax",%progbits
 .balign 4
 .arm
@@ -911,112 +859,6 @@ _ZN9b2Polygon18MergeParallelEdgesE5Fixed:
 .L0203fe14:
     .long .rodata.str1.4 + 96  /* literal data */
 .size _ZN9b2Polygon18MergeParallelEdgesE5Fixed, .-_ZN9b2Polygon18MergeParallelEdgesE5Fixed
-
-.section .text.polygon.residual.33,"ax",%progbits
-.balign 4
-.arm
-.global _ZN9b2PolygonC1EP6b2Vec2l
-.type _ZN9b2PolygonC1EP6b2Vec2l, %function
-_ZN9b2PolygonC1EP6b2Vec2l:
-.L02040cf0:
-    stmdb sp!, {r4, r5, r6, r7, r8, lr}
-.L02040cf4:
-    mov r6, r0
-.L02040cf8:
-    mov r8, #0
-.L02040cfc:
-    mov r5, r2
-.L02040d00:
-    str r8, [r0, #12]
-.L02040d04:
-    str r2, [r6, #8]
-.L02040d08:
-    mov r0, r2, lsl #2
-.L02040d0c:
-    mov r7, r1
-.L02040d10:
-    bl _Znaj
-.L02040d14:
-    cmp r5, r8
-.L02040d18:
-    beq .L02040d34
-.L02040d1c:
-    mov r3, r8
-.L02040d20:
-    mov r2, r8
-.L02040d24:
-    str r2, [r0, r3, lsl #2]
-.L02040d28:
-    add r3, r3, #1
-.L02040d2c:
-    cmp r5, r3
-.L02040d30:
-    bne .L02040d24
-.L02040d34:
-    ldr r4, [r6, #8]
-.L02040d38:
-    str r0, [r6]
-.L02040d3c:
-    mov r0, r4, lsl #2
-.L02040d40:
-    bl _Znaj
-.L02040d44:
-    cmp r4, #0
-.L02040d48:
-    beq .L02040d64
-.L02040d4c:
-    mov r3, #0
-.L02040d50:
-    mov r2, r3
-.L02040d54:
-    str r2, [r0, r3, lsl #2]
-.L02040d58:
-    add r3, r3, #1
-.L02040d5c:
-    cmp r3, r4
-.L02040d60:
-    bne .L02040d54
-.L02040d64:
-    ldr r4, [r6, #8]
-.L02040d68:
-    str r0, [r6, #4]
-.L02040d6c:
-    cmp r4, #0
-.L02040d70:
-    ble .L02040da4
-.L02040d74:
-    mov ip, #0
-.L02040d78:
-    ldr r5, [r6]
-.L02040d7c:
-    mov lr, ip
-.L02040d80:
-    ldr r3, [lr, r7]
-.L02040d84:
-    add r2, lr, r7
-.L02040d88:
-    str r3, [r5, ip, lsl #2]
-.L02040d8c:
-    ldr r1, [r2, #4]
-.L02040d90:
-    add lr, lr, #8
-.L02040d94:
-    str r1, [r0, ip, lsl #2]
-.L02040d98:
-    add ip, ip, #1
-.L02040d9c:
-    cmp r4, ip
-.L02040da0:
-    bgt .L02040d80
-.L02040da4:
-    mov r3, #0
-.L02040da8:
-    mov r0, r6
-.L02040dac:
-    strb r3, [r6, #16]
-.L02040db0:
-    ldmia sp!, {r4, r5, r6, r7, r8, pc}
-.size _ZN9b2PolygonC1EP6b2Vec2l, .-_ZN9b2PolygonC1EP6b2Vec2l
 
 .section .text.polygon.residual.40,"ax",%progbits
 .balign 4

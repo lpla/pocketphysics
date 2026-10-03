@@ -12,16 +12,16 @@ source. The current outputs have no unattributed executable-section bytes.
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
 | Source-compiled application | 23,416 | 88,796 | 112,212 |
-| Source-compiled dependencies | 4,340 | 393,116 | 397,456 |
+| Source-compiled dependencies | 4,340 | 393,400 | 397,740 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
-| Residual dependency reconstruction | 0 | 31,368 | 31,368 |
+| Residual dependency reconstruction | 0 | 31,084 | 31,084 |
 | Residual ARM9 section replacement | 0 | 5,932 | 5,932 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **638,200 bytes (94.47%)**.
-Residual reconstruction accounts for **37,300 bytes (5.52%)**. The remaining
+Source-compiled implementations account for **638,484 bytes (94.51%)**.
+Residual reconstruction accounts for **37,016 bytes (5.48%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.
@@ -40,8 +40,8 @@ residual unless source and residual code have independently identifiable input
 sections. The [contact solver](contact-source-recovery.md) separates 14,940
 source-compiled bytes from its 5,160-byte residual velocity method this way;
 its unknown executable input sections fail the audit. The
-[polygon member](polygon-source-recovery.md) similarly separates 8,972 C++
-bytes from 21,796 residual bytes, with unknown sections rejected. Removing its
+[polygon member](polygon-source-recovery.md) similarly separates 9,256 C++
+bytes from 21,512 residual bytes, with unknown sections rejected. Removing its
 whole-unit replacement lets its accepted methods receive source credit without
 crediting the unresolved assembly methods.
 
@@ -49,7 +49,7 @@ crediting the unresolved assembly methods.
 
 | Linked residual implementation | Executable-section bytes |
 | --- | ---: |
-| Polygon/decomposition methods | 21,796 |
+| Polygon/decomposition methods | 21,512 |
 | Contact velocity solver | 5,160 |
 | uLibrary historical mixed unit | 3,980 |
 | Island solver | 3,444 |
@@ -57,7 +57,7 @@ crediting the unresolved assembly methods.
 | Font creation | 808 |
 | Paletted-alpha image conversion | 432 |
 | Keyboard label rendering | 232 |
-| Total | 37,300 |
+| Total | 37,016 |
 
 The archive-only zlib `deflate` reconstruction is an additional source-recovery
 task, but contributes no code to this release ROM and is excluded from the

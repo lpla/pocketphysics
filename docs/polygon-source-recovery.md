@@ -2,10 +2,10 @@
 
 ## Result and Boundary
 
-The release's 30,768-byte polygon/decomposition unit now contains **8,972 bytes
-compiled from C++** and **21,796 bytes of explicitly residual ARM assembly**.
-The reviewed layout selects 39 complete compiler-emitted methods and retains
-nine unresolved methods. The former whole-unit ARM9 section replacement is
+The release's 30,768-byte polygon/decomposition unit now contains **9,256 bytes
+compiled from C++** and **21,512 bytes of explicitly residual ARM assembly**.
+The reviewed layout selects 41 complete compiler-emitted methods and retains
+seven unresolved methods. The former whole-unit ARM9 section replacement is
 removed. This is partial source recovery, not a new performance optimization
 or a claim that the remaining assembly has been recovered to C++.
 
@@ -18,16 +18,14 @@ are recorded in the [method inventory](../research/reconstruction/v06/dependenci
 
 | Unresolved method | Executable-section bytes |
 | --- | ---: |
-| `b2PolyNode::IsConnectedTo` | 88 |
 | `b2Polygon::MergeParallelEdges` | 1,660 |
-| Complete-object vector-array constructor | 196 |
 | `TriangulatePolygon` | 6,812 |
 | `b2Polygon::IsUsable(bool)` | 3,420 |
 | `DecomposeConvexAndAddTo` | 2,916 |
 | Pointer-argument rightmost-connection search | 4,328 |
 | Vector-argument rightmost-connection wrapper | 120 |
 | `TraceEdge` | 2,256 |
-| Total residual | 21,796 |
+| Total residual | 21,512 |
 
 Counts include literal pools inside executable sections. The source-built
 56-byte constant storage and four-byte initializer entry are outside this
@@ -38,7 +36,14 @@ linkage is independently constrained by the full payload identity.
 
 The preserved [C++ unit](../research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.cpp)
 is compiled unchanged with devkitARM r21 GCC 4.1.2, the historical fixed-point
-Box2D flags, and `-ffunction-sections`. The
+Box2D flags, and `-ffunction-sections`. Thirty-nine methods use the baseline
+compiler configuration. The unchanged membership method is selected from a
+second compilation with `-fno-tree-fre`; the complete-object vector constructor
+is selected from a third compilation with `-fno-tree-dominator-opts`. Those
+controls reproduce the release's equality-comparison operand order without
+editing a compiled instruction or changing the C++ algorithm. Only the one
+verified method is selected from each controlled compilation; their other
+definitions, storage, and initializers are not installed. The
 [selection tool](../tools/repro/prepare_polygon_object.py) validates every
 accepted section's length and executable flags. It weakens unselected global
 function definitions and exposes named unit-local constants for assembly
@@ -49,6 +54,8 @@ section has zero VMA until the final application link.
 The old linker requires exact relative object filenames in this layout; the
 build runs the relocatable link in a fixed directory. An incorrect selector
 leaves orphan sections and is rejected by the normalized object identity gate.
+These configurations are sufficient for binary reproduction; they are not
+proof that the original producer used the same per-method compiler commands.
 
 The [residual methods](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-methods-residual.S)
 contain ARM mnemonics with symbolic calls, internal branches, constant names,
