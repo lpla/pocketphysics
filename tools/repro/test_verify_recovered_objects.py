@@ -11,9 +11,9 @@ from verify_recovered_objects import HEADER, SECTION, SYMBOL, REL, object_identi
 
 def specimen(code=b"\x00\x00\xa0\xe1" * 2, relocation=28, symbol_value=0,
              alignment=4, debug=b"source path one", callee_info=0x12,
-             elf_flags=0):
+             elf_flags=0, assertion_path=b"/historical/unit.cpp\0"):
     strings = b"\0entry\0callee\0"
-    names = b"\0.text\0.rel.text\0.symtab\0.strtab\0.shstrtab\0.debug_info\0"
+    names = b"\0.text\0.rel.text\0.symtab\0.strtab\0.shstrtab\0.debug_info\0.rodata.str1.4\0"
     symbols = bytes(SYMBOL.size) + SYMBOL.pack(1, symbol_value, 8, 0x12, 0, 1)
     symbols += SYMBOL.pack(7, 0, 0, callee_info, 0, 0)
     parts = [
@@ -23,6 +23,7 @@ def specimen(code=b"\x00\x00\xa0\xe1" * 2, relocation=28, symbol_value=0,
         (".strtab", 3, 0, strings, 0, 0, 1, 0),
         (".shstrtab", 3, 0, names, 0, 0, 1, 0),
         (".debug_info", 1, 0, debug, 0, 0, 1, 0),
+        (".rodata.str1.4", 1, 50, assertion_path, 0, 0, 4, 1),
     ]
     data = bytearray(HEADER.size)
     sections = [bytes(SECTION.size)]
@@ -49,6 +50,10 @@ class ObjectIdentityTests(unittest.TestCase):
 
     def test_repeat_and_debug_metadata(self):
         self.assertEqual(self.digest(specimen()), self.digest(specimen(debug=b"different build directory")))
+
+    def test_assertion_filename_is_program_data_not_debug_metadata(self):
+        self.assertNotEqual(self.digest(specimen()),
+                            self.digest(specimen(assertion_path=b"/different/unit.cpp\0")))
 
     def test_program_changes_fail_identity(self):
         baseline = self.digest(specimen())

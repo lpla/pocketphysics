@@ -1,0 +1,26 @@
+{
+  "objects": {
+    "tinystr.o": {
+      "allocated_bytes": 512,
+      "identity_sha256": "095a5f1c4ea01e14211ec8b498922c4495033023de9fd1a5e4fb9285c25c8607",
+      "text_bytes": 496
+    },
+    "tinyxml.o": {
+      "allocated_bytes": 10821,
+      "identity_sha256": "659ed79aa6f3e741eafeacc685c98ede376659b2ed42a983bee25ba9ee31b842",
+      "text_bytes": 9472
+    },
+    "tinyxmlerror.o": {
+      "allocated_bytes": 564,
+      "identity_sha256": "772999cf0764a4a061299801b6e5e58616ebfc273396c9decb66ab376767440f",
+      "text_bytes": 0
+    },
+    "tinyxmlparser.o": {
+      "allocated_bytes": 7544,
+      "identity_sha256": "25c94a027e1efc1d4314511aa5d735bb18b180650f3302947748bb42a4652286",
+      "text_bytes": 5836
+    }
+  },
+  "reference": "Accepted release-constrained reconstruction objects, not an original library-distribution archive; final ARM9 and ROM hashes independently constrain these identities. Comparison identities only, not build inputs.",
+  "schema": 1
+}

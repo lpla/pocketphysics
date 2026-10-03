@@ -24,6 +24,11 @@
       "allocated_bytes": 1656,
       "identity_sha256": "efa20697447a3ebce1ae64965fef567ab4ebe2c42f1bc8f9405fc38e65390d8c",
       "text_bytes": 1648
+    },
+    "arm9/console.o": {
+      "allocated_bytes": 1776,
+      "identity_sha256": "e44101269583369eece4c350ee4378a37e2f9a23b52a9b4221f3cbf5157e2c67",
+      "text_bytes": 1408
     }
   },
   "reference": "libnds 2007-10-23 distribution objects, comparison oracles only; not build inputs.",

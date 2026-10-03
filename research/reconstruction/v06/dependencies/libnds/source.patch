@@ -71,3 +71,9 @@
          cardReadEeprom(offset0,&buf1,1,type);
          cardReadEeprom(offset1,&buf2,1,type);
          buf3=~buf1;
+--- a/source/arm9/console.c
++++ b/source/arm9/console.c
+@@ -81,1 +81,2 @@
+-			while(i++ < ((CONSOLE_HEIGHT * CONSOLE_WIDTH) - (rowTemp * CONSOLE_WIDTH + colTemp))) consolePrintChar(' ');
++			int remaining = ((CONSOLE_HEIGHT * CONSOLE_WIDTH) - (rowTemp * CONSOLE_WIDTH + colTemp));
++			while (i++ < remaining) consolePrintChar(' ');

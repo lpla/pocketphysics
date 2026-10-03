@@ -192,23 +192,25 @@ ROM must hash to:
 
 ## Remaining Recovery Work
 
-Five additional [libnds archive members](libnds-source-recovery.md) now compile
-from C, removing the reconstructed dependency boundary in the ARM7 link. Their
-6,564 executable-section bytes include 4,880 bytes linked into the release.
+All six previously reconstructed [libnds archive members](libnds-source-recovery.md)
+now compile from C, removing the reconstructed dependency boundary in the
+ARM7 link. Their 7,972 executable-section bytes include 6,288 bytes linked into
+the release. All four [TinyXML members](tinyxml-source-recovery.md) also compile
+from C++, adding 15,236 linked executable bytes from two further recoveries.
 
-Ten uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, one libnds object, two TinyXML units, two uLibrary units, two Box2D
+Seven uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, two uLibrary units, two Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
-The next source-recovery targets are `deflate` and the Box2D/TinyXML
+The next source-recovery targets are `deflate` and the Box2D/uLibrary
 substitutions. No instruction-byte edits are accepted as substitutes for
 recovering a compiler-reproducible source/configuration. ARM9 section
 replacement also remains. The [runtime source rebuild](runtime-source-recovery.md)
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 87.8%
+processors, runtime/startup, and post-link replacements. It attributes 90.3%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above

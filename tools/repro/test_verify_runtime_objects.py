@@ -41,11 +41,11 @@ class RuntimeGateTests(unittest.TestCase):
             path = Path(tmp) / "one.o"
             path.write_bytes(specimen())
             identity = object_identity(path)
-            expected = {"identity_sha256": identity_hash(identity), "allocated_bytes": 8, "text_bytes": 8}
+            expected = {"identity_sha256": identity_hash(identity), "allocated_bytes": 29, "text_bytes": 8}
             check_object(path, expected)
             path.write_bytes(specimen(debug=b"different compilation directory"))
             check_object(path, expected)
-            for field, value in [("identity_sha256", "0" * 64), ("allocated_bytes", 9), ("text_bytes", 9)]:
+            for field, value in [("identity_sha256", "0" * 64), ("allocated_bytes", 30), ("text_bytes", 9)]:
                 with self.subTest(field=field), self.assertRaises(ValueError):
                     check_object(path, {**expected, field: value})
             path.write_bytes(specimen(symbol_value=4))

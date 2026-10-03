@@ -35,11 +35,11 @@ each build, and byte-compares the generated binaries and ELF files.
 | Component | Reconstructed form |
 | --- | --- |
 | Pocket Physics ARM7 and ARM9 application | Git revision `e9b621e`, seven files restored from `3e538e0`, and the reviewed `application.patch` |
-| libnds | Upstream revision `df7b1022`, recovered C declaration/compiler settings, historical headers, and one residual ARM9 console object |
+| libnds | Upstream revision `df7b1022`, recovered C declaration/compiler settings, and historical headers; no residual reconstructed members |
 | libfat | Historical C/assembly source with the recovered source and archive member order |
 | libpng 1.2.8 | Upstream C for all 15 archive members with recovered configuration and source patches |
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
-| TinyXML 2.5.3 | C++ source plus mnemonic assembly for the two host-sensitive translation units |
+| TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
 | Box2D r132/r134 hybrid | C++ source for 32 archive members; the final convex-decomposition member is linked from two mnemonic components and one recovered C++ function |
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
@@ -54,7 +54,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Ten uppercase `.S` files remain in this corpus, including
+remaining work. Seven uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy

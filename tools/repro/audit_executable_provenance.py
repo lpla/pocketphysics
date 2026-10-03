@@ -25,9 +25,7 @@ FILL_ROW = re.compile(r"^\s+\*fill\*\s+(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)")
 ARCHIVE_MEMBER = re.compile(r"([^/]+\.a)\(([^)]+)\)$")
 RESIDUAL_MEMBERS = {
     "arm7": {},
-    "arm9": {"libnds9.a": {"console.o"},
-             "libtinyxml.a": {"tinyxml.o", "tinyxmlparser.o"},
-             "libul.a": {"ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"},
+    "arm9": {"libul.a": {"ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"},
              "libbox2d2.a": {"b2Polygon.o"}, "libz.a": {"deflate.o"}},
 }
 SOURCE_ARCHIVES = {"libnds7.a", "libnds9.a", "libtinyxml.a", "libul.a", "libbox2d2.a", "libz.a", "libpng.a", "libfat.a"}

@@ -2,10 +2,11 @@
 
 ## Result and Boundary
 
-Five previously reconstructed archive members now compile from the locked
+All six previously reconstructed archive members now compile from the locked
 upstream libnds revision `df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb` with a
 [source patch](../research/reconstruction/v06/dependencies/libnds/source.patch).
-The patch changes local declaration order, not hardware protocols or algorithms.
+The patch changes local declaration order and names one console loop bound,
+not hardware protocols or algorithms.
 All original license notices remain in the downloaded source. The patched
 files are altered research versions of that source, not an original release.
 
@@ -16,13 +17,13 @@ files are altered research versions of that source, not an original release.
 | ARM7 `touch.o` | 2,012 | 2,033 | Yes |
 | ARM7 `userSettings.o` | 244 | 244 | Yes |
 | ARM9 `card.o` | 1,648 | 1,656 | Yes |
-| Total | 6,564 | 6,601 | 4,880 executable bytes |
+| ARM9 `console.o` | 1,408 | 1,776 | Yes |
+| Total | 7,972 | 8,377 | 6,288 executable bytes |
 
-The ARM7 link no longer contains reconstructed dependency implementations.
-ARM9 `console.o` remains unresolved: a candidate reproduces every function
-except two compiler-commuted comparisons, but still fails complete identity.
-It is not accepted, and no generated instruction bytes are edited to complete
-a near match. Other ARM9 dependency and post-link replacements also remain.
+Neither libnds archive now contains a reconstructed implementation. The ARM7
+link no longer contains reconstructed dependency implementations at all.
+Other ARM9 dependencies and post-link replacements remain unresolved. No
+generated instruction bytes are edited to complete a near match.
 
 ## Source and Producer Configuration
 
@@ -36,10 +37,15 @@ ARM7:     -DARM7 -mcpu=arm7tdmi -mtune=arm7tdmi
 ARM9:     -DARM9 -march=armv5te -mtune=arm946e-s
 ```
 
-Only `touch.o` adds `-fno-tree-fre`, disabling tree full redundancy elimination.
+`touch.o` adds `-fno-tree-fre`, disabling tree full redundancy elimination.
 That control reproduces the sampler's register allocation and loop code;
 the other five functions in the same object also pass the identity gate.
-Applying the override to the whole library is not part of the recipe.
+`console.o` adds `-fno-tree-pre`, disabling tree partial redundancy elimination.
+With the original source, that control reproduced the console writer but left
+two comparison operands commuted in `consoleCls`. Naming its first branch's
+existing bound as `int remaining` resolves both comparisons and passes the
+complete object gate. The loop condition and iteration count are unchanged.
+Applying either override to the whole library is not part of the recipe.
 These settings are experimentally sufficient, not a recovered original build
 command or a proposed modern compiler configuration.
 
@@ -52,6 +58,8 @@ The source changes reproduce stack-slot allocation:
   `slot1count`, `slot2count`, `slot1CRC`.
 - `cardEepromGetSize` declares `buf2`, `buf3`, `buf4`, `buf1` in that order.
   The same source reproduces both processor variants independently.
+- The first `consoleCls` branch names the existing number of remaining cells
+  before its loop, without changing the other two branches.
 
 The historical firmware reader retains an uninitialized upper half of
 `userSettingsBase` and its original slot-counter self-comparison. These are

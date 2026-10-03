@@ -50,26 +50,25 @@ make -C "$BUILD/libnds" \
     DEVKITPRO="$SDK_R20" \
     DEVKITARM="$SDK_R20/devkitARM" \
     lib/libnds7.a lib/libnds9.a
-# Only touch requires a producer-pass override; keep other members unchanged.
+# Keep the recovered producer-pass overrides local to their two members.
 "$SDK_R20/devkitARM/bin/arm-eabi-gcc" -g -Wall -O2 \
     -fomit-frame-pointer -ffast-math -fno-tree-fre \
     -mthumb -mthumb-interwork -DARM7 -mcpu=arm7tdmi -mtune=arm7tdmi \
     -I"$BUILD/libnds/include" -c "$BUILD/libnds/source/arm7/touch.c" \
     -o "$BUILD/libnds/build/arm7/touch.o"
+"$SDK_R20/devkitARM/bin/arm-eabi-gcc" -g -Wall -O2 \
+    -fomit-frame-pointer -ffast-math -fno-tree-pre \
+    -mthumb -mthumb-interwork -DARM9 -march=armv5te -mtune=arm946e-s \
+    -I"$BUILD/libnds/include" -I"$BUILD/libnds/build/arm9" \
+    -c "$BUILD/libnds/source/arm9/console.c" \
+    -o "$BUILD/libnds/build/arm9/console.o"
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$RECON/dependencies/libnds/c-object-identities.json" "$BUILD/libnds/build"
 "$TOOL-ar" r "$BUILD/libnds/lib/libnds7.a" \
     "$BUILD/libnds/build/arm7/touch.o"
 "$TOOL-ranlib" "$BUILD/libnds/lib/libnds7.a"
-LIBNDS9_RECON="$BUILD/libnds9-reconstructed"
-mkdir -p "$LIBNDS9_RECON"
-for member in console; do
-    "$TOOL-gcc" -w -c -mcpu=arm946e-s -mthumb-interwork \
-        "$RECON/dependencies/libnds/reconstructed/${member}9.S" \
-        -o "$LIBNDS9_RECON/$member.o"
-done
 "$TOOL-ar" r "$BUILD/libnds/lib/libnds9.a" \
-    "$LIBNDS9_RECON/console.o"
+    "$BUILD/libnds/build/arm9/console.o"
 "$TOOL-ranlib" "$BUILD/libnds/lib/libnds9.a"
 cp "$BUILD/libnds/lib/libnds7.a" "$DEVKITPRO/libnds/lib/libnds7.a"
 cp "$BUILD/libnds/lib/libnds9.a" "$DEVKITPRO/libnds/lib/libnds9.a"
@@ -135,23 +134,24 @@ rm -f "$DEVKITPRO/libnds/lib/libpng.a" "$DEVKITPRO/libnds/lib/libz.a"
 printf '%s\n' '[3/8] Building TinyXML 2.5.3 from C++ source'
 TINYXML="$RECON/dependencies/tinyxml"
 TINYXML_BUILD="$BUILD/tinyxml"
-mkdir -p "$TINYXML_BUILD"
+TINYXML_LAYOUT=/home/tob/coding/dsdev/tob/tinyxml
+mkdir -p "$TINYXML_BUILD" "$TINYXML_LAYOUT"
+# Assertion messages are target data: preserve the release's __FILE__ strings.
+cp -a "$TINYXML/source" "$TINYXML/include" "$TINYXML_LAYOUT/"
 tinyxml_flags=(
     -g -Wall -O2 -march=armv5te -mtune=arm946e-s
     -fomit-frame-pointer -ffast-math -mthumb -mthumb-interwork
-    -fno-rtti -fno-exceptions -I"$TINYXML/include"
+    -fno-rtti -fno-exceptions -I"$TINYXML_LAYOUT/include"
 )
 tinyxml_members=(tinystr tinyxml tinyxmlerror tinyxmlparser)
 for member in "${tinyxml_members[@]}"; do
-    "$TOOL-g++" "${tinyxml_flags[@]}" -c "$TINYXML/source/$member.cpp" \
+    "$TOOL-g++" "${tinyxml_flags[@]}" -c "$TINYXML_LAYOUT/source/$member.cpp" \
         -o "$TINYXML_BUILD/$member.o"
 done
 tinyxml_objects=()
 for member in "${tinyxml_members[@]}"; do tinyxml_objects+=("$TINYXML_BUILD/$member.o"); done
-for member in tinyxml tinyxmlparser; do
-    "$TOOL-gcc" -w -c -mcpu=arm946e-s -mthumb-interwork \
-        "$TINYXML/reconstructed/$member.S" -o "$TINYXML_BUILD/$member.o"
-done
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$TINYXML/c-object-identities.json" "$TINYXML_BUILD"
 rm -f "$DEVKITPRO/libnds/lib/libtinyxml.a"
 "$TOOL-ar" cr "$DEVKITPRO/libnds/lib/libtinyxml.a" "${tinyxml_objects[@]}"
 "$TOOL-ranlib" "$DEVKITPRO/libnds/lib/libtinyxml.a"
