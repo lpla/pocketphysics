@@ -11,17 +11,17 @@ source. The current outputs have no unattributed executable-section bytes.
 
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
-| Source-compiled application | 23,416 | 87,224 | 110,640 |
-| Source-compiled dependencies | 4,340 | 369,204 | 373,544 |
+| Source-compiled application | 23,416 | 88,796 | 112,212 |
+| Source-compiled dependencies | 4,340 | 384,144 | 388,484 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
-| Residual dependency reconstruction | 0 | 4,412 | 4,412 |
-| Residual ARM9 section replacement | 0 | 58,372 | 58,372 |
+| Residual dependency reconstruction | 0 | 9,572 | 9,572 |
+| Residual ARM9 section replacement | 0 | 36,700 | 36,700 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **612,716 bytes (90.7%)**.
-Residual reconstruction accounts for **62,784 bytes (9.3%)**. The remaining
+Source-compiled implementations account for **629,228 bytes (93.14%)**.
+Residual reconstruction accounts for **46,272 bytes (6.85%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.
@@ -36,7 +36,31 @@ and its complete executable unit now compile from [C++ source](triangle-source-r
 The source categories include original upstream hardware assembly where the
 CPU requires low-level operations. They must not be read as a C/C++-only
 percentage. Mixed reconstructed objects are conservatively counted in full as
-residual even when a subset of their functions already compiles from C/C++.
+residual unless source and residual code have independently identifiable input
+sections. The [contact solver](contact-source-recovery.md) separates 14,940
+source-compiled bytes from its 5,160-byte residual velocity method this way;
+its unknown executable input sections fail the audit. The remaining polygon
+composite is still counted conservatively as residual.
+
+## Remaining Boundary
+
+| Linked residual implementation | Executable-section bytes |
+| --- | ---: |
+| Polygon/decomposition region | 30,768 |
+| Contact velocity solver | 5,160 |
+| uLibrary historical mixed unit | 3,980 |
+| Island solver | 3,444 |
+| FAT directory entry creation | 1,448 |
+| Font creation | 808 |
+| Paletted-alpha image conversion | 432 |
+| Keyboard label rendering | 232 |
+| Total | 46,272 |
+
+The archive-only zlib `deflate` reconstruction is an additional source-recovery
+task, but contributes no code to this release ROM and is excluded from the
+table. Clearing the listed boundary requires source/compiler reconstruction
+and identity gates, not moving residual instructions into another container or
+reclassifying them as source.
 
 ## Reproduction
 
@@ -63,6 +87,7 @@ source/assembly boundary must update that inventory and the published counts.
 The [unit tests](../tools/repro/test_executable_provenance.py) cover discarded
 input exclusion, multiline section names, padding, unknown owners, residual
 classification, replacement precedence, gaps, overlaps, and replacements
-outside executable sections. This is a reproducible build-provenance audit,
+outside executable sections, including mixed contact-solver attribution and
+unknown-section rejection. This is a reproducible build-provenance audit,
 not independent proof that each source algorithm has been semantically
 validated. The object identity gates and final ROM hash tests remain separate.

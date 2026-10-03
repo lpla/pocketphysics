@@ -46,9 +46,12 @@ The [triangle recovery report](docs/triangle-source-recovery.md) removes an
 entire Box2D compilation unit and its initializer from post-link replacement.
 The [shape proxy report](docs/shape-source-recovery.md) recovers the release's
 missing-proxy handling and removes another section replacement.
+The [contact solver report](docs/contact-source-recovery.md) isolates its one
+unresolved velocity method from 14,940 bytes now compiled from C++.
+The [UI report](docs/ui-source-recovery.md) removes two application replacements.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-90.7% of both processors' executable-section bytes to source-compiled
-implementations. The remaining 9.3% still contains unresolved reconstruction;
+93.1% of both processors' executable-section bytes to source-compiled
+implementations. Another 46,272 bytes still contain unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce

@@ -41,12 +41,9 @@ SECTIONS
   reconstructed_external_arm_020978a0 = 0x020978a0;
   reconstructed_external_arm_020978ac = 0x020978ac;
   reconstructed_external_arm_020978b8 = 0x020978b8;
-  .reconstructed.fn00 0x0200273c : { *(.reconstructed.fn00) }
   .reconstructed.fn01 0x0200c3ec : { *(.reconstructed.fn01) }
-  .reconstructed.fn02 0x0200d678 : { *(.reconstructed.fn02) }
   .reconstructed.fn04 0x0203e768 : { *(.reconstructed.fn04) }
   .reconstructed.fn06 0x0204737c : { *(.reconstructed.fn06) }
-  .reconstructed.fn07 0x020480f0 : { *(.reconstructed.fn07) }
   .reconstructed.fn08 0x0205d318 : { *(.reconstructed.fn08) }
   .reconstructed.fn09 0x0205f21c : { *(.reconstructed.fn09) }
   .reconstructed.thumb_target_02009608 0x02009608 : { *(.reconstructed.thumb_target_02009608) }

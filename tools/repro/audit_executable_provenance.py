@@ -80,12 +80,18 @@ def map_rows(text: str) -> list[tuple[str, int, int, str]]:
     return rows
 
 
-def classify(cpu: str, owner: str, application_members: set[str]) -> str:
+def classify(cpu: str, owner: str, application_members: set[str], input_section: str | None = None) -> str:
     if owner in ("linker padding", "linker stubs"):
         return "linker_generated"
     member = ARCHIVE_MEMBER.search(owner)
     if member:
         archive, name = member.groups()
+        if cpu == "arm9" and (archive, name) == ("libbox2d2.a", "b2ContactSolver.o"):
+            if input_section in (".text.contact.prefix", ".text.contact.suffix"):
+                return "source_dependency"
+            if input_section == ".text.contact.velocity":
+                return "residual_reconstruction"
+            raise ValueError(f"unclassified contact-solver section: {input_section}")
         if name in RESIDUAL_MEMBERS[cpu].get(archive, set()):
             return "residual_reconstruction"
         if archive in SOURCE_ARCHIVES:
@@ -134,7 +140,7 @@ def inventory(build: Path, cpu: str) -> dict:
         if size == 0 or not any(address < section["address"] + section["size"] and address + size > section["address"] for section in sections):
             continue
         inputs.append({"address": address, "size": size, "owner": owner,
-                       "category": classify(cpu, owner, application_members)})
+                       "category": classify(cpu, owner, application_members, name)})
     replacements = []
     if cpu == "arm9":
         for section in read_sections(build / "build/reconstructed-regions.elf", ".reconstructed."):

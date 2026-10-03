@@ -22,6 +22,15 @@
 #include "../b2World.h"
 #include "../../Common/b2StackAllocator.h"
 
+#ifdef TARGET_FLOAT32_IS_FIXED
+#define B2FORCE_SCALE2(x) ((x)<<7)
+#define B2FORCE_INV_SCALE2(x) ((x)>>7)
+#else
+#define B2FORCE_SCALE2(x) (x)
+#define B2FORCE_INV_SCALE2(x) (x)
+#endif
+
+
 b2ContactSolver::b2ContactSolver(const b2TimeStep& step, b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator)
 {
 	m_step = step;
@@ -161,7 +170,7 @@ void b2ContactSolver::InitVelocityConstraints()
 			for (int32 j = 0; j < c->pointCount; ++j)
 			{
 				b2ContactConstraintPoint* ccp = c->points + j;
-				b2Vec2 P = m_step.dt * (ccp->normalForce * normal + ccp->tangentForce * tangent);
+				b2Vec2 P = B2FORCE_SCALE2(m_step.dt) * (ccp->normalForce * normal + ccp->tangentForce * tangent);
 				b2Vec2 r1 = b2Mul(b1->m_xf.R, ccp->localAnchor1 - b1->GetLocalCenter());
 				b2Vec2 r2 = b2Mul(b2->m_xf.R, ccp->localAnchor2 - b2->GetLocalCenter());
 				b1->m_angularVelocity -= invI1 * b2Cross(r1, P);

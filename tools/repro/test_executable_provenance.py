@@ -49,6 +49,16 @@ Linker script and memory map
                          [(100, 5, "source"), (105, 5, "residual"), (110, 10, "source"), (120, 10, "unattributed")])
         self.assertEqual(sum(row["size"] for row in rows), 30)
 
+    def test_mixed_solver_object_is_classified_per_input_section(self):
+        owner = "/sdk/libbox2d2.a(b2ContactSolver.o)"
+        for name in (".text.contact.prefix", ".text.contact.suffix"):
+            self.assertEqual(classify("arm9", owner, set(), name), "source_dependency")
+        self.assertEqual(classify("arm9", owner, set(), ".text.contact.velocity"),
+                         "residual_reconstruction")
+        for name in (None, ".text", ".text.contact.unrecorded"):
+            with self.assertRaisesRegex(ValueError, "unclassified contact-solver section"):
+                classify("arm9", owner, set(), name)
+
     def test_overlaps_fail_and_outside_replacements_are_not_counted(self):
         sections = [{"name": ".text", "address": 100, "size": 20}]
         inputs = [{"address": 100, "size": 20, "category": "source", "owner": "one.o"}]

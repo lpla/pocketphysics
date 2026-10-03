@@ -1,0 +1,19 @@
+--- a/arm9/source/main.cpp
++++ b/arm9/source/main.cpp
+@@ -743,13 +743,13 @@
+ 		btnsave = new BitButton(233, 121, 22, 19, &main_vram, icon_save_raw, 18, 15, 2, 1);
+ 		btnsave->registerPushCallback(showSaveDialog);
+ 		
+-		btnstop = new BitButton(233, 151, 22, 19, &main_vram, icon_stop_raw, 12, 12, 5, 1);
++		btnstop = new BitButton(233, 152, 22, 19, &main_vram, icon_stop_raw, 12, 12, 5, 1);
+ 		btnstop->registerPushCallback(stopPlay);
+ 		
+-		btnplay = new BitButton(233, 171, 22, 19, &main_vram, icon_play_raw, 12, 12, 5, 1);
++		btnplay = new BitButton(233, 172, 22, 19, &main_vram, icon_play_raw, 12, 12, 5, 1);
+ 		btnplay->registerPushCallback(startPlay);
+ 		
+-		btnpause = new BitButton(233, 171, 22, 19, &main_vram, icon_pause_raw, 12, 12, 5, 1);
++		btnpause = new BitButton(233, 172, 22, 19, &main_vram, icon_pause_raw, 12, 12, 5, 1);
+ 		btnpause->registerPushCallback(pausePlay);
+ 		
+ 		//gui->registerWidget(tbbselect, 0, MAIN_SCREEN);

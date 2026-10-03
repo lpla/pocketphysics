@@ -205,9 +205,13 @@ The [triangle compilation unit](triangle-source-recovery.md) adds another
 2,708 source-compiled executable bytes and removes its post-link initializer.
 The [shape proxy recovery](shape-source-recovery.md) removes a further 284-byte
 section replacement by restoring the release's missing-proxy control flow.
+The [contact solver](contact-source-recovery.md) replaces 14,940 further bytes
+with C++ while explicitly retaining its 5,160-byte velocity method as residual
+assembly. The [UI recovery](ui-source-recovery.md) removes GUI-setup and
+thumbnail-rendering replacements, adding 1,572 source-compiled bytes.
 
-Seven uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, two uLibrary units, two Box2D
+Eight uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, two uLibrary units, three Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
@@ -218,7 +222,7 @@ replacement also remains. The [runtime source rebuild](runtime-source-recovery.m
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 90.7%
+processors, runtime/startup, and post-link replacements. It attributes 93.1%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above
