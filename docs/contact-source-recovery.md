@@ -30,6 +30,22 @@ multiplies by the scaled time step, `B2FORCE_SCALE2(m_step.dt)`, rather than the
 unscaled step. No compiled assertion constants or instruction encodings are
 rewritten to obtain the match.
 
+The [upstream r134 source file](https://svn.code.sf.net/p/box2d/code/!svn/bc/134/Source/Dynamics/Contacts/b2ContactSolver.cpp)
+was independently retrieved from the original Subversion repository and
+byte-compared with the preserved export. Its 11,471 bytes have SHA-256
+`a1b895e2aa6c65b1d5cd3c840f4eec7f9dc6cc1a4e2d4e920f9aef937c6ee66b`.
+The repository UUID is `f71193c7-d439-0410-8131-bb32c6e3d2ad`; revision 134
+records 18 March 2008. This reference supports source lineage but does not
+replace the independent release-payload identity gate or assert that the
+release used the unmodified r134 solver.
+
+```sh
+curl -L --fail \
+  'https://svn.code.sf.net/p/box2d/code/!svn/bc/134/Source/Dynamics/Contacts/b2ContactSolver.cpp' \
+  -o b2ContactSolver-r134.cpp
+shasum -a 256 b2ContactSolver-r134.cpp
+```
+
 The available C++ velocity loop does not reproduce the released method and is
 not installed in the exact archive. Similar-looking instruction sequences and
 semantically plausible loop variants are insufficient evidence of recovery.

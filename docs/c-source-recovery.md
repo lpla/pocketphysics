@@ -51,6 +51,10 @@ The [libnds/TinyXML/triangle validation](../research/results/triangle-cpp-source
 repeats the clean-revision comparison at `06d1f4ab` after those recoveries.
 All 207 rows and three instrumented ROM identities remain byte-identical.
 
+The [contact-solver/UI validation](../research/results/solver-ui-source/)
+repeats the three-repeat comparison from clean revision `633f69a4`. All 207
+rows and all three instrumented ROM hashes again remain byte-identical.
+
 ## Inputs and Configuration
 
 The [input lock](../research/provenance/input-locks.csv) pins upstream zlib
