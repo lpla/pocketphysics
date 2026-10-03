@@ -1,0 +1,11 @@
+{
+  "objects": {
+    "b2Shape.o": {
+      "allocated_bytes": 2104,
+      "identity_sha256": "16b4789db9d115ebbcab437f3f5080665281af3c51bd46737e0719652e4da039",
+      "text_bytes": 1932
+    }
+  },
+  "reference": "Release-constrained C++ recovery, not an independently preserved original archive member. The full ARM9 payload matches after removing the ResetProxy section replacement; identities are comparison gates, not build inputs.",
+  "schema": 1
+}

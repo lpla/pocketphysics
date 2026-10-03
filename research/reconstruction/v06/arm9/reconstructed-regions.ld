@@ -44,7 +44,6 @@ SECTIONS
   .reconstructed.fn00 0x0200273c : { *(.reconstructed.fn00) }
   .reconstructed.fn01 0x0200c3ec : { *(.reconstructed.fn01) }
   .reconstructed.fn02 0x0200d678 : { *(.reconstructed.fn02) }
-  .reconstructed.fn03 0x02031424 : { *(.reconstructed.fn03) }
   .reconstructed.fn04 0x0203e768 : { *(.reconstructed.fn04) }
   .reconstructed.fn06 0x0204737c : { *(.reconstructed.fn06) }
   .reconstructed.fn07 0x020480f0 : { *(.reconstructed.fn07) }

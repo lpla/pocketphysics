@@ -203,6 +203,8 @@ the release. All four [TinyXML members](tinyxml-source-recovery.md) also compile
 from C++, adding 15,236 linked executable bytes from two further recoveries.
 The [triangle compilation unit](triangle-source-recovery.md) adds another
 2,708 source-compiled executable bytes and removes its post-link initializer.
+The [shape proxy recovery](shape-source-recovery.md) removes a further 284-byte
+section replacement by restoring the release's missing-proxy control flow.
 
 Seven uppercase `.S` files remain in the reconstruction corpus: one zlib
 member, two uLibrary units, two Box2D

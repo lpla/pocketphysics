@@ -44,6 +44,8 @@ The [TinyXML recovery report](docs/tinyxml-source-recovery.md) completes its
 four C++ archive members by preserving the historical assertion filenames.
 The [triangle recovery report](docs/triangle-source-recovery.md) removes an
 entire Box2D compilation unit and its initializer from post-link replacement.
+The [shape proxy report](docs/shape-source-recovery.md) recovers the release's
+missing-proxy handling and removes another section replacement.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
 90.7% of both processors' executable-section bytes to source-compiled
 implementations. The remaining 9.3% still contains unresolved reconstruction;

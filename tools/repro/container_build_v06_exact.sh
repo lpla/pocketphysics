@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=185281863e84044f546e71d044622e2c53a39b898333afca548ca19ec56535b7
+EXPECTED_BASE_ARM9=e7c6f4e894be26d8d08bfc5f5bf7c86d3ecd6f32dfae2d6cb6070ea857e5a961
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -241,6 +241,8 @@ cp -a "$RECON/dependencies/box2d/." "$BOX/"
 mv "$BOX/Include" "$BOX_ROOT/Include"
 make -C "$BOX" clean
 make -C "$BOX" Gen/nds-fixed/lib/libbox2d.a
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$BOX/reconstructed/shape-object-identity.json" "$BOX/Gen/nds-fixed/Collision/Shapes"
 box_flags=(
     -g -O2 -fomit-frame-pointer -ffast-math
     -march=armv5te -mtune=arm946e-s -mthumb-interwork
