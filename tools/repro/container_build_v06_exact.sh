@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=7a41cb8050b45c75cb3ab4820b32a119cf1f56bcc9e9fc82ffc4cbda86d81cc3
+EXPECTED_BASE_ARM9=4848cad81a714afc2aeb140ebaf8085c54a49b61dfdfb05fba70b890eaaf0927
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -251,28 +251,24 @@ box_flags=(
     -I"$DEVKITPRO/libnds/include" -I"$BOX_ROOT/Include"
     -I"$BOX/Common" -I"$BOX/Contrib" -ffunction-sections
 )
-cp "$BOX/reconstructed/trace-standalone.cpp" "$BOX/Contrib/trace-standalone.cpp"
-cp "$BOX/Contrib/b2Polygon.h" "$BUILD/b2Polygon-normal-state.h"
-patch -d "$BOX" -p1 < "$BOX/reconstructed/trace-compiler-state.patch"
-"$TOOL-gcc" -w -c -mcpu=arm946e-s -mthumb-interwork \
-    "$BOX/reconstructed/b2Polygon-donor.S" -o /tmp/core-donor-labels.o
-"$TOOL-gcc" -w -c -mcpu=arm946e-s -mthumb-interwork \
-    "$BOX/reconstructed/b2Polygon-decompose.S" -o /tmp/core-cfg-exact-ext.o
-"$TOOL-g++" "${box_flags[@]}" -c "$BOX/Contrib/trace-standalone.cpp" \
-    -o /tmp/trace-standalone.o
-cp "$BUILD/b2Polygon-normal-state.h" "$BOX/Contrib/b2Polygon.h"
-cp /tmp/core-donor-labels.o /tmp/core-donor-labels-global-notarget.o
-"$TOOL-objcopy" --globalize-symbol=b2_angularSlop \
-    /tmp/core-donor-labels-global-notarget.o
-"$TOOL-objcopy" \
-    --strip-symbol=_Z23DecomposeConvexAndAddToP7b2WorldP9b2PolygonP6b2BodyP12b2PolygonDef \
-    /tmp/core-donor-labels-global-notarget.o
-"$TOOL-ld" -r --allow-multiple-definition \
-    -T "$BOX/reconstructed/composite-cfg-exact.ld" \
-    -o /tmp/b2Polygon.o \
-    /tmp/core-donor-labels-global-notarget.o \
-    /tmp/core-cfg-exact-ext.o \
-    /tmp/trace-standalone.o
+# Select complete release-verified C++ methods, never patched instructions.
+(
+    cd "$BOX"
+    "$TOOL-g++" "${box_flags[@]}" -c Contrib/b2Polygon.cpp \
+        -o "$BUILD/polygon-sections.o"
+)
+python3 "$ROOT/tools/repro/prepare_polygon_object.py" \
+    "$BOX/reconstructed/polygon-method-layout.json" \
+    "$BUILD/polygon-sections.o" "$BUILD/polygon-source.o" --objcopy "$TOOL-objcopy"
+"$TOOL-gcc" -w -c -march=armv5te -mthumb-interwork \
+    "$BOX/reconstructed/polygon-methods-residual.S" -o "$BUILD/polygon-residual.o"
+(
+    cd "$BUILD"
+    "$TOOL-ld" -r -T "$BOX/reconstructed/polygon-object-layout.ld" \
+        polygon-source.o polygon-residual.o -o b2Polygon.o
+)
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$BOX/reconstructed/polygon-object-identity.json" "$BUILD"
 BOX_ARCHIVE="$BOX/Gen/nds-fixed/lib/libbox2d.a"
 "$TOOL-g++" "${box_flags[@]}" -c "$BOX/Contrib/b2Triangle.cpp" \
     -o "$BUILD/b2Triangle-sections.o"
@@ -298,15 +294,15 @@ python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$BOX/reconstructed/contact-object-identity.json" "$BUILD"
 "$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2ContactSolver.o"
-"$TOOL-ar" r "$BOX_ARCHIVE" /tmp/b2Polygon.o
+"$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2Polygon.o"
 "$TOOL-ranlib" "$BOX_ARCHIVE"
 cp "$BOX_ARCHIVE" "$DEVKITPRO/libnds/lib/libbox2d2.a"
 
 printf '%s\n' '[7/8] Clean-building both Nintendo DS processors from application source'
 patch --fuzz=0 -d "$SRC" -p1 < "$RECON/arm9/ui-source.patch"
-patch --fuzz=0 -d "$DEVKITARM/arm-eabi/lib" -p1 < "$RECON/arm9/contact-sections.patch"
+patch --fuzz=0 -d "$DEVKITARM/arm-eabi/lib" -p1 < "$RECON/arm9/mixed-sections.patch"
 check_hash "$DEVKITARM/arm-eabi/lib/ds_arm9.ld" \
-    7dd5aeab6e6a2615ca1e755152c89278670e39dd5ef4932d3e0befa26446b2b7
+    1db34b181dac165f45a6ebc4bf274f0388acb5569d193e5736e96c1b687ad2f1
 rm -rf "$SRC/box2d"
 ln -s "$BOX_ROOT" "$SRC/box2d"
 export TOPDIR="$SRC" TARGET=src

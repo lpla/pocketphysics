@@ -24,7 +24,7 @@ low-level assembly. This is not a claim of completed C/C++ recovery.
 
 The independent [hosted development-loop workflow](https://github.com/lpla/pocketphysics/actions/runs/37141306046)
 records the CI run for the specimen revision. Local two-build and emulator
-checks reported here are complete; hosted CI was still running when archived.
+checks reported here are complete; the hosted run also completed successfully.
 
 ## Experiment
 

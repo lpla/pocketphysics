@@ -62,7 +62,7 @@ orders the retained C++ sections and the
 All relocatable output sections start at zero; the final linker determines
 their runtime addresses.
 
-A [reviewed linker-script patch](../research/reconstruction/v06/arm9/contact-sections.patch)
+A [reviewed linker-script patch](../research/reconstruction/v06/arm9/mixed-sections.patch)
 places these three sections together in the ordinary archive-member position.
 The unchanged producer linker script is verified before this source patch is
 applied; the patched script also has a fixed hash gate. The source/residual

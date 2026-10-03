@@ -5,7 +5,7 @@
  	.text :   /* ALIGN (4): */
  	{
 -		*(EXCLUDE_FILE (*.itcm*) .text)
-+		*(EXCLUDE_FILE (*.itcm*) .text .text.contact.prefix .text.contact.velocity .text.contact.suffix)
++		*(EXCLUDE_FILE (*.itcm*) .text .text.contact.prefix .text.contact.velocity .text.contact.suffix .text.polygon.*)
  
  		*(.text.*)
  		*(.stub)

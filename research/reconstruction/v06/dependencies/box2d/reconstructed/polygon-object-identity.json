@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "reference": "Release-constrained mixed C++/assembly recovery, not an independently preserved original archive member. The C++ sections are unchanged compiler output. Nine remaining methods are explicit mnemonic assembly. The full ARM9 payload matches without the polygon whole-unit section replacement; identities are comparison gates, not build inputs.",
+  "objects": {
+    "b2Polygon.o": {
+      "identity_sha256": "a99879e82c97ece2973c9b92748fce1d5d38cfba7279871ce540dc43c3c81f91",
+      "allocated_bytes": 33248,
+      "text_bytes": 30768,
+      "source_text_bytes": 8972,
+      "residual_text_bytes": 21796
+    }
+  }
+}

@@ -1,0 +1,338 @@
+[
+  {
+    "name": "_Z9intersectRK6b2Vec2S1_S1_S1_RS_",
+    "section": ".text.polygon.source.00",
+    "offset": 0,
+    "size": 808,
+    "source": true
+  },
+  {
+    "name": "_Z9intersectRK6b2Vec2S1_S1_S1_",
+    "section": ".text.polygon.source.01",
+    "offset": 808,
+    "size": 40,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC1Ev",
+    "section": ".text.polygon.source.02",
+    "offset": 848,
+    "size": 28,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon7GetAreaEv",
+    "section": ".text.polygon.source.03",
+    "offset": 876,
+    "size": 272,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon5IsCCWEv",
+    "section": ".text.polygon.source.04",
+    "offset": 1148,
+    "size": 44,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon8IsConvexEv",
+    "section": ".text.polygon.source.05",
+    "offset": 1192,
+    "size": 188,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon8IsSimpleEv",
+    "section": ".text.polygon.source.06",
+    "offset": 1380,
+    "size": 268,
+    "source": true
+  },
+  {
+    "name": "_Z14ReversePolygonP5FixedS0_i",
+    "section": ".text.polygon.source.07",
+    "offset": 1648,
+    "size": 120,
+    "source": true
+  },
+  {
+    "name": "_Z14ReversePolygonR9b2Polygon",
+    "section": ".text.polygon.source.08",
+    "offset": 1768,
+    "size": 20,
+    "source": true
+  },
+  {
+    "name": "_Z9IsRighter5FixedS_S_S_",
+    "section": ".text.polygon.source.09",
+    "offset": 1788,
+    "size": 96,
+    "source": true
+  },
+  {
+    "name": "_Z9remainderll",
+    "section": ".text.polygon.source.10",
+    "offset": 1884,
+    "size": 44,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNodeC1Ev",
+    "section": ".text.polygon.source.11",
+    "offset": 1928,
+    "size": 20,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNodeC1ER6b2Vec2",
+    "section": ".text.polygon.source.12",
+    "offset": 1948,
+    "size": 32,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNode23RemoveConnectionByIndexEl",
+    "section": ".text.polygon.source.13",
+    "offset": 1980,
+    "size": 60,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNode13IsConnectedToERS_",
+    "section": ".text.polygon.residual.14",
+    "offset": 2040,
+    "size": 88,
+    "source": false
+  },
+  {
+    "name": "_ZN10b2PolyNode16RemoveConnectionERS_",
+    "section": ".text.polygon.source.15",
+    "offset": 2128,
+    "size": 188,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNode13AddConnectionERS_",
+    "section": ".text.polygon.source.16",
+    "offset": 2316,
+    "size": 88,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC1ER10b2Triangle",
+    "section": ".text.polygon.source.17",
+    "offset": 2404,
+    "size": 172,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon13GetVertexVecsEv",
+    "section": ".text.polygon.source.18",
+    "offset": 2576,
+    "size": 144,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC1EP5FixedS1_l",
+    "section": ".text.polygon.source.19",
+    "offset": 2720,
+    "size": 204,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon5AddToER12b2PolygonDef",
+    "section": ".text.polygon.source.20",
+    "offset": 2924,
+    "size": 256,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon3AddER10b2Triangle",
+    "section": ".text.polygon.source.21",
+    "offset": 3180,
+    "size": 732,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon3SetERKS_",
+    "section": ".text.polygon.source.22",
+    "offset": 3912,
+    "size": 236,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon18MergeParallelEdgesE5Fixed",
+    "section": ".text.polygon.residual.23",
+    "offset": 4148,
+    "size": 1660,
+    "source": false
+  },
+  {
+    "name": "_Z10ConvexHullP5FixedS0_l",
+    "section": ".text.polygon.source.24",
+    "offset": 5808,
+    "size": 1424,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonD1Ev",
+    "section": ".text.polygon.source.25",
+    "offset": 7232,
+    "size": 48,
+    "source": true
+  },
+  {
+    "name": "_Z17ResolvePinchPointRK9b2PolygonRS_S2_",
+    "section": ".text.polygon.source.26",
+    "offset": 7280,
+    "size": 712,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonD2Ev",
+    "section": ".text.polygon.source.27",
+    "offset": 7992,
+    "size": 48,
+    "source": true
+  },
+  {
+    "name": "_Z19PolygonizeTrianglesP10b2TrianglelP9b2Polygonl",
+    "section": ".text.polygon.source.28",
+    "offset": 8040,
+    "size": 620,
+    "source": true
+  },
+  {
+    "name": "_Z5IsEarlP5FixedS0_l",
+    "section": ".text.polygon.source.29",
+    "offset": 8660,
+    "size": 544,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC2EP5FixedS1_l",
+    "section": ".text.polygon.source.30",
+    "offset": 9204,
+    "size": 204,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC2ER10b2Triangle",
+    "section": ".text.polygon.source.31",
+    "offset": 9408,
+    "size": 172,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC2Ev",
+    "section": ".text.polygon.source.32",
+    "offset": 9580,
+    "size": 28,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2PolygonC1EP6b2Vec2l",
+    "section": ".text.polygon.residual.33",
+    "offset": 9608,
+    "size": 196,
+    "source": false
+  },
+  {
+    "name": "_ZN9b2PolygonC2EP6b2Vec2l",
+    "section": ".text.polygon.source.34",
+    "offset": 9804,
+    "size": 196,
+    "source": true
+  },
+  {
+    "name": "_Z10ConvexHullP6b2Vec2i",
+    "section": ".text.polygon.source.35",
+    "offset": 10000,
+    "size": 244,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNodeC2Ev",
+    "section": ".text.polygon.source.36",
+    "offset": 10244,
+    "size": 20,
+    "source": true
+  },
+  {
+    "name": "_ZN10b2PolyNodeC2ER6b2Vec2",
+    "section": ".text.polygon.source.37",
+    "offset": 10264,
+    "size": 32,
+    "source": true
+  },
+  {
+    "name": "_Z41__static_initialization_and_destruction_0ii",
+    "section": ".text.polygon.source.38",
+    "offset": 10296,
+    "size": 276,
+    "source": true
+  },
+  {
+    "name": "_GLOBAL__I__Z9intersectRK6b2Vec2S1_S1_S1_RS_",
+    "section": ".text.polygon.source.39",
+    "offset": 10572,
+    "size": 16,
+    "source": true
+  },
+  {
+    "name": "_Z18TriangulatePolygonP5FixedS0_lP10b2Triangle",
+    "section": ".text.polygon.residual.40",
+    "offset": 10588,
+    "size": 6812,
+    "source": false
+  },
+  {
+    "name": "_Z15DecomposeConvexP9b2PolygonS0_l",
+    "section": ".text.polygon.source.41",
+    "offset": 17400,
+    "size": 304,
+    "source": true
+  },
+  {
+    "name": "_ZN9b2Polygon8IsUsableEb",
+    "section": ".text.polygon.residual.42",
+    "offset": 17704,
+    "size": 3420,
+    "source": false
+  },
+  {
+    "name": "_ZN9b2Polygon8IsUsableEv",
+    "section": ".text.polygon.source.43",
+    "offset": 21124,
+    "size": 24,
+    "source": true
+  },
+  {
+    "name": "_Z23DecomposeConvexAndAddToP7b2WorldP9b2PolygonP6b2BodyP12b2PolygonDef",
+    "section": ".text.polygon.residual.44",
+    "offset": 21148,
+    "size": 2916,
+    "source": false
+  },
+  {
+    "name": "_ZN10b2PolyNode21GetRightestConnectionEPS_",
+    "section": ".text.polygon.residual.45",
+    "offset": 24064,
+    "size": 4328,
+    "source": false
+  },
+  {
+    "name": "_ZN10b2PolyNode21GetRightestConnectionER6b2Vec2",
+    "section": ".text.polygon.residual.46",
+    "offset": 28392,
+    "size": 120,
+    "source": false
+  },
+  {
+    "name": "_Z9TraceEdgeP9b2Polygon",
+    "section": ".text.polygon.residual.47",
+    "offset": 28512,
+    "size": 2256,
+    "source": false
+  }
+]

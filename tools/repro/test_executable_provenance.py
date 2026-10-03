@@ -3,7 +3,7 @@
 
 import unittest
 
-from audit_executable_provenance import classify, map_rows, partition
+from audit_executable_provenance import POLYGON_SECTIONS, classify, map_rows, partition
 
 
 class ProvenanceTests(unittest.TestCase):
@@ -68,6 +68,16 @@ Linker script and memory map
             partition(sections, inputs + inputs, [])
         with self.assertRaisesRegex(ValueError, "overlapping provenance"):
             partition(sections, inputs, inputs + inputs)
+
+    def test_polygon_methods_are_classified_individually(self):
+        owner = "/sdk/libbox2d2.a(b2Polygon.o)"
+        self.assertEqual(len(POLYGON_SECTIONS), 48)
+        for section, category in POLYGON_SECTIONS.items():
+            self.assertEqual(classify("arm9", owner, set(), section), category)
+        for section in (None, ".text", ".text.polygon.source.99",
+                        ".text.polygon.residual.00", ".text.polygon.unrecorded"):
+            with self.assertRaisesRegex(ValueError, "unclassified polygon section"):
+                classify("arm9", owner, set(), section)
 
 
 if __name__ == "__main__":

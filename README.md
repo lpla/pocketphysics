@@ -49,9 +49,11 @@ missing-proxy handling and removes another section replacement.
 The [contact solver report](docs/contact-source-recovery.md) isolates its one
 unresolved velocity method from 14,940 bytes now compiled from C++.
 The [UI report](docs/ui-source-recovery.md) removes two application replacements.
+The [polygon report](docs/polygon-source-recovery.md) replaces 8,972 bytes with
+complete compiler-emitted C++ methods and removes its whole-unit replacement.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-93.1% of both processors' executable-section bytes to source-compiled
-implementations. Another 46,272 bytes still contain unresolved reconstruction;
+94.47% of both processors' executable-section bytes to source-compiled
+implementations. Another 37,300 bytes still contain unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
@@ -95,6 +97,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical libnds source recovery](docs/libnds-source-recovery.md)
 - [Historical TinyXML source recovery](docs/tinyxml-source-recovery.md)
 - [Historical triangle source recovery](docs/triangle-source-recovery.md)
+- [Historical polygon source recovery](docs/polygon-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)
