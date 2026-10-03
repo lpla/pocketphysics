@@ -1,0 +1,112 @@
+melonDS 1.1
+https://melonds.kuribo64.net
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x20 (effective mode "ab")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+MP comm init OK
+Audio output frequency: 48000 Hz
+Audio output buffer size: 512 samples
+Opened "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.sav" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.sav" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.sav" with FileMode 0x1 (effective mode "rb")
+ROM entry not found for gamecode 589505315
+!! bad ROM size 3216448 (expected 4194304) rounded to 4194304
+Failed to open "/opt/melonds/usr/bin/portable/wfcsettings.bin" with FileMode 0x1 (effective mode "rb")
+Resetting JIT block cache...
+done resetting jit mem
+done resetting jit mem
+MAC: 00:09:BF:11:22:33
+FW: WIFI CRC16 = GOOD
+FW: AP1 CRC16 = GOOD
+FW: AP2 CRC16 = GOOD
+FW: AP3 CRC16 = GOOD
+FW: USER0 CRC16 = GOOD
+FW: USER1 CRC16 = GOOD
+Failed to open "/opt/melonds/usr/bin/portable/rtc.bin" with FileMode 0x1 (effective mode "rb")
+Inserted cart with game code: ####
+Inserted cart with ID: 000003C2
+ROM entry: 00400000 00000000
+Ejected GBA cart
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.mch" with FileMode 0x11 (effective mode "r")
+Resetting JIT block cache...
+done resetting jit mem
+done resetting jit mem
+MAC: 00:09:BF:11:22:33
+FW: WIFI CRC16 = GOOD
+FW: AP1 CRC16 = GOOD
+FW: AP2 CRC16 = GOOD
+FW: AP3 CRC16 = GOOD
+FW: USER0 CRC16 = GOOD
+FW: USER1 CRC16 = GOOD
+remapping SWRAM
+remapping DTCM 0 1000 ffffffff ffffffff
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19
+PU: region 1 = 0200002B : enabled, start: 02000000 size: 15
+PU: region 1 = 0200002B : enabled, start: 02000000 size: 15
+PU: region 2 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 2 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 3 = 08000035 : enabled, start: 08000000 size: 1A
+PU: region 3 = 08000035 : enabled, start: 08000000 size: 1A
+PU: region 4 = 0300001B : enabled, start: 03000000 size: 0D
+PU: region 4 = 0300001B : enabled, start: 03000000 size: 0D
+PU: region 5 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 5 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 6 = FFFF001D : enabled, start: FFFF0000 size: 0E
+PU: region 6 = FFFF001D : enabled, start: FFFF0000 size: 0E
+PU: region 7 = 027FF017 : enabled, start: 027FF000 size: 0B
+PU: region 7 = 027FF017 : enabled, start: 027FF000 size: 0B
+remapping DTCM 3000000 3004000 0 fffff000
+Game is now booting
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x20 (effective mode "ab")
+remapping DTCM ffffffff ffffffff 3000000 2ffc000
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml1" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml2" with FileMode 0x1 (effective mode "rb")
+PU: region 1 = 0200002B : enabled, start: 02000000 size: 15
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml3" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml4" with FileMode 0x1 (effective mode "rb")
+PU: region 2 = 037F801D : enabled, start: 037F8000 size: 0E
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml5" with FileMode 0x1 (effective mode "rb")
+PU: region 3 = 08000035 : enabled, start: 08000000 size: 1A
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml6" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml7" with FileMode 0x1 (effective mode "rb")
+PU: region 4 = 0B00001B : enabled, start: 0B000000 size: 0D
+Failed to open "/workspace/research-artifacts/build/bench-historical/pocketphysics-bench-historical.ml8" with FileMode 0x1 (effective mode "rb")
+PU: region 5 = 0100001D : enabled, start: 01000000 size: 0E
+PU: region 6 = FFFF001D : enabled, start: FFFF0000 size: 0E
+PU: region 7 = 0240002B : enabled, start: 02400000 size: 15
+remapping DTCM b000000 b004000 ffffffff ffffffff
+PU region 0: 04000000-07FFFFFF, user=07 priv=07, 36333333/36636333
+PU region 1: 02000000-023FFFFF, user=77 priv=77, 36333333/36636333
+PU region 2: 037F8000-037FFFFF, user=07 priv=07, 36333333/36636333
+PU region 3: 08000000-0FFFFFFF, user=07 priv=07, 36333333/36636333
+PU region 4: 0B000000-0B003FFF, user=07 priv=07, 36333333/36636333
+PU region 5: 01000000-01007FFF, user=07 priv=07, 36333333/36636333
+PU region 6: FFFF0000-FFFF7FFF, user=55 priv=55, 36333333/36636333
+PU region 7: 02400000-027FFFFF, user=07 priv=07, 36333333/36636333
+PPBENCH,bench-historical,benchmark_started,1,1,1,1,1,0,0,00000000,1
+PPBENCH,bench-historical,file_output_ready,1,0,0,0,0,0,0,00000000,1
+PPBENCH,bench-historical,timer_read_overhead_ticks,1,32,32,32,32,0,0,00000000,1
+PPBENCH,bench-historical,scene_things_created,1,27,27,27,27,0,0,d8635f64,1
+PPBENCH,bench-historical,scene_position_sum_x,1,2996,2996,2996,2996,0,0,d8635f64,1
+PPBENCH,bench-historical,scene_position_sum_y,1,1944,1944,1944,1944,0,0,d8635f64,1
+PPBENCH,bench-historical,hit_test_heap_delta_bytes,1,14400,14400,14400,14400,0,0,d82df0ac,0
+PPBENCH,bench-historical,touch_create_and_drag,225,1231071,5471,155,89066,0,0,d8635f64,0
+PPBENCH,bench-historical,hit_test,600,1683049,2805,2089,3507,0,0,d82df0ac,0
+PPBENCH,bench-historical,physics_step,240,66934347,278893,203326,438071,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,render_frame,240,66135063,275562,99739,354116,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,render_begin,240,190800,795,795,795,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,render_canvas,240,65894606,274560,98739,353115,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,render_end,240,13200,55,55,55,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,frame_total,240,133159165,554829,325892,558160,558566,0,dc1b8ba7,0
+PPBENCH,bench-historical,frame_over_1pct_count,1,0,0,0,0,0,0,dc1b8ba7,1
+PPBENCH,bench-historical,frame_over_2x_count,1,0,0,0,0,0,0,dc1b8ba7,1
+PPBENCH,bench-historical,visible_things_rendered,1,5070,5070,5070,5070,0,0,dc1b8ba7,1
+PPBENCH,bench-historical,line_quads_rendered,1,22183,22183,22183,22183,0,0,dc1b8ba7,1
+PPBENCH,bench-historical,things_final,1,27,27,27,27,0,0,dc1b8ba7,0
+PPBENCH,bench-historical,behavior_pass,1,1,1,1,1,0,0,dc1b8ba7,1
+PPBENCH,bench-historical,hit_test_heap_fixed_pass,1,0,0,0,0,0,0,d82df0ac,0
+PPBENCH,bench-historical,overall_pass,1,0,0,0,0,0,0,dc1b8ba7,0

@@ -12,8 +12,8 @@ or a claim that the remaining assembly has been recovered to C++.
 The accepted C++ includes intersection, area, winding, convexity and simplicity
 checks, reversal, polygon/node constructors and destructors, vertex extraction,
 triangle addition, pinch-point resolution, hull construction, triangle
-polygonization, ear checking, usability validation, decomposition orchestration, and static
-initialization. The exact method names, lengths, ordering, and source boundary
+polygonization, ear checking, usability validation, decomposition orchestration,
+and static initialization. The exact method names, lengths, ordering, and source boundary
 are recorded in the [method inventory](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-method-layout.json).
 
 | Unresolved method | Executable-section bytes |
@@ -80,6 +80,10 @@ offsets. This recovers the released assertion pointers without hardcoding
 their final addresses or patching compiled instructions.
 
 ## Evidence and Acceptance
+
+The [validation archive](../research/results/polygon-cpp-source/) preserves
+the two-build identities, complete byte-provenance report, unit-test record,
+and fresh three-role melonDS experiment at the accepted source revision.
 
 Function sizes from a previously combined object were not sufficient boundary
 evidence: duplicate discarded definitions could overwrite size metadata in the

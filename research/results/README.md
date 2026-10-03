@@ -19,8 +19,11 @@ historical/modern/improved comparison.
 - [Fresh C-source recovery validation and stricter screening reanalysis](c-source-recovery/)
 - [Source-built runtime and complete libpng validation](runtime-source-recovery/)
 - [Complete libnds, TinyXML, and triangle C++ recovery validation](triangle-cpp-source/)
+- [Contact solver and UI C++ recovery validation](solver-ui-source/)
+- [Polygon C++ recovery and fresh nine-run comparison](polygon-cpp-source/)
 
-Each value is the deterministic per-run mean from three complete runs. Cadence
+Time columns use in-ROM ARM9 timer ticks. Each value is the deterministic
+per-run mean from three complete runs. Cadence
 columns count intervals out of 240 simulation/render frames.
 
 | Role | Touch | Hit test | Physics | Frame | >1% | >2x | Leak bytes |

@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "source_revision": "a63e4e00b2a7071ffb2e43c54a8fbed9683dcb8d",
+  "clean_builds": {
+    "command": "tools/repro/test_v06_exact.sh",
+    "exit_code": 0,
+    "repetitions": 2,
+    "release_rom_sha256": "9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64",
+    "identical_outputs": [
+      "pocketphysics.arm9",
+      "pocketphysics.arm7",
+      "pocketphysics.nds",
+      "pocketphysics.base.arm9",
+      "pocketphysics.base.arm9.elf",
+      "pocketphysics.arm7.elf",
+      "executable-provenance.json"
+    ],
+    "compiled_polygon_source_matches_revision": true,
+    "normalized_polygon_object_identity": "65e45c5b25a4f1bffef04731b9a5400d399af7c2d1e24583964f826b7b57ad94"
+  },
+  "source_transform_tests": {
+    "command": "tools/repro/test_source_patches.sh",
+    "exit_code": 0,
+    "total_tests": 54,
+    "suites": [
+      {"file": "test_instrument_exact.py", "tests": 4},
+      {"file": "test_apply_reconstructed_sections.py", "tests": 5},
+      {"file": "test_verify_recovered_objects.py", "tests": 6},
+      {"file": "test_verify_runtime_objects.py", "tests": 9},
+      {"file": "test_executable_provenance.py", "tests": 7},
+      {"file": "test_prepare_polygon_object.py", "tests": 5},
+      {"file": "test_fetch_locked.py", "tests": 7},
+      {"file": "test_analyze_inrom.py", "tests": 11}
+    ]
+  },
+  "reconstruction_source_audit": {
+    "command": "python3 tools/repro/audit_reconstruction_source.py",
+    "exit_code": 0,
+    "text_files": 293,
+    "assembly_files": 7,
+    "long_directives": 190,
+    "scope": "Lexical checks only; instruction/data semantics are not proved by this audit."
+  },
+  "tracked_binary_inventory": {
+    "command": "python3 tools/repro/audit_tracked_binaries.py --check",
+    "exit_code": 0
+  },
+  "melonds_comparison": {
+    "command": "REPEATS=3 tools/repro/test_v06_inrom.sh",
+    "exit_code": 0,
+    "runs": 9,
+    "measurement_rows": 207,
+    "working_tree_dirty": false,
+    "preceding_dataset": "research/results/solver-ui-source/melonds",
+    "identical_preceding_files": ["results.csv", "summary.csv", "roms.txt"],
+    "physical_hardware_validated": false
+  }
+}
