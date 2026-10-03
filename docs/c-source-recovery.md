@@ -47,6 +47,10 @@ records a further clean-revision, nine-run comparison at `55db9bca`. Again,
 all 207 measurement rows and the instrumented ROM manifest are byte-identical.
 Its independently hosted full-development-loop workflow also passed.
 
+The [libnds/TinyXML/triangle validation](../research/results/triangle-cpp-source/)
+repeats the clean-revision comparison at `06d1f4ab` after those recoveries.
+All 207 rows and three instrumented ROM identities remain byte-identical.
+
 ## Inputs and Configuration
 
 The [input lock](../research/provenance/input-locks.csv) pins upstream zlib
