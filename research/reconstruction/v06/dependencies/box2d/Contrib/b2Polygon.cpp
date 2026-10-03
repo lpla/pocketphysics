@@ -315,6 +315,7 @@ bool b2Polygon::IsUsable(bool printErrors){
 		normals[i].Normalize();
 	}
 
+	int32 j;
 	//Required side checks
 	for (int32 i=0; i<nVertices; ++i){
 		int32 iminus = (i==0)?nVertices-1:i-1;
@@ -331,7 +332,7 @@ bool b2Polygon::IsUsable(bool printErrors){
 		}
 
 		//Too skinny check
-		for (int32 j=0; j<nVertices; ++j){
+		for (j=0; j<nVertices; ++j){
 			if (j == i || j == (i + 1) % nVertices){
 				continue;
 			}

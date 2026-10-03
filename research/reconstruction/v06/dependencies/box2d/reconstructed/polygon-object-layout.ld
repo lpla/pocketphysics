@@ -43,7 +43,7 @@ SECTIONS
   .text.polygon.source.39 0 : { polygon-source.o(.text._GLOBAL__I__Z9intersectRK6b2Vec2S1_S1_S1_RS_) }
   .text.polygon.residual.40 0 : { polygon-residual.o(.text.polygon.residual.40) }
   .text.polygon.source.41 0 : { polygon-source.o(.text._Z15DecomposeConvexP9b2PolygonS0_l) }
-  .text.polygon.residual.42 0 : { polygon-residual.o(.text.polygon.residual.42) }
+  .text.polygon.source.42 0 : { polygon-source.o(.text._ZN9b2Polygon8IsUsableEb) }
   .text.polygon.source.43 0 : { polygon-source.o(.text._ZN9b2Polygon8IsUsableEv) }
   .text.polygon.residual.44 0 : { polygon-residual.o(.text.polygon.residual.44) }
   .text.polygon.residual.45 0 : { polygon-residual.o(.text.polygon.residual.45) }

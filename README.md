@@ -49,11 +49,11 @@ missing-proxy handling and removes another section replacement.
 The [contact solver report](docs/contact-source-recovery.md) isolates its one
 unresolved velocity method from 14,940 bytes now compiled from C++.
 The [UI report](docs/ui-source-recovery.md) removes two application replacements.
-The [polygon report](docs/polygon-source-recovery.md) replaces 9,256 bytes with
+The [polygon report](docs/polygon-source-recovery.md) replaces 12,676 bytes with
 complete compiler-emitted C++ methods and removes its whole-unit replacement.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-94.51% of both processors' executable-section bytes to source-compiled
-implementations. Another 37,016 bytes still contain unresolved reconstruction;
+95.02% of both processors' executable-section bytes to source-compiled
+implementations. Another 33,596 bytes still contain unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce

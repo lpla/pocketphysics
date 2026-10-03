@@ -335,10 +335,11 @@
   },
   {
     "name": "_ZN9b2Polygon8IsUsableEb",
-    "section": ".text.polygon.residual.42",
+    "section": ".text.polygon.source.42",
     "offset": 17704,
     "size": 3420,
-    "source": false
+    "source": true,
+    "compiler_variant": "base"
   },
   {
     "name": "_ZN9b2Polygon8IsUsableEv",

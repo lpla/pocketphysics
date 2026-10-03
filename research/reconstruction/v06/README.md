@@ -41,7 +41,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
-| Box2D r132/r134 hybrid | C++ compilation units with a residual contact velocity method; the polygon member selects 41 compiler-emitted methods and seven residual assembly methods |
+| Box2D r132/r134 hybrid | C++ compilation units with a residual contact velocity method; the polygon member selects 42 compiler-emitted methods and six residual assembly methods |
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
@@ -52,7 +52,7 @@ replacement, preserving the release's missing-proxy handling. The GUI-setup
 and thumbnail-rendering replacements are also removed. The contact solver is
 linked from 14,940 C++ bytes and a separately attributed 5,160-byte residual
 velocity method, without its former whole-unit replacement. The polygon unit's
-9,256 C++ bytes and 21,512 residual assembly bytes also link through separately
+12,676 C++ bytes and 18,092 residual assembly bytes also link through separately
 attributed method sections without a whole-unit replacement. Residual regions
 are applied only after the ordinary application link has produced the guarded
 pre-reconstruction ARM9 hash above. This makes a

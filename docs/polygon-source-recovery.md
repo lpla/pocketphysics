@@ -2,17 +2,17 @@
 
 ## Result and Boundary
 
-The release's 30,768-byte polygon/decomposition unit now contains **9,256 bytes
-compiled from C++** and **21,512 bytes of explicitly residual ARM assembly**.
-The reviewed layout selects 41 complete compiler-emitted methods and retains
-seven unresolved methods. The former whole-unit ARM9 section replacement is
+The release's 30,768-byte polygon/decomposition unit now contains **12,676 bytes
+compiled from C++** and **18,092 bytes of explicitly residual ARM assembly**.
+The reviewed layout selects 42 complete compiler-emitted methods and retains
+six unresolved methods. The former whole-unit ARM9 section replacement is
 removed. This is partial source recovery, not a new performance optimization
 or a claim that the remaining assembly has been recovered to C++.
 
 The accepted C++ includes intersection, area, winding, convexity and simplicity
 checks, reversal, polygon/node constructors and destructors, vertex extraction,
 triangle addition, pinch-point resolution, hull construction, triangle
-polygonization, ear checking, decomposition orchestration, and static
+polygonization, ear checking, usability validation, decomposition orchestration, and static
 initialization. The exact method names, lengths, ordering, and source boundary
 are recorded in the [method inventory](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-method-layout.json).
 
@@ -20,12 +20,11 @@ are recorded in the [method inventory](../research/reconstruction/v06/dependenci
 | --- | ---: |
 | `b2Polygon::MergeParallelEdges` | 1,660 |
 | `TriangulatePolygon` | 6,812 |
-| `b2Polygon::IsUsable(bool)` | 3,420 |
 | `DecomposeConvexAndAddTo` | 2,916 |
 | Pointer-argument rightmost-connection search | 4,328 |
 | Vector-argument rightmost-connection wrapper | 120 |
 | `TraceEdge` | 2,256 |
-| Total residual | 21,512 |
+| Total residual | 18,092 |
 
 Counts include literal pools inside executable sections. The source-built
 56-byte constant storage and four-byte initializer entry are outside this
@@ -35,8 +34,8 @@ linkage is independently constrained by the full payload identity.
 ## Compiler and Linker Reconstruction
 
 The preserved [C++ unit](../research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.cpp)
-is compiled unchanged with devkitARM r21 GCC 4.1.2, the historical fixed-point
-Box2D flags, and `-ffunction-sections`. Thirty-nine methods use the baseline
+is compiled with devkitARM r21 GCC 4.1.2, the historical fixed-point
+Box2D flags, and `-ffunction-sections`. Forty methods use the baseline
 compiler configuration. The unchanged membership method is selected from a
 second compilation with `-fno-tree-fre`; the complete-object vector constructor
 is selected from a third compilation with `-fno-tree-dominator-opts`. Those
@@ -56,6 +55,15 @@ build runs the relocatable link in a fixed directory. An incorrect selector
 leaves orphan sections and is rejected by the normalized object identity gate.
 These configurations are sufficient for binary reproduction; they are not
 proof that the original producer used the same per-method compiler commands.
+
+The usability check preserves the historical algorithm but declares its inner
+loop counter before the outer side-check loop. The counter is still reset to
+zero at each inner-loop entry. GCC 4.1.2 canonicalizes equal comparisons using
+SSA-name version order; the declaration scope changes that ordering and
+reproduces the released comparison without editing the emitted instruction.
+The complete 3,420-byte method, including its switch table and relocated string
+pointers, matches the release. This source form is a binary-constrained
+reconstruction, not proof of the original author's exact declaration spelling.
 
 The [residual methods](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-methods-residual.S)
 contain ARM mnemonics with symbolic calls, internal branches, constant names,

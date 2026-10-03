@@ -17,9 +17,9 @@ class PolygonSelectionTests(unittest.TestCase):
         self.rows = load_layout(LAYOUT)
 
     def test_boundary_and_byte_accounting(self):
-        self.assertEqual(sum(r["size"] for r in self.rows if r["source"]), 9256)
-        self.assertEqual(sum(r["size"] for r in self.rows if not r["source"]), 21512)
-        self.assertEqual(sum(r["source"] for r in self.rows), 41)
+        self.assertEqual(sum(r["size"] for r in self.rows if r["source"]), 12676)
+        self.assertEqual(sum(r["size"] for r in self.rows if not r["source"]), 18092)
+        self.assertEqual(sum(r["source"] for r in self.rows), 42)
 
     def test_malformed_layouts_are_rejected(self):
         changes = (("source", 1), ("section", ".text.polygon.source.99"),
