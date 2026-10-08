@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "source_revision": "28fe33d05a42ef6b2734029b745c2af49736a3ac",
+  "clean_builds": {
+    "command": "tools/repro/test_v06_exact.sh",
+    "exit_code": 0,
+    "repetitions": 2,
+    "identical_outputs": ["pocketphysics.arm9", "pocketphysics.arm7", "pocketphysics.nds", "pocketphysics.base.arm9", "pocketphysics.base.arm9.elf", "pocketphysics.arm7.elf", "executable-provenance.json"],
+    "ordinary_arm9_matches_packaged_payload": true,
+    "post_link_replacements": 0,
+    "release_rom_sha256": "9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64",
+    "normalized_text_object_identity": "4b5eb0cdaba793fdc72623fa43a6de5876aab33e02efe71ff682fefc130164fd",
+    "normalized_keyboard_object_identity": "7f455b607147d73f6ef71bbf2e07c6ac05e563752baaefa16a4ce35bfb03451c",
+    "normalized_directory_object_identity": "e39f41283b2f28a22e141f9c85b4c8b05f13f0f769a086d6b105093b93740e2c"
+  },
+  "source_transform_tests": {
+    "command": "tools/repro/test_source_patches.sh",
+    "exit_code": 0,
+    "total_tests": 74,
+    "suites": 12
+  },
+  "reconstruction_source_audit": {
+    "command": "python3 tools/repro/audit_reconstruction_source.py",
+    "exit_code": 0,
+    "text_files": 290,
+    "assembly_files": 4,
+    "long_directives": 126,
+    "scope": "Lexical checks only, not instruction/data semantic proof."
+  },
+  "tracked_binary_inventory": {
+    "command": "python3 tools/repro/audit_tracked_binaries.py --check",
+    "exit_code": 0
+  },
+  "melonds_comparison": {
+    "command": "REPEATS=3 tools/repro/test_v06_inrom.sh",
+    "exit_code": 0,
+    "runs": 9,
+    "measurement_rows": 207,
+    "working_tree_dirty": false,
+    "preceding_dataset": "research/results/archived-solver-source/melonds",
+    "identical_preceding_files": ["results.csv", "summary.csv", "roms.txt"],
+    "physical_hardware_validated": false
+  }
+}

@@ -54,6 +54,9 @@ auditor also rejects changed ARM9 payloads and stale reconstruction artifacts.
 Object normalization covers allocated layout/data, relocations, exports, and
 ELF flags. Complete unmasked ARM9 and final ROM identities remain independent
 acceptance gates, followed by two clean builds and deterministic melonDS replay.
+The [public validation dataset](../research/results/ordinary-arm9-source/)
+preserves both build identities, the provenance inventory, and nine fresh
+three-role emulator runs bound to a clean source revision.
 
 ```sh
 tools/repro/test_source_patches.sh
