@@ -31,7 +31,9 @@ Important controls include:
 - Debian base image digest and dated signed package snapshots.
 - BlocksDS image digest and exact package archive hashes.
 - Box2D, TinyXML, and convex-decomposition source hashes.
-- melonDS 1.1 AppImage hash and exact DeSmuME package version.
+- melonDS 1.1 AppImage hash, its pinned-source configuration diagnostic, and
+  exact DeSmuME package version. The [run-integrity protocol](emulator-run-integrity.md)
+  fixes and verifies startup settings independently of ROM timing.
 - Explicit `linux/amd64` containers for legacy x86 tooling and emulator parity.
 
 GameBrew's download host requires the public Pocket Physics page as the HTTP

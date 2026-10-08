@@ -6,6 +6,9 @@ set -euo pipefail
 : "${BENCH_DURATION:?BENCH_DURATION is required}"
 : "${BENCH_EMULATOR:?BENCH_EMULATOR is required}"
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "$ROOT/tools/repro/emulators/melonds/prepare_run.sh"
+
 sha256_file() {
     sha256sum "$1" | awk '{print $1}'
 }
@@ -95,10 +98,22 @@ for spec in "$@"; do
         extracted="$BENCH_OUT/logs/${label}.${i}.ppbench.csv"
         mkdir -p "$cflash"
 
+        if [ "$BENCH_EMULATOR" = melonds ]; then
+            prepare_melonds_run "$run_dir" /opt/melonds/benchmark-config.toml \
+                /opt/melonds/usr/bin/portable
+        fi
+
         set +e
         run_emulator "$rom" "$cflash" "$stdout" "$stderr"
         status="$?"
         set -e
+
+        printf '%s\n' "$status" > "$run_dir/exit-status.txt"
+        if [ "$BENCH_EMULATOR" = melonds ]; then
+            cp "$run_dir/emulator-state/melonDS.toml" "$run_dir/melonDS.final.toml"
+            sha256sum "$run_dir/melonDS.input.toml" "$run_dir/melonDS.final.toml" \
+                > "$run_dir/configuration.SHA256SUMS"
+        fi
 
         : > "$extracted"
         bench_file="$(find "$cflash" -maxdepth 1 -type f -name 'ppbench-*.csv' -print -quit)"
@@ -108,6 +123,16 @@ for spec in "$@"; do
             extract_ppbench_rows "$stdout" "$extracted"
             extract_ppbench_rows "$stderr" "$extracted"
         fi
+
+        case "$status" in
+            0|124) ;;
+            *)
+                echo "Abnormal emulator exit for $label iteration $i: $status" >&2
+                echo "stdout: $stdout" >&2
+                echo "stderr: $stderr" >&2
+                exit 1
+                ;;
+        esac
 
         if ! grep -q '^PPBENCH,' "$extracted"; then
             echo "No PPBENCH rows captured for $label iteration $i" >&2

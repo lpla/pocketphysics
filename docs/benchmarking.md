@@ -127,10 +127,14 @@ environment; disagreement from DeSmuME does not veto a melonDS improvement.
 - Official melonDS 1.1 x86_64 AppImage, checksum verified.
 - FreeBIOS/direct boot; no proprietary firmware is required.
 - JIT disabled.
-- Frame limiter, sound, and DLDI disabled.
+- Frame limiter, audio synchronization, and DLDI disabled; host audio output
+  uses SDL's dummy device. The ROM's ARM7/audio program is not removed.
 - Software GL and Xvfb in a pinned `linux/amd64` container.
 - no$gba debug-register output captured as a byte stream because long messages
   can wrap in the emulated console.
+- Explicit startup defaults and isolated portable state for each repetition;
+  input/final configuration snapshots and abnormal-exit rejection follow the
+  [run-integrity protocol](emulator-run-integrity.md).
 
 ### Supplemental DeSmuME Runtime
 

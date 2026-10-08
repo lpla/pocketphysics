@@ -103,6 +103,15 @@ docker run --rm --platform linux/amd64 --entrypoint bash \
     "$IMAGE" \
     tools/repro/run_inrom_container.sh "${container_specs[@]}"
 
+if [ "$EMULATOR" = melonds ]; then
+    configuration_args=()
+    for spec in "${container_specs[@]}"; do
+        configuration_args+=(--rom "$spec")
+    done
+    python3 "$ROOT/tools/repro/check_melonds_config.py" "$OUT" \
+        --repeats "$REPEATS" "${configuration_args[@]}"
+fi
+
 analysis_args=()
 if [[ "$REQUIRE_CORRECTNESS" == "1" ]]; then
     analysis_args+=(--require-correctness)
@@ -123,6 +132,7 @@ python3 "$ROOT/tools/repro/analyze_inrom.py" \
 
 python3 - "$OUT/metadata.json" <<EOF
 import json
+import hashlib
 import pathlib
 import subprocess
 
@@ -151,6 +161,14 @@ metadata = {
         ).strip()
     ),
 }
+if metadata["emulator"] == "melonds":
+    seed = root / "tools/repro/emulators/melonds/melonDS.toml"
+    metadata["configuration"] = {
+        "seed_path": seed.relative_to(root).as_posix(),
+        "seed_sha256": hashlib.sha256(seed.read_bytes()).hexdigest(),
+        "portable_state": "isolated per run",
+        "snapshots": "runs/<label>.<iteration>/melonDS.{input,final}.toml",
+    }
 pathlib.Path(${OUT@Q}, "metadata.json").write_text(
     json.dumps(metadata, indent=2, sort_keys=True) + "\n"
 )

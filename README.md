@@ -68,7 +68,7 @@ original source, and byte coverage is not a semantic-validation percentage.
 
 ## Reproduce
 
-Requirements are Git with full history, Docker, Python 3, `curl`, `unzip`, and
+Requirements are Git with full history, Docker, Python 3.11 or later, `curl`, `unzip`, and
 a host C++ compiler with AddressSanitizer support (GCC or Clang).
 All downloaded files, container bases, package archives, and emulator releases
 are pinned in [the input lock](research/provenance/input-locks.csv).

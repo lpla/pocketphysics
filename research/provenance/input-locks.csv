@@ -44,5 +44,6 @@ apt-snapshot,Debian security archive,20260709T000000Z,http://snapshot.debian.org
 apt-snapshot,Debian archive,20250721T000000Z,http://snapshot.debian.org/archive/debian/20250721T000000Z,,emulator Dockerfiles
 apt-snapshot,Debian security archive,20250721T000000Z,http://snapshot.debian.org/archive/debian-security/20250721T000000Z,,emulator Dockerfiles
 emulator,melonDS AppImage,1.1,https://github.com/melonDS-emu/melonDS/releases/download/1.1/melonDS-1.1-appimage-x86_64.zip,bf377420a2e95f2cd2cdda17d5372b51c2534f858b038db9ec6d129554875124,emulators/melonds/Dockerfile
+source-archive,melonDS configuration diagnostic,b86390e4428bf38ce4c1ce0e9ca446d6d25955e8 (1.1),https://codeload.github.com/melonDS-emu/melonDS/tar.gz/b86390e4428bf38ce4c1ce0e9ca446d6d25955e8,0ae765f1cd0644bce04c034079e74272259c9dad20a9fa4537296f45390fc463,test_melonds_config.sh
 emulator,DeSmuME Debian package,0.9.11-4.1,apt:desmume,,emulators/desmume/Dockerfile
 tracked-input,ppicon.bmp,repository blob,repo:ppicon.bmp,4864eb659ace646569d817c5af4a392dd02d451a35cfaf0bbd75fea6573db1b9,build_v06_exact.sh and build_v06_repack_control.sh

@@ -42,18 +42,8 @@ RUN curl -L --fail --retry 3 --retry-delay 2 "$MELONDS_URL" -o melonds.zip \
     && mv squashfs-root /opt/melonds \
     && rm -rf /tmp/melonds
 
-RUN mkdir -p /opt/melonds/usr/bin/portable \
-    && printf '%s\n' \
-        'LimitFPS = false' \
-        '[Emu]' \
-        'ConsoleType = 0' \
-        'DirectBoot = true' \
-        'ExternalBIOSEnable = false' \
-        '[JIT]' \
-        'Enable = false' \
-        '[DLDI]' \
-        'Enable = false' \
-        > /opt/melonds/usr/bin/portable/melonDS.toml
+COPY melonDS.toml /opt/melonds/benchmark-config.toml
+RUN mkdir -p /opt/melonds/usr/bin/portable
 
 ENV LIBGL_ALWAYS_SOFTWARE=1 \
     QT_QPA_PLATFORM=xcb \
