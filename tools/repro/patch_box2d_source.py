@@ -62,7 +62,12 @@ def main() -> int:
 		// Later Box2D releases avoid normalization unless a speed limit can
 		// trigger. This half-limit component gate preserves the 2.0.1 result:
 		// below it, vector length is strictly below the full limit.
+#ifdef PP_BOX2D_WIDE_VELOCITY_GATE
+		// 2 * 181^2 < 256^2; both bounded components cannot trigger the clamp.
+		const float32 halfLinearVelocity = b2_maxLinearVelocity * (181.0f / 256.0f);
+#else
 		const float32 halfLinearVelocity = b2_maxLinearVelocity * 0.5f;
+#endif
 		if (b2Abs(b->m_linearVelocity.x) > halfLinearVelocity ||
 			b2Abs(b->m_linearVelocity.y) > halfLinearVelocity)
 		{
