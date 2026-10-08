@@ -209,27 +209,27 @@ The [triangle compilation unit](triangle-source-recovery.md) adds another
 2,708 source-compiled executable bytes and removes its post-link initializer.
 The [shape proxy recovery](shape-source-recovery.md) removes a further 284-byte
 section replacement by restoring the release's missing-proxy control flow.
-The [contact solver](contact-source-recovery.md) replaces 14,940 further bytes
-with C++ while explicitly retaining its 5,160-byte velocity method as residual
-assembly. The [UI recovery](ui-source-recovery.md) removes GUI-setup and
+The [contact and island solvers](contact-source-recovery.md) now compile their
+complete units from upstream r131 with the preserved March 2008 fixed-point
+patch. Their final two method recoveries remove another 8,604 residual bytes.
+The [UI recovery](ui-source-recovery.md) removes GUI-setup and
 thumbnail-rendering replacements, adding 1,572 source-compiled bytes.
 The [polygon recovery](polygon-source-recovery.md) compiles the complete
 30,768-byte unit from March 2008 forum-archived C++, with a documented
 pointer-argument ABI adjustment. No polygon residual assembly remains.
 
-Six uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, two uLibrary units, one Box2D
-components, the ARM9 residual-region file, and a data-only libfat table. Original
+Five uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, two uLibrary units, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
-The next source-recovery targets are `deflate` and the Box2D/uLibrary
+The next source-recovery targets are `deflate` and the uLibrary
 substitutions. No instruction-byte edits are accepted as substitutes for
 recovering a compiler-reproducible source/configuration. ARM9 section
 replacement also remains. The [runtime source rebuild](runtime-source-recovery.md)
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 97.69%
+processors, runtime/startup, and post-link replacements. It attributes 98.97%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above

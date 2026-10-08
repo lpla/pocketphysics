@@ -1,89 +1,81 @@
-# Historical Contact Solver Source Recovery
+# Historical Contact and Island Solver Source Recovery
 
-## Scope
+## Result
 
-The 20,100-byte release contact-solver unit is now linked as three separately
-attributed executable input sections. C++ produces 14,940 bytes; the unresolved
-velocity method contributes 5,160 bytes of explicitly residual mnemonic
-assembly. The former whole-unit ARM9 section replacement is removed.
+Both complete release solver units compile from archival C++ using the ordinary
+Box2D build recipe, devkitARM r21 GCC 4.1.2, and the recovered historical headers.
+No method selection, residual solver assembly, custom solver linker script,
+instruction rewriting, or post-link solver replacement is used.
 
-| Release implementation | Executable-section bytes | Source form |
-| --- | ---: | --- |
-| Destructors, force finalization, static initialization | 448 | C++ |
-| Velocity constraint initialization | 2,548 | C++ |
-| Two constructor entry points | 8,328 | C++ |
-| Position constraint solver | 3,616 | C++ |
-| Velocity constraint solver | 5,160 | Residual assembly |
+| Compilation unit | Executable-section bytes | Allocated bytes |
+| --- | ---: | ---: |
+| Contact solver | 20,100 | 20,396 |
+| Island solver | 6,952 | 7,008 |
 
-The complete mixed object has 20,396 allocated bytes, including its 52-byte
-zero-initialized storage, 240-byte assertion strings, and four-byte initializer.
-This is partial source recovery, not recovery of the complete solver and not
-a performance optimization. The historical ROM remains unchanged.
+The contact velocity method contributes 5,160 executable bytes and the island
+`Solve` method 3,444 bytes. Recovering these methods removes 8,604 bytes from
+the linked residual boundary. This is source recovery, not a performance
+optimization: the final historical ROM remains byte-identical.
 
-## Source Lineage
+## Archival Inputs
 
-The release-constrained hybrid retains the older local-anchor constraint
-layout while using fixed-point force scaling also present in Box2D r134.
-Restoring the nine-line `B2FORCE_SCALE2`/`B2FORCE_INV_SCALE2` definition block
-preserves the release constructor's assertion line numbers. Warm starting
-multiplies by the scaled time step, `B2FORCE_SCALE2(m_step.dt)`, rather than the
-unscaled step. No compiled assertion constants or instruction encodings are
-rewritten to obtain the match.
+The original forum's attachment 109 preserves `box2d_fixed_r131_2.patch.zip`.
+Its member, [box2d_fixed.patch](../research/reference/box2d-fixed-20080315/),
+identifies upstream SVN revision 131. ZIP member and HTTP Last-Modified
+metadata date it to March 15, 2008; the preserved Internet Archive capture
+is from 2010. Those observations support chronology but do not prove which
+checkout the release producer used.
 
-The [upstream r134 source file](https://svn.code.sf.net/p/box2d/code/!svn/bc/134/Source/Dynamics/Contacts/b2ContactSolver.cpp)
-was independently retrieved from the original Subversion repository and
-byte-compared with the preserved export. Its 11,471 bytes have SHA-256
-`a1b895e2aa6c65b1d5cd3c840f4eec7f9dc6cc1a4e2d4e920f9aef937c6ee66b`.
-The repository UUID is `f71193c7-d439-0410-8131-bb32c6e3d2ad`; revision 134
-records 18 March 2008. This reference supports source lineage but does not
-replace the independent release-payload identity gate or assert that the
-release used the unmodified r134 solver.
+The [unmodified upstream r131 files](../research/reference/box2d-r131/) were
+independently retrieved from the original SVN repository. Applying only the
+two corresponding forum diffs produces the tracked
+[island source](../research/reconstruction/v06/dependencies/box2d/Dynamics/b2Island.cpp)
+and [contact source](../research/reconstruction/v06/dependencies/box2d/Dynamics/Contacts/b2ContactSolver.cpp)
+byte for byte. No additional local source edits are needed. Copyright,
+license notices, and original line endings are preserved.
 
-```sh
-curl -L --fail \
-  'https://svn.code.sf.net/p/box2d/code/!svn/bc/134/Source/Dynamics/Contacts/b2ContactSolver.cpp' \
-  -o b2ContactSolver-r134.cpp
-shasum -a 256 b2ContactSolver-r134.cpp
-```
+The forum patch supplies the fixed-point force-scaling definitions, deferred
+velocity-update structure, and component-wise sleep threshold checks absent
+from other historical variants. These details are retained for archival
+fidelity, including historical behavior; they are not silently corrected
+in the exact build. The modern and optimized builds remain separate.
 
-The available C++ velocity loop does not reproduce the released method and is
-not installed in the exact archive. Similar-looking instruction sequences and
-semantically plausible loop variants are insufficient evidence of recovery.
+## Independent Acceptance Gates
 
-## Compilation and Attribution
+The [object manifest](../research/reconstruction/v06/dependencies/box2d/reconstructed/solver-object-identities.json)
+guards each complete relocatable object: ELF flags, allocated sections,
+relocations, exported symbols, and section layout. Debug information and file
+symbols are excluded from normalization. The manifest is a comparison gate,
+not a binary build input or a claim that an original producer object archive
+survived.
 
-The build compiles the unit with devkitARM r21 GCC 4.1.2, the recovered Box2D
-flags, and `-ffunction-sections`. `objcopy` removes the unmatched velocity
-function section and debug information referring to it; it does not edit any
-retained code or relocation. The
-[relocatable layout](../research/reconstruction/v06/dependencies/box2d/reconstructed/contact-object-layout.ld)
-orders the retained C++ sections and the
-[residual method](../research/reconstruction/v06/dependencies/box2d/reconstructed/contact-velocity-residual.S).
-All relocatable output sections start at zero; the final linker determines
-their runtime addresses.
+The unmodified producer `ds_arm9.ld` has SHA-256
+`e0b7f28bd015da38851d0699f9344df02b8a6b0426093815ecba576b5b1a8260`.
+Before applying the remaining unrelated replacements, the entire unmasked
+827,636-byte linked ARM9 payload must have SHA-256
+`3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9`.
+The final ARM9, ARM7, and complete 894,016-byte release ROM must independently
+match their canonical identities. A near-matching method cannot pass these
+gates by hiding differences behind a solver replacement.
 
-A [reviewed linker-script patch](../research/reconstruction/v06/arm9/mixed-sections.patch)
-places these three sections together in the ordinary archive-member position.
-The unchanged producer linker script is verified before this source patch is
-applied; the patched script also has a fixed hash gate. The source/residual
-section names survive into the final GNU linker map. The provenance auditor
-classifies each separately and rejects unknown contact-solver executable
-sections. The residual method is never credited as C++.
+The provenance auditor credits only the expected `.text` input sections for
+these two members and rejects unknown solver executable sections. Neither
+contains residual assembly.
 
-## Acceptance
-
-The [mixed-object gate](../research/reconstruction/v06/dependencies/box2d/reconstructed/contact-object-identity.json)
-records a release-constrained recovered identity, not an independently
-preserved original distribution object. Object normalization is only the first
-gate: the entire final ARM9 payload, ARM7 payload, and packaged ROM must also
-match their canonical hashes without the former solver section replacement.
+## Reproduction
 
 ```sh
 tools/repro/test_source_patches.sh
 tools/repro/test_v06_exact.sh
+REPEATS=3 tools/repro/test_v06_inrom.sh
 ```
 
-The second command performs two independent clean builds of all target
-components and compares their payloads, ELF files, and provenance reports.
-The unresolved velocity method remains a source-recovery target; exact ROM
-identity alone does not establish completion of high-level reconstruction.
+The [archival source tests](../tools/repro/test_archived_solver.py) independently
+apply the preserved patch to the preserved originals, check all input/output
+hashes, compare complete source bytes, and reject solver substitutions.
+The exact-build test compiles all target components twice in independent
+directories and compares ROMs, payloads, ELF files, and provenance reports.
+The last command builds all three instrumented roles and replays the same
+touch/physics/render workload in melonDS. In-ROM DS timer measurements are
+separate from binary-identity evidence and remain emulator-only until tested
+on physical hardware.

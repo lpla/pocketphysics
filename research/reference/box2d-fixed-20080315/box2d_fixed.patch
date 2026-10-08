@@ -1,0 +1,890 @@
+Index: Source/Dynamics/b2Island.cpp
+===================================================================
+--- Source/Dynamics/b2Island.cpp	(revision 131)
++++ Source/Dynamics/b2Island.cpp	(working copy)
+@@ -277,8 +277,10 @@
+ 	{
+ 		float32 minSleepTime = FLOAT32_MAX;
+ 
++#ifndef TARGET_FLOAT32_IS_FIXED
+ 		const float32 linTolSqr = b2_linearSleepTolerance * b2_linearSleepTolerance;
+ 		const float32 angTolSqr = b2_angularSleepTolerance * b2_angularSleepTolerance;
++#endif
+ 
+ 		for (int32 i = 0; i < m_bodyCount; ++i)
+ 		{
+@@ -295,8 +297,15 @@
+ 			}
+ 
+ 			if ((b->m_flags & b2Body::e_allowSleepFlag) == 0 ||
++#ifdef TARGET_FLOAT32_IS_FIXED
++				b2Abs(b->m_angularVelocity) > b2_angularSleepTolerance ||
++				b2Abs(b->m_linearVelocity.x) > b2_linearSleepTolerance ||
++				b2Abs(b->m_linearVelocity.y) > b2_linearSleepTolerance ||
++				b->m_linearVelocity.Length() > b2_linearSleepTolerance)
++#else
+ 				b->m_angularVelocity * b->m_angularVelocity > angTolSqr ||
+ 				b2Dot(b->m_linearVelocity, b->m_linearVelocity) > linTolSqr)
++#endif
+ 			{
+ 				b->m_sleepTime = 0.0f;
+ 				minSleepTime = 0.0f;
+Index: Source/Dynamics/Joints/b2MouseJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2MouseJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2MouseJoint.cpp	(working copy)
+@@ -34,7 +34,7 @@
+ 	m_target = def->target;
+ 	m_localAnchor = b2MulT(m_body2->m_xf, m_target);
+ 
+-	m_maxForce = def->maxForce;
++	m_maxForce = B2FORCE_INV_SCALE(def->maxForce);
+ 	m_force.SetZero();
+ 
+ 	float32 mass = m_body2->m_mass;
+@@ -46,11 +46,11 @@
+ 	float32 d = 2.0f * mass * def->dampingRatio * omega;
+ 
+ 	// Spring stiffness
+-	float32 k = mass * omega * omega;
++	float32 k = (def->timeStep * mass) * (omega * omega);
+ 
+ 	// magic formulas
+-	m_gamma = 1.0f / (d + def->timeStep * k);
+-	m_beta = def->timeStep * k / (d + def->timeStep * k);
++	m_gamma = 1.0f / (d + k);
++	m_beta = k / (d + k);
+ }
+ 
+ void b2MouseJoint::SetTarget(const b2Vec2& target)
+@@ -95,7 +95,7 @@
+ 	b->m_angularVelocity *= 0.98f;
+ 
+ 	// Warm starting.
+-	b2Vec2 P = step.dt * m_force;
++	b2Vec2 P = B2FORCE_SCALE(step.dt) * m_force;
+ 	b->m_linearVelocity += invMass * P;
+ 	b->m_angularVelocity += invI * b2Cross(r, P);
+ }
+@@ -108,19 +108,8 @@
+ 
+ 	// Cdot = v + cross(w, r)
+ 	b2Vec2 Cdot = b->m_linearVelocity + b2Cross(b->m_angularVelocity, r);
++	b2Vec2 force = -B2FORCE_INV_SCALE(step.inv_dt) * b2Mul(m_mass, Cdot + (m_beta * step.inv_dt) * m_C + B2FORCE_SCALE(step.dt) * (m_gamma * m_force));
+ 
+-#ifdef TARGET_FLOAT32_IS_FIXED
+-	b2Vec2 force = -b2Mul(m_mass, Cdot + (m_beta * step.inv_dt) * m_C + m_gamma * step.dt * m_force);
+-	float32 forceLength = force.Length();
+-	if(forceLength > 200.0) {
+-		force *= 200.0/forceLength;
+-	}
+-	force *= step.inv_dt;
+-
+-#else
+-	b2Vec2 force = -step.inv_dt * b2Mul(m_mass, Cdot + (m_beta * step.inv_dt) * m_C + m_gamma * step.dt * m_force);
+-#endif
+-
+ 	b2Vec2 oldForce = m_force;
+ 	m_force += force;
+ 	float32 forceMagnitude = m_force.Length();
+@@ -130,7 +119,7 @@
+ 	}
+ 	force = m_force - oldForce;
+ 
+-	b2Vec2 P = step.dt * force;
++	b2Vec2 P = B2FORCE_SCALE(step.dt) * force;
+ 	b->m_linearVelocity += b->m_invMass * P;
+ 	b->m_angularVelocity += b->m_invI * b2Cross(r, P);
+ }
+@@ -147,7 +136,7 @@
+ 
+ b2Vec2 b2MouseJoint::GetReactionForce() const
+ {
+-	return m_force;
++	return B2FORCE_SCALE(float32(1.0))*m_force;
+ }
+ 
+ float32 b2MouseJoint::GetReactionTorque() const
+Index: Source/Dynamics/Joints/b2DistanceJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2DistanceJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2DistanceJoint.cpp	(working copy)
+@@ -77,7 +77,7 @@
+ 
+ 	if (b2World::s_enableWarmStarting)
+ 	{
+-		b2Vec2 P = step.dt * m_force * m_u;
++		b2Vec2 P = B2FORCE_SCALE(step.dt) * m_force * m_u;
+ 		b1->m_linearVelocity -= b1->m_invMass * P;
+ 		b1->m_angularVelocity -= b1->m_invI * b2Cross(r1, P);
+ 		b2->m_linearVelocity += b2->m_invMass * P;
+@@ -101,10 +101,10 @@
+ 	b2Vec2 v1 = b1->m_linearVelocity + b2Cross(b1->m_angularVelocity, r1);
+ 	b2Vec2 v2 = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2);
+ 	float32 Cdot = b2Dot(m_u, v2 - v1);
+-	float32 force = -step.inv_dt * m_mass * Cdot;
++	float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_mass * Cdot;
+ 	m_force += force;
+ 
+-	b2Vec2 P = step.dt * force * m_u;
++	b2Vec2 P = B2FORCE_SCALE(step.dt) * force * m_u;
+ 	b1->m_linearVelocity -= b1->m_invMass * P;
+ 	b1->m_angularVelocity -= b1->m_invI * b2Cross(r1, P);
+ 	b2->m_linearVelocity += b2->m_invMass * P;
+@@ -152,7 +152,7 @@
+ 
+ b2Vec2 b2DistanceJoint::GetReactionForce() const
+ {
+-	b2Vec2 F = m_force * m_u;
++	b2Vec2 F = B2FORCE_SCALE(m_force) * m_u;
+ 	return F;
+ }
+ 
+Index: Source/Dynamics/Joints/b2PulleyJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2PulleyJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2PulleyJoint.cpp	(working copy)
+@@ -173,8 +173,8 @@
+ 	if (b2World::s_enableWarmStarting)
+ 	{
+ 		// Warm starting.
+-		b2Vec2 P1 = step.dt * (-m_force - m_limitForce1) * m_u1;
+-		b2Vec2 P2 = step.dt * (-m_ratio * m_force - m_limitForce2) * m_u2;
++		b2Vec2 P1 = B2FORCE_SCALE(step.dt) * (-m_force - m_limitForce1) * m_u1;
++		b2Vec2 P2 = B2FORCE_SCALE(step.dt) * (-m_ratio * m_force - m_limitForce2) * m_u2;
+ 		b1->m_linearVelocity += b1->m_invMass * P1;
+ 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
+ 		b2->m_linearVelocity += b2->m_invMass * P2;
+@@ -202,13 +202,13 @@
+ 		b2Vec2 v2 = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2);
+ 
+ 		float32 Cdot = -b2Dot(m_u1, v1) - m_ratio * b2Dot(m_u2, v2);
+-		float32 force = -step.inv_dt * m_pulleyMass * Cdot;
++		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_pulleyMass * Cdot;
+ 		float32 oldForce = m_force;
+ 		m_force = b2Max(0.0f, m_force + force);
+ 		force = m_force - oldForce;
+ 
+-		b2Vec2 P1 = -step.dt * force * m_u1;
+-		b2Vec2 P2 = -step.dt * m_ratio * force * m_u2;
++		b2Vec2 P1 = -B2FORCE_SCALE(step.dt) * force * m_u1;
++		b2Vec2 P2 = -B2FORCE_SCALE(step.dt) * m_ratio * force * m_u2;
+ 		b1->m_linearVelocity += b1->m_invMass * P1;
+ 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
+ 		b2->m_linearVelocity += b2->m_invMass * P2;
+@@ -220,12 +220,12 @@
+ 		b2Vec2 v1 = b1->m_linearVelocity + b2Cross(b1->m_angularVelocity, r1);
+ 
+ 		float32 Cdot = -b2Dot(m_u1, v1);
+-		float32 force = -step.inv_dt * m_limitMass1 * Cdot;
++		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_limitMass1 * Cdot;
+ 		float32 oldForce = m_limitForce1;
+ 		m_limitForce1 = b2Max(0.0f, m_limitForce1 + force);
+ 		force = m_limitForce1 - oldForce;
+ 
+-		b2Vec2 P1 = -step.dt * force * m_u1;
++		b2Vec2 P1 = -B2FORCE_SCALE(step.dt) * force * m_u1;
+ 		b1->m_linearVelocity += b1->m_invMass * P1;
+ 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
+ 	}
+@@ -235,12 +235,12 @@
+ 		b2Vec2 v2 = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2);
+ 
+ 		float32 Cdot = -b2Dot(m_u2, v2);
+-		float32 force = -step.inv_dt * m_limitMass2 * Cdot;
++		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_limitMass2 * Cdot;
+ 		float32 oldForce = m_limitForce2;
+ 		m_limitForce2 = b2Max(0.0f, m_limitForce2 + force);
+ 		force = m_limitForce2 - oldForce;
+ 
+-		b2Vec2 P2 = -step.dt * force * m_u2;
++		b2Vec2 P2 = -B2FORCE_SCALE(step.dt) * force * m_u2;
+ 		b2->m_linearVelocity += b2->m_invMass * P2;
+ 		b2->m_angularVelocity += b2->m_invI * b2Cross(r2, P2);
+ 	}
+@@ -389,7 +389,7 @@
+ 
+ b2Vec2 b2PulleyJoint::GetReactionForce() const
+ {
+-	b2Vec2 F = m_force * m_u2;
++	b2Vec2 F = B2FORCE_SCALE(m_force) * m_u2;
+ 	return F;
+ }
+ 
+Index: Source/Dynamics/Joints/b2PrismaticJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2PrismaticJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2PrismaticJoint.cpp	(working copy)
+@@ -71,7 +71,7 @@
+ 
+ 	m_lowerTranslation = def->lowerTranslation;
+ 	m_upperTranslation = def->upperTranslation;
+-	m_maxMotorForce = def->maxMotorForce;
++	m_maxMotorForce = B2FORCE_INV_SCALE(def->maxMotorForce);
+ 	m_motorSpeed = def->motorSpeed;
+ 	m_enableLimit = def->enableLimit;
+ 	m_enableMotor = def->enableMotor;
+@@ -162,10 +162,10 @@
+ 
+ 	if (b2World::s_enableWarmStarting)
+ 	{
+-		b2Vec2 P1 = step.dt * (m_force * m_linearJacobian.linear1 + (m_motorForce + m_limitForce) * m_motorJacobian.linear1);
+-		b2Vec2 P2 = step.dt * (m_force * m_linearJacobian.linear2 + (m_motorForce + m_limitForce) * m_motorJacobian.linear2);
+-		float32 L1 = step.dt * (m_force * m_linearJacobian.angular1 - m_torque + (m_motorForce + m_limitForce) * m_motorJacobian.angular1);
+-		float32 L2 = step.dt * (m_force * m_linearJacobian.angular2 + m_torque + (m_motorForce + m_limitForce) * m_motorJacobian.angular2);
++		b2Vec2 P1 = B2FORCE_SCALE(step.dt) * (m_force * m_linearJacobian.linear1 + (m_motorForce + m_limitForce) * m_motorJacobian.linear1);
++		b2Vec2 P2 = B2FORCE_SCALE(step.dt) * (m_force * m_linearJacobian.linear2 + (m_motorForce + m_limitForce) * m_motorJacobian.linear2);
++		float32 L1 = B2FORCE_SCALE(step.dt) * (m_force * m_linearJacobian.angular1 - m_torque + (m_motorForce + m_limitForce) * m_motorJacobian.angular1);
++		float32 L2 = B2FORCE_SCALE(step.dt) * (m_force * m_linearJacobian.angular2 + m_torque + (m_motorForce + m_limitForce) * m_motorJacobian.angular2);
+ 
+ 		b1->m_linearVelocity += invMass1 * P1;
+ 		b1->m_angularVelocity += invI1 * L1;
+@@ -194,10 +194,10 @@
+ 
+ 	// Solve linear constraint.
+ 	float32 linearCdot = m_linearJacobian.Compute(b1->m_linearVelocity, b1->m_angularVelocity, b2->m_linearVelocity, b2->m_angularVelocity);
+-	float32 force = -step.inv_dt * m_linearMass * linearCdot;
++	float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_linearMass * linearCdot;
+ 	m_force += force;
+ 
+-	float32 P = step.dt * force;
++	float32 P = B2FORCE_SCALE(step.dt) * force;
+ 	b1->m_linearVelocity += (invMass1 * P) * m_linearJacobian.linear1;
+ 	b1->m_angularVelocity += invI1 * P * m_linearJacobian.angular1;
+ 
+@@ -206,10 +206,10 @@
+ 
+ 	// Solve angular constraint.
+ 	float32 angularCdot = b2->m_angularVelocity - b1->m_angularVelocity;
+-	float32 torque = -step.inv_dt * m_angularMass * angularCdot;
++	float32 torque = -B2FORCE_INV_SCALE(step.inv_dt) * m_angularMass * angularCdot;
+ 	m_torque += torque;
+ 
+-	float32 L = step.dt * torque;
++	float32 L = B2FORCE_SCALE(step.dt) * torque;
+ 	b1->m_angularVelocity -= invI1 * L;
+ 	b2->m_angularVelocity += invI2 * L;
+ 
+@@ -217,12 +217,12 @@
+ 	if (m_enableMotor && m_limitState != e_equalLimits)
+ 	{
+ 		float32 motorCdot = m_motorJacobian.Compute(b1->m_linearVelocity, b1->m_angularVelocity, b2->m_linearVelocity, b2->m_angularVelocity) - m_motorSpeed;
+-		float32 motorForce = -step.inv_dt * m_motorMass * motorCdot;
++		float32 motorForce = -B2FORCE_INV_SCALE(step.inv_dt) * m_motorMass * motorCdot;
+ 		float32 oldMotorForce = m_motorForce;
+ 		m_motorForce = b2Clamp(m_motorForce + motorForce, -m_maxMotorForce, m_maxMotorForce);
+ 		motorForce = m_motorForce - oldMotorForce;
+ 
+-		float32 P = step.dt * motorForce;
++		float32 P = B2FORCE_SCALE(step.dt) * motorForce;
+ 		b1->m_linearVelocity += (invMass1 * P) * m_motorJacobian.linear1;
+ 		b1->m_angularVelocity += invI1 * P * m_motorJacobian.angular1;
+ 
+@@ -234,7 +234,7 @@
+ 	if (m_enableLimit && m_limitState != e_inactiveLimit)
+ 	{
+ 		float32 limitCdot = m_motorJacobian.Compute(b1->m_linearVelocity, b1->m_angularVelocity, b2->m_linearVelocity, b2->m_angularVelocity);
+-		float32 limitForce = -step.inv_dt * m_motorMass * limitCdot;
++		float32 limitForce = -B2FORCE_INV_SCALE(step.inv_dt) * m_motorMass * limitCdot;
+ 
+ 		if (m_limitState == e_equalLimits)
+ 		{
+@@ -253,7 +253,7 @@
+ 			limitForce = m_limitForce - oldLimitForce;
+ 		}
+ 
+-		float32 P = step.dt * limitForce;
++		float32 P = B2FORCE_SCALE(step.dt) * limitForce;
+ 
+ 		b1->m_linearVelocity += (invMass1 * P) * m_motorJacobian.linear1;
+ 		b1->m_angularVelocity += invI1 * P * m_motorJacobian.angular1;
+@@ -379,12 +379,12 @@
+ 	b2Vec2 ax1 = b2Mul(m_body1->m_xf.R, m_localXAxis1);
+ 	b2Vec2 ay1 = b2Mul(m_body1->m_xf.R, m_localYAxis1);
+ 
+-	return m_limitForce * ax1 + m_force * ay1;
++	return B2FORCE_SCALE(float32(1.0))*(m_limitForce * ax1 + m_force * ay1);
+ }
+ 
+ float32 b2PrismaticJoint::GetReactionTorque() const
+ {
+-	return m_torque;
++	return B2FORCE_SCALE(m_torque);
+ }
+ 
+ float32 b2PrismaticJoint::GetJointTranslation() const
+@@ -466,7 +466,7 @@
+ 
+ void b2PrismaticJoint::SetMaxMotorForce(float32 force)
+ {
+-	m_maxMotorForce = force;
++	m_maxMotorForce = B2FORCE_SCALE(float32(1.0))*force;
+ }
+ 
+ float32 b2PrismaticJoint::GetMotorForce() const
+Index: Source/Dynamics/Joints/b2GearJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2GearJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2GearJoint.cpp	(working copy)
+@@ -145,7 +145,7 @@
+ 	if (b2World::s_enableWarmStarting)
+ 	{
+ 		// Warm starting.
+-		float32 P = step.dt * m_force;
++		float32 P = B2FORCE_SCALE(step.dt) * m_force;
+ 		b1->m_linearVelocity += b1->m_invMass * P * m_J.linear1;
+ 		b1->m_angularVelocity += b1->m_invI * P * m_J.angular1;
+ 		b2->m_linearVelocity += b2->m_invMass * P * m_J.linear2;
+@@ -165,10 +165,10 @@
+ 	float32 Cdot = m_J.Compute(	b1->m_linearVelocity, b1->m_angularVelocity,
+ 								b2->m_linearVelocity, b2->m_angularVelocity);
+ 
+-	float32 force = -step.inv_dt * m_mass * Cdot;
++	float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_mass * Cdot;
+ 	m_force += force;
+ 
+-	float32 P = step.dt * force;
++	float32 P = B2FORCE_SCALE(step.dt) * force;
+ 	b1->m_linearVelocity += b1->m_invMass * P * m_J.linear1;
+ 	b1->m_angularVelocity += b1->m_invI * P * m_J.angular1;
+ 	b2->m_linearVelocity += b2->m_invMass * P * m_J.linear2;
+@@ -229,7 +229,7 @@
+ b2Vec2 b2GearJoint::GetReactionForce() const
+ {
+ 	// TODO_ERIN not tested
+-	b2Vec2 F = m_force * m_J.linear2;
++	b2Vec2 F = B2FORCE_SCALE(m_force) * m_J.linear2;
+ 	return F;
+ }
+ 
+@@ -238,7 +238,7 @@
+ 	// TODO_ERIN not tested
+ 	b2Vec2 r = b2Mul(m_body2->m_xf.R, m_localAnchor2 - m_body2->GetLocalCenter());
+ 	b2Vec2 F = m_force * m_J.linear2;
+-	float32 T = m_force * m_J.angular2 - b2Cross(r, F);
++	float32 T = B2FORCE_SCALE(m_force * m_J.angular2 - b2Cross(r, F));
+ 	return T;
+ }
+ 
+Index: Source/Dynamics/Joints/b2RevoluteJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2RevoluteJoint.cpp	(revision 131)
++++ Source/Dynamics/Joints/b2RevoluteJoint.cpp	(working copy)
+@@ -137,11 +137,11 @@
+ 
+ 	if (b2World::s_enableWarmStarting)
+ 	{
+-		b1->m_linearVelocity -= step.dt * invMass1 * m_pivotForce;
+-		b1->m_angularVelocity -= step.dt * invI1 * (b2Cross(r1, m_pivotForce) + m_motorForce + m_limitForce);
++		b1->m_linearVelocity -= B2FORCE_SCALE(step.dt) * invMass1 * m_pivotForce;
++		b1->m_angularVelocity -= B2FORCE_SCALE(step.dt) * invI1 * (b2Cross(r1, m_pivotForce) + B2FORCE_INV_SCALE(m_motorForce + m_limitForce));
+ 
+-		b2->m_linearVelocity += step.dt * invMass2 * m_pivotForce;
+-		b2->m_angularVelocity += step.dt * invI2 * (b2Cross(r2, m_pivotForce) + m_motorForce + m_limitForce);
++		b2->m_linearVelocity += B2FORCE_SCALE(step.dt) * invMass2 * m_pivotForce;
++		b2->m_angularVelocity += B2FORCE_SCALE(step.dt) * invI2 * (b2Cross(r2, m_pivotForce) + B2FORCE_INV_SCALE(m_motorForce + m_limitForce));
+ 	}
+ 	else
+ 	{
+@@ -163,10 +163,10 @@
+ 
+ 	// Solve point-to-point constraint
+ 	b2Vec2 pivotCdot = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2) - b1->m_linearVelocity - b2Cross(b1->m_angularVelocity, r1);
+-	b2Vec2 pivotForce = -step.inv_dt * b2Mul(m_pivotMass, pivotCdot);
++	b2Vec2 pivotForce = -B2FORCE_INV_SCALE(step.inv_dt) * b2Mul(m_pivotMass, pivotCdot);
+ 	m_pivotForce += pivotForce;
+ 
+-	b2Vec2 P = step.dt * pivotForce;
++	b2Vec2 P = B2FORCE_SCALE(step.dt) * pivotForce;
+ 	b1->m_linearVelocity -= b1->m_invMass * P;
+ 	b1->m_angularVelocity -= b1->m_invI * b2Cross(r1, P);
+ 
+@@ -324,7 +324,7 @@
+ 
+ b2Vec2 b2RevoluteJoint::GetReactionForce() const
+ {
+-	return m_pivotForce;
++	return B2FORCE_SCALE(float32(1.0))*m_pivotForce;
+ }
+ 
+ float32 b2RevoluteJoint::GetReactionTorque() const
+Index: Source/Dynamics/Contacts/b2ContactSolver.cpp
+===================================================================
+--- Source/Dynamics/Contacts/b2ContactSolver.cpp	(revision 131)
++++ Source/Dynamics/Contacts/b2ContactSolver.cpp	(working copy)
+@@ -22,6 +22,15 @@
+ #include "../b2World.h"
+ #include "../../Common/b2StackAllocator.h"
+ 
++#ifdef TARGET_FLOAT32_IS_FIXED
++#define	B2FORCE_SCALE2(x)	((x)<<7)
++#define	B2FORCE_INV_SCALE2(x)	((x)>>7)
++#else
++#define	B2FORCE_SCALE2(x)	(x)
++#define	B2FORCE_INV_SCALE2(x)	(x)
++#endif
++
++
+ b2ContactSolver::b2ContactSolver(const b2TimeStep& step, b2Contact** contacts, int32 contactCount, b2StackAllocator* allocator)
+ {
+ 	m_step = step;
+@@ -161,7 +170,7 @@
+ 			for (int32 j = 0; j < c->pointCount; ++j)
+ 			{
+ 				b2ContactConstraintPoint* ccp = c->points + j;
+-				b2Vec2 P = m_step.dt * (ccp->normalForce * normal + ccp->tangentForce * tangent);
++				b2Vec2 P = B2FORCE_SCALE2(m_step.dt) * (ccp->normalForce * normal + ccp->tangentForce * tangent);
+ 				b2Vec2 r1 = b2Mul(b1->m_xf.R, ccp->localAnchor1 - b1->GetLocalCenter());
+ 				b2Vec2 r2 = b2Mul(b2->m_xf.R, ccp->localAnchor2 - b2->GetLocalCenter());
+ 				b1->m_angularVelocity -= invI1 * b2Cross(r1, P);
+@@ -213,43 +222,17 @@
+ 			// Relative velocity at contact
+ 			b2Vec2 dv = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2) - b1->m_linearVelocity - b2Cross(b1->m_angularVelocity, r1);
+ 
+-
+-#ifdef TARGET_FLOAT32_IS_FIXED
+ 			// Compute normal force
+ 			float32 vn = b2Dot(dv, normal);
+-			float32 lambda = - ccp->normalMass * (vn - ccp->velocityBias);
+-			// b2Clamp the accumulated force
+-			float32 newForce = b2Max(m_step.dt * ccp->normalForce + lambda, 0.0f);
+-			lambda = newForce - m_step.dt * ccp->normalForce;
+ 
+-			// Apply contact impulse
+-			b2Vec2 P = lambda * normal;
++			float32 lambda = -B2FORCE_INV_SCALE2(m_step.inv_dt) * ccp->normalMass * (vn - ccp->velocityBias);
+ 
+-			b1->m_linearVelocity -= invMass1 * P;
+-			b1->m_angularVelocity -= invI1 * b2Cross(r1, P);
+-
+-			b2->m_linearVelocity += invMass2 * P;
+-			b2->m_angularVelocity += invI2 * b2Cross(r2, P);
+-
+-			if(newForce > 20000.0 * m_step.dt) {
+-				ccp->normalForce = 20000.0;
+-			} else if(newForce < -20000.0 * m_step.dt) {
+-				ccp->normalForce = -20000.0;
+-			} else {
+-				ccp->normalForce = m_step.inv_dt * newForce;
+-			}
+-#else 
+-
+-			// Compute normal force
+-			float32 vn = b2Dot(dv, normal);
+-			float32 lambda = - m_step.inv_dt * ccp->normalMass * (vn - ccp->velocityBias);
+-
+ 			// b2Clamp the accumulated force
+ 			float32 newForce = b2Max(ccp->normalForce + lambda, 0.0f);
+ 			lambda = newForce - ccp->normalForce;
+ 
+ 			// Apply contact impulse
+-			b2Vec2 P = m_step.dt * lambda * normal;
++			b2Vec2 P = B2FORCE_SCALE2(m_step.dt) * lambda * normal;
+ #ifdef DEFERRED_UPDATE
+ 			b1_linearVelocity -= invMass1 * P;
+ 			b1_angularVelocity -= invI1 * b2Cross(r1, P);
+@@ -264,7 +247,6 @@
+ 			b2->m_angularVelocity += invI2 * b2Cross(r2, P);
+ #endif
+ 			ccp->normalForce = newForce;
+-#endif
+ 		}
+ 
+ #ifdef DEFERRED_UPDATE
+@@ -286,7 +268,7 @@
+ 
+ 			// Compute tangent force
+ 			float32 vt = b2Dot(dv, tangent);
+-			float32 lambda = m_step.inv_dt * ccp->tangentMass * (-vt);
++			float32 lambda = B2FORCE_INV_SCALE2(m_step.inv_dt) * ccp->tangentMass * (-vt);
+ 
+ 			// b2Clamp the accumulated force
+ 			float32 maxFriction = c->friction * ccp->normalForce;
+@@ -294,7 +276,7 @@
+ 			lambda = newForce - ccp->tangentForce;
+ 
+ 			// Apply contact impulse
+-			b2Vec2 P = m_step.dt * lambda * tangent;
++			b2Vec2 P = B2FORCE_SCALE2(m_step.dt) * lambda * tangent;
+ 
+ 			b1->m_linearVelocity -= invMass1 * P;
+ 			b1->m_angularVelocity -= invI1 * b2Cross(r1, P);
+Index: Source/Common/Fixed.h
+===================================================================
+--- Source/Common/Fixed.h	(revision 131)
++++ Source/Common/Fixed.h	(working copy)
+@@ -209,6 +209,29 @@
+ #if 1
+ // more acurate, using long long
+ inline Fixed Fixed::operator *(const Fixed a) const { return Fixed(RAW,  (int)( ((long long)g * (long long)a.g ) >> BP)); }
++
++#elif 0
++
++// check for overflow and figure out where.  Must specify -rdynamic in linker
++#include <execinfo.h>
++#include <signal.h>
++#include <exception>
++
++inline Fixed Fixed::operator *(const Fixed a) const {
++	long long x =  ((long long)g * (long long)a.g );
++	if(x > 0x7fffffffffffLL || x < -0x7fffffffffffLL) {
++		printf("overflow");
++		void *array[2];
++		int nSize = backtrace(array, 2);
++		char **symbols = backtrace_symbols(array, nSize);
++		for(int i=0; i<nSize; i++) {
++			printf(" %s", symbols[i]);
++		}
++		printf("\n");
++	}
++	return Fixed(RAW, (int)(x>>BP)); 
++}
++
+ #else
+ // faster, but with only half as many bits right of binary point
+ inline Fixed Fixed::operator *(const Fixed a) const { return Fixed(RAW, (g>>BPhalf) * (a.g>>BPhalf) ); }
+Index: Source/Common/b2Settings.h
+===================================================================
+--- Source/Common/b2Settings.h	(revision 131)
++++ Source/Common/b2Settings.h	(working copy)
+@@ -51,6 +51,8 @@
+ #define	FLOAT32_MAX	FIXED_MAX
+ #define	FLOAT32_MIN	FIXED_MIN
+ #define	FLOAT32_EPSILON	FIXED_EPSILON
++#define	B2FORCE_SCALE(x)	((x)<<7)
++#define	B2FORCE_INV_SCALE(x)	((x)>>7)
+ 
+ #else
+ 
+@@ -58,6 +60,8 @@
+ #define	FLOAT32_MAX	FLT_MAX
+ #define	FLOAT32_MIN	FLT_MIN
+ #define	FLOAT32_EPSILON	FLT_EPSILON
++#define	B2FORCE_SCALE(x)	(x)
++#define	B2FORCE_INV_SCALE(x)	(x)
+ 
+ #endif
+ 
+@@ -109,13 +113,15 @@
+ const float32 b2_maxLinearVelocity = 100.0f;
+ #else
+ const float32 b2_maxLinearVelocity = 200.0f;
++const float32 b2_maxLinearVelocitySquared = b2_maxLinearVelocity * b2_maxLinearVelocity;
+ #endif
+-const float32 b2_maxLinearVelocitySquared = b2_maxLinearVelocity * b2_maxLinearVelocity;
+ 
+ /// The maximum angular velocity of a body. This limit is very large and is used
+ /// to prevent numerical problems. You shouldn't need to adjust this.
+ const float32 b2_maxAngularVelocity = 250.0f;
++#ifndef TARGET_FLOAT32_IS_FIXED
+ const float32 b2_maxAngularVelocitySquared = b2_maxAngularVelocity * b2_maxAngularVelocity;
++#endif
+ 
+ /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
+ /// that overlap is removed in one time step. However using values close to 1 often lead
+Index: Source/Collision/b2Distance.cpp
+===================================================================
+--- Source/Collision/b2Distance.cpp	(revision 131)
++++ Source/Collision/b2Distance.cpp	(working copy)
+@@ -131,11 +131,17 @@
+ 	float32 denom = va + vb + vc;
+ 	b2Assert(denom > 0.0f);
+ 	denom = 1.0f / denom;
++
++#ifdef TARGET_FLOAT32_IS_FIXED
++	*x1 = denom * (va * p1s[0] + vb * p1s[1] + vc * p1s[2]);
++	*x2 = denom * (va * p2s[0] + vb * p2s[1] + vc * p2s[2]);
++#else
+ 	float32 u = va * denom;
+ 	float32 v = vb * denom;
+ 	float32 w = 1.0f - u - v;
+ 	*x1 = u * p1s[0] + v * p1s[1] + w * p1s[2];
+ 	*x2 = u * p2s[0] + v * p2s[1] + w * p2s[2];
++#endif
+ 	return 3;
+ }
+ 
+Index: Source/Makefile
+===================================================================
+--- Source/Makefile	(revision 131)
++++ Source/Makefile	(working copy)
+@@ -4,11 +4,6 @@
+ TARGETS += Gen/nds-float/lib/libbox2d.a Gen/nds-fixed/lib/libbox2d.a
+ endif
+ 
+-all:	$(TARGETS)
+-
+-clean:
+-	rm -rf Gen
+-
+ CXXFLAGS=	-g -O2
+ 
+ SOURCES = \
+@@ -42,65 +37,97 @@
+ 	./Collision/b2PairManager.cpp \
+ 	./Collision/b2CollidePoly.cpp \
+ 	./Collision/b2CollideCircle.cpp \
+-	./Collision/b2BroadPhase.cpp \
+-	./Contrib/b2Polygon.cpp \
+-	./Contrib/b2Triangle.cpp
++	./Collision/b2BroadPhase.cpp 
++#	./Contrib/b2Polygon.cpp \
++#	./Contrib/b2Triangle.cpp
+ 
+-FLOAT_OBJECTS= $(addprefix Gen/float/,$(SOURCES:.cpp=.o))
+ 
++ifneq ($(INCLUDE_DEPENDENCIES),yes)
++
++all:	
++	@make --no-print-directory INCLUDE_DEPENDENCIES=yes $(TARGETS)
++
++.PHONY:	clean
++clean:
++	rm -rf Gen
++
++else
++
++-include $(addprefix Gen/float/,$(SOURCES:.cpp=.d))
++-include $(addprefix Gen/fixed/,$(SOURCES:.cpp=.d))
++
++ifdef DEVKITPRO
++-include $(addprefix Gen/nds-fixed/,$(SOURCES:.cpp=.d))
++-include $(addprefix Gen/nds-float/,$(SOURCES:.cpp=.d))
++endif
++
++endif
++
+ Gen/float/%.o:		%.cpp
+-	mkdir -p $(dir $@)
++	@mkdir -p $(dir $@)
+ 	c++ $(CXXFLAGS) -c -o $@ $<
+ 
+ 
+-Gen/float/libbox2d.a:	$(FLOAT_OBJECTS)
++Gen/float/libbox2d.a:	$(addprefix Gen/float/,$(SOURCES:.cpp=.o))
+ 	ar cr $@ $^
+ 	ranlib $@ 
+ 
++Gen/float/%.d:		%.cpp
++	@mkdir -p $(dir $@)
++	c++ -MM -MT $(@:.d=.o) $(CXXFLAGS) -o $@ $<
+ 
+-FIXED_OBJECTS= $(addprefix Gen/fixed/,$(SOURCES:.cpp=.o)) 
+ 
+ Gen/fixed/%.o:		%.cpp
+ 	@mkdir -p $(dir $@)
+-	c++ $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -c -o $@ $^
++	c++ $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -c -o $@ $<
+ 
+ 
+-Gen/fixed/libbox2d.a:	$(FIXED_OBJECTS)
++Gen/fixed/libbox2d.a:	$(addprefix Gen/fixed/,$(SOURCES:.cpp=.o)) 
+ 	ar cr $@ $^
+ 	ranlib $@ 
+ 
+ 
+-NDS_OBJECTS= $(addprefix Gen/nds-fixed/,$(SOURCES:.cpp=.o)) 
++Gen/fixed/%.d:		%.cpp
++	@mkdir -p $(dir $@)
++	c++ -MM -MT $(@:.d=.o) $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -o $@ $<
+ 
+-Gen/nds-fixed/%.o:		%.cpp
+-	@mkdir -p $(dir $@)
+-	arm-eabi-g++ -g -O2 -fomit-frame-pointer -ffast-math \
++
++
++NDS_COMPILE_FLAGS= -g -O2 -fomit-frame-pointer -ffast-math \
+ 		-march=armv5te -mtune=arm946e-s -mthumb-interwork \
+ 		-DARM9 -fno-rtti -fno-exceptions -c \
+-		-DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS \
+-		-I$(DEVKITPRO)/libnds/include \
+-		-o $@ $^
++		-DTARGET_IS_NDS \
++		-I$(DEVKITPRO)/libnds/include 
+ 
+-Gen/nds-fixed/lib/libbox2d.a:	$(NDS_OBJECTS)
++
++Gen/nds-fixed/%.o:		%.cpp
+ 	@mkdir -p $(dir $@)
++	arm-eabi-g++ $(NDS_COMPILE_FLAGS) -DTARGET_FLOAT32_IS_FIXED -o $@ $<
++
++Gen/nds-fixed/lib/libbox2d.a:	$(addprefix Gen/nds-fixed/,$(SOURCES:.cpp=.o)) 
++	@mkdir -p $(dir $@)
+ 	arm-eabi-ar cr $@ $^
+ 	arm-eabi-ranlib $@ 
+ 
++Gen/nds-fixed/%.d:		%.cpp
++	@mkdir -p $(dir $@)
++	arm-eabi-g++ -MM -MT $(@:.d=.o) $(NDS_COMPILE_FLAGS) \
++		-DTARGET_FLOAT32_IS_FIXED -o $@ $<
+ 
+-NDS_OBJECTS= $(addprefix Gen/nds-float/,$(SOURCES:.cpp=.o))
+ 
++
+ Gen/nds-float/%.o:		%.cpp
+ 	@mkdir -p $(dir $@)
+-	arm-eabi-g++ -g -O2 -fomit-frame-pointer -ffast-math \
+-		-march=armv5te -mtune=arm946e-s -mthumb-interwork \
+-		-DARM9 -fno-rtti -fno-exceptions -c \
+-		-DTARGET_IS_NDS \
+-		-I$(DEVKITPRO)/libnds/include \
+-		-o $@ $^
++	arm-eabi-g++ $(NDS_COMPILE_FLAGS) -o $@ $<
+ 
+-Gen/nds-float/lib/libbox2d.a:	$(NDS_OBJECTS)
++Gen/nds-float/lib/libbox2d.a:	$(addprefix Gen/nds-float/,$(SOURCES:.cpp=.o))
+ 	@mkdir -p $(dir $@)
+ 	arm-eabi-ar cr $@ $^
+ 	arm-eabi-ranlib $@ 
+ 
+ 
++Gen/nds-float/%.d:		%.cpp
++	@mkdir -p $(dir $@) 
++	arm-eabi-g++ -MM -MT $(@:.d=.o) $(NDS_COMPILE_FLAGS) -o $@ $<
++
++
+Index: Makefile
+===================================================================
+--- Makefile	(revision 130)
++++ Makefile	(working copy)
+@@ -14,15 +14,15 @@
+ 
+ patch:
+ 	svn diff > $(PATCH)
+-	- diff --unified /dev/null Makefile >> $(PATCH)
+-	- diff --unified /dev/null Documentation/latex/Makefile >> $(PATCH)
+-	- diff --unified /dev/null Contrib/freeglut/Makefile >> $(PATCH)
+-	- diff --unified /dev/null Contrib/glui/Makefile >> $(PATCH)
+-	- diff --unified /dev/null Source/Makefile >> $(PATCH)
+-	- diff --unified /dev/null Examples/TestBed/Makefile >> $(PATCH)
+-	- diff --unified /dev/null Source/Common/Fixed.h >> $(PATCH)
+-	- diff --unified /dev/null Source/Common/jtypes.h >> $(PATCH)
+-	- diff --unified /dev/null Source/Contrib/b2Polygon.cpp >> $(PATCH)
+-	- diff --unified /dev/null Source/Contrib/b2Polygon.h >> $(PATCH)
+-	- diff --unified /dev/null Source/Contrib/b2Triangle.cpp >> $(PATCH)
+-	- diff --unified /dev/null Source/Contrib/b2Triangle.h >> $(PATCH)
++#	- diff --unified /dev/null Makefile >> $(PATCH)
++#	- diff --unified /dev/null Documentation/latex/Makefile >> $(PATCH)
++#	- diff --unified /dev/null Contrib/freeglut/Makefile >> $(PATCH)
++#	- diff --unified /dev/null Contrib/glui/Makefile >> $(PATCH)
++#	- diff --unified /dev/null Source/Makefile >> $(PATCH)
++#	- diff --unified /dev/null Examples/TestBed/Makefile >> $(PATCH)
++#	- diff --unified /dev/null Source/Common/Fixed.h >> $(PATCH)
++#	- diff --unified /dev/null Source/Common/jtypes.h >> $(PATCH)
++#	- diff --unified /dev/null Source/Contrib/b2Polygon.cpp >> $(PATCH)
++#	- diff --unified /dev/null Source/Contrib/b2Polygon.h >> $(PATCH)
++#	- diff --unified /dev/null Source/Contrib/b2Triangle.cpp >> $(PATCH)
++#	- diff --unified /dev/null Source/Contrib/b2Triangle.h >> $(PATCH)
+Index: Examples/TestBed/Framework/Test.cpp
+===================================================================
+--- Examples/TestBed/Framework/Test.cpp	(revision 131)
++++ Examples/TestBed/Framework/Test.cpp	(working copy)
+@@ -173,7 +173,12 @@
+ 		md.body1 = m_world->m_groundBody;
+ 		md.body2 = body;
+ 		md.target = p;
++#ifdef TARGET_FLOAT32_IS_FIXED
++		md.maxForce = (body->m_mass < 16.0)? 
++			(1000.0f * body->m_mass) : float32(16000.0);
++#else
+ 		md.maxForce = 1000.0f * body->m_mass;
++#endif
+ 		m_mouseJoint = (b2MouseJoint*)m_world->CreateJoint(&md);
+ 		body->WakeUp();
+ 	}
+Index: Examples/TestBed/Framework/Main.cpp
+===================================================================
+--- Examples/TestBed/Framework/Main.cpp	(revision 131)
++++ Examples/TestBed/Framework/Main.cpp	(working copy)
+@@ -34,6 +34,7 @@
+ 	int32 height = 480;
+ 	int32 framePeriod = 16;
+ 	int32 mainWindow;
++	float settingsHz = 60.0;
+ 	GLUI *glui;
+ 	float32 viewZoom = 1.0f;
+ 	b2Vec2 viewCenter(0.0f, 20.0f);
+@@ -99,6 +100,7 @@
+ 	glLoadIdentity();
+ 
+ 	test->SetTextLine(30);
++	settings.hz = settingsHz;
+ 	test->Step(&settings);
+ 
+ 	DrawString(5, 15, entry->name);
+@@ -307,7 +309,8 @@
+ 	iterationSpinner->set_int_limits(1, 100);
+ 
+ 	GLUI_Spinner* hertzSpinner =
+-		glui->add_spinner("Hertz", GLUI_SPINNER_FLOAT, &settings.hz);
++		glui->add_spinner("Hertz", GLUI_SPINNER_FLOAT, &settingsHz);
++
+ 	hertzSpinner->set_float_limits(5.0f, 200.0f);
+ 
+ 	glui->add_checkbox("Position Correction", &settings.enablePositionCorrection);
+Index: Examples/TestBed/Makefile
+===================================================================
+--- Examples/TestBed/Makefile	(revision 131)
++++ Examples/TestBed/Makefile	(working copy)
+@@ -1,8 +1,5 @@
+-all:	Gen/float/testbed Gen/fixed/testbed
++TARGETS=	Gen/float/testbed Gen/fixed/testbed
+ 
+-clean:
+-	rm -rf Gen
+-
+ PROJECT=	../..
+ 
+ CXXFLAGS=	-g -O2 -I$(PROJECT)/Contrib -I$(PROJECT)/Include -DGLUI_FREEGLUT
+@@ -17,21 +14,48 @@
+ 		Tests/BipedDef.cpp \
+ 		Tests/TestEntries.cpp 
+ 
++ifneq ($(INCLUDE_DEPENDENCIES),yes)
++
++all:	
++	@make --no-print-directory INCLUDE_DEPENDENCIES=yes $(TARGETS)
++
++.PHONY:	clean
++clean:
++	rm -rf Gen
++
++else
++
++-include $(addprefix Gen/float/,$(SOURCES:.cpp=.d))
++-include $(addprefix Gen/fixed/,$(SOURCES:.cpp=.d))
++
++endif
++
++
+ FLOAT_OBJECTS= $(addprefix Gen/float/,$(SOURCES:.cpp=.o))
+ 
+ Gen/float/%.o:		%.cpp
+ 	mkdir -p $(dir $@)
+ 	c++ $(CXXFLAGS) -c -o $@ $<
+ 
+-Gen/float/testbed:	$(FLOAT_OBJECTS)
++Gen/float/testbed:	$(FLOAT_OBJECTS) $(PROJECT)/Source/Gen/float/libbox2d.a
+ 	g++ -o $@ $^ $(LDFLAGS) -L$(PROJECT)/Source/Gen/float -lbox2d -lglui -lglut -lGLU -lGL
+ 
++Gen/float/%.d:		%.cpp
++	@mkdir -p $(dir $@)
++	c++ -M -MT $(@:.d=.o) $(CXXFLAGS) -o $@ $<
+ 
++
++
+ FIXED_OBJECTS= $(addprefix Gen/fixed/,$(SOURCES:.cpp=.o))
+ 
+ Gen/fixed/%.o:		%.cpp
+ 	mkdir -p $(dir $@)
+ 	c++ $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -c -o $@ $<
+ 
+-Gen/fixed/testbed:	$(FIXED_OBJECTS)
+-	g++ -o $@ $^ $(LDFLAGS) -L$(PROJECT)/Source/Gen/fixed -lbox2d -lglui -lglut -lGLU -lGL
++Gen/fixed/testbed:	$(FIXED_OBJECTS) $(PROJECT)/Source/Gen/fixed/libbox2d.a
++	g++ -rdynamic -o $@ $^ $(LDFLAGS) -L$(PROJECT)/Source/Gen/fixed -lbox2d -lglui -lglut -lGLU -lGL
++
++Gen/fixed/%.d:		%.cpp
++	@mkdir -p $(dir $@)
++	c++ -M -MT $(@:.d=.o) $(CXXFLAGS) -o $@ $<
++

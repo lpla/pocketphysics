@@ -1,0 +1,20 @@
+{
+  "objects": {
+    "b2Island.o": {
+      "allocated_bytes": 7008,
+      "identity_sha256": "d7a4460304b25af7c6b4edce65e636cbacf5d28d582f246d8857dda0d35b0183",
+      "text_bytes": 6952,
+      "source_text_bytes": 6952,
+      "residual_text_bytes": 0
+    },
+    "Contacts/b2ContactSolver.o": {
+      "allocated_bytes": 20396,
+      "identity_sha256": "b6c57f89e7b291bc0af9e193c63d9fd2f128803213fb0a0e995fef9d4de9af63",
+      "text_bytes": 20100,
+      "source_text_bytes": 20100,
+      "residual_text_bytes": 0
+    }
+  },
+  "reference": "Complete unmodified upstream SVN r131 C++ with the archived March 15, 2008 fixed-point patch. Normalized identities constrain source recovery and are not build inputs; the entire unmasked ARM9 payload and final ROM are independent acceptance gates.",
+  "schema": 1
+}

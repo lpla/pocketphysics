@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=4848cad81a714afc2aeb140ebaf8085c54a49b61dfdfb05fba70b890eaaf0927
+EXPECTED_BASE_ARM9=3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -233,7 +233,7 @@ for member in "${fat_members[@]}"; do fat_objects+=("$FAT_OBJECTS/$member"); don
 rm -f "$DEVKITPRO/libnds/lib/libfat.a"
 "$TOOL-ar" rcs "$DEVKITPRO/libnds/lib/libfat.a" "${fat_objects[@]}"
 
-printf '%s\n' '[6/8] Building the recovered Box2D r132/r134 hybrid from C++ source'
+printf '%s\n' '[6/8] Building the historical fixed-point Box2D from C++ source'
 BOX_ROOT="$BUILD/box2d"
 BOX="$BOX_ROOT/Source"
 mkdir -p "$BOX"
@@ -270,32 +270,17 @@ box_flags+=(-ffunction-sections)
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$BOX/reconstructed/triangle-object-identity.json" "$BUILD"
 "$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2Triangle.o"
-# Keep the unresolved velocity method separate from accepted C++ methods.
-(
-    cd "$BOX"
-    "$TOOL-g++" "${box_flags[@]}" -c Dynamics/Contacts/b2ContactSolver.cpp \
-        -o "$BUILD/b2ContactSolver-sections.o"
-)
-"$TOOL-objcopy" --strip-debug \
-    --remove-section=.text._ZN15b2ContactSolver24SolveVelocityConstraintsEv \
-    "$BUILD/b2ContactSolver-sections.o" "$BUILD/b2ContactSolver-source.o"
-"$TOOL-gcc" -c -march=armv5te -mtune=arm946e-s -mthumb-interwork \
-    "$BOX/reconstructed/contact-velocity-residual.S" -o "$BUILD/contact-velocity-residual.o"
-"$TOOL-ld" -r -T "$BOX/reconstructed/contact-object-layout.ld" \
-    "$BUILD/b2ContactSolver-source.o" "$BUILD/contact-velocity-residual.o" \
-    -o "$BUILD/b2ContactSolver.o"
+# The ordinary Box2D makefile compiles both complete archived solver units.
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
-    "$BOX/reconstructed/contact-object-identity.json" "$BUILD"
-"$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2ContactSolver.o"
+    "$BOX/reconstructed/solver-object-identities.json" "$BOX/Gen/nds-fixed/Dynamics"
 "$TOOL-ar" r "$BOX_ARCHIVE" "$BUILD/b2Polygon.o"
 "$TOOL-ranlib" "$BOX_ARCHIVE"
 cp "$BOX_ARCHIVE" "$DEVKITPRO/libnds/lib/libbox2d2.a"
 
 printf '%s\n' '[7/8] Clean-building both Nintendo DS processors from application source'
 patch --fuzz=0 -d "$SRC" -p1 < "$RECON/arm9/ui-source.patch"
-patch --fuzz=0 -d "$DEVKITARM/arm-eabi/lib" -p1 < "$RECON/arm9/mixed-sections.patch"
 check_hash "$DEVKITARM/arm-eabi/lib/ds_arm9.ld" \
-    1db34b181dac165f45a6ebc4bf274f0388acb5569d193e5736e96c1b687ad2f1
+    e0b7f28bd015da38851d0699f9344df02b8a6b0426093815ecba576b5b1a8260
 rm -rf "$SRC/box2d"
 ln -s "$BOX_ROOT" "$SRC/box2d"
 export TOPDIR="$SRC" TARGET=src

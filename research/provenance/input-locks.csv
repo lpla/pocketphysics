@@ -1,4 +1,7 @@
 kind,name,version_or_revision,url,sha256,consumer
+source-reference,Box2D fixed-point forum patch,2008-03-15 attachment 109,https://web.archive.org/web/20100705070808id_/http://www.box2d.org/forum/download/file.php?id=109,bb381f543676209942ee0c3f612eacbb6fa3c789b0b592a7d418d526804b67dd,research/reference/box2d-fixed-20080315 (ZIP provenance; tracked patch SHA in README)
+source-reference,Box2D island solver,SVN r131,https://svn.code.sf.net/p/box2d/code/!svn/bc/131/Source/Dynamics/b2Island.cpp,6df0b2af009cc9b58bed3f5a9491ead868caaa3c4aa513baa68239a5e53cd6b6,research/reference/box2d-r131
+source-reference,Box2D contact solver,SVN r131,https://svn.code.sf.net/p/box2d/code/!svn/bc/131/Source/Dynamics/Contacts/b2ContactSolver.cpp,7608d0acd9c6dd410f742a9f42d07010c661d49a1647e93579fa573265686e79,research/reference/box2d-r131
 release-archive,Pocket Physics public archive,v0.6,https://dlhb.gamebrew.org/dshomebrew2/pocketphysics.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
 release-archive-mirror,Pocket Physics preservation mirror,v0.6,https://github.com/lpla/pocketphysics/releases/download/historical-input-v0.6/pocketphysics-gamebrew.zip,953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6,extract_release_v06.sh
 release-rom,pocketphysics.nds,v0.6,archive:PocketPhysics-v0.6/pocketphysics.nds,9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64,build_v06_repack_control.sh

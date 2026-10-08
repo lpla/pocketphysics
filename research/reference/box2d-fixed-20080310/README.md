@@ -40,4 +40,4 @@ time. Its only substantive polygon change is documented in the
 [source-recovery report](../../../docs/polygon-source-recovery.md): the
 incoming-node overload uses the released pointer ABI. The two triangle files
 are unmodified copies of the contributed source. The full patch is also a
-comparison reference for the remaining core solver reconstruction.
+comparison reference for the historical core solver reconstruction.

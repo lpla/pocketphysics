@@ -86,7 +86,7 @@ nonallocated ARM attributes are not program data and are excluded.
 
 Relocation-masked comparisons are diagnostic only. Acceptance requires the
 unmasked ARM9 link to retain SHA-256
-`4848cad81a714afc2aeb140ebaf8085c54a49b61dfdfb05fba70b890eaaf0927`
+`3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9`
 before the remaining non-polygon reconstructed regions are applied. The final
 ARM9 and packaged ROM must retain their canonical release identities.
 

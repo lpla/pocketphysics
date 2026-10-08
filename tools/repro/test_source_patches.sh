@@ -39,6 +39,7 @@ PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_verify_runtim
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_executable_provenance.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_verify_polygon_object.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_archived_polygon.py"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_archived_solver.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_fetch_locked.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_analyze_inrom.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 -m py_compile "$ROOT"/tools/repro/*.py

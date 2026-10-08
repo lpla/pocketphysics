@@ -92,12 +92,10 @@ def classify(cpu: str, owner: str, application_members: set[str], input_section:
                                  ".text._ZNK6b2Vec26LengthEv"):
                 return "source_dependency"
             raise ValueError(f"unclassified polygon section: {input_section}")
-        if cpu == "arm9" and (archive, name) == ("libbox2d2.a", "b2ContactSolver.o"):
-            if input_section in (".text.contact.prefix", ".text.contact.suffix"):
+        if cpu == "arm9" and archive == "libbox2d2.a" and name in ("b2ContactSolver.o", "b2Island.o"):
+            if input_section == ".text":
                 return "source_dependency"
-            if input_section == ".text.contact.velocity":
-                return "residual_reconstruction"
-            raise ValueError(f"unclassified contact-solver section: {input_section}")
+            raise ValueError(f"unclassified solver section: {input_section}")
         if name in RESIDUAL_MEMBERS[cpu].get(archive, set()):
             return "residual_reconstruction"
         if archive in SOURCE_ARCHIVES:

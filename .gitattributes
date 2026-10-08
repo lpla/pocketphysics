@@ -1,3 +1,5 @@
 research/reference/** -text -whitespace
 research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.* -whitespace
 research/reconstruction/v06/dependencies/box2d/Contrib/b2Triangle.* -whitespace
+research/reconstruction/v06/dependencies/box2d/Dynamics/b2Island.cpp -text -whitespace
+research/reconstruction/v06/dependencies/box2d/Dynamics/Contacts/b2ContactSolver.cpp -text -whitespace

@@ -15,7 +15,7 @@ Two independent clean builds reproduce these identities:
 
 | Artifact | Size | SHA-256 |
 | --- | ---: | --- |
-| Pre-reconstruction ARM9 link | 827,636 B | `4848cad81a714afc2aeb140ebaf8085c54a49b61dfdfb05fba70b890eaaf0927` |
+| Pre-reconstruction ARM9 link | 827,636 B | `3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9` |
 | Final ARM9 payload | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
 | ARM7 payload | 62,828 B | `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec` |
 | Packaged ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
@@ -41,7 +41,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
-| Box2D r132/r134 hybrid | C++ compilation units with a residual contact velocity method; the complete polygon unit compiles from March 2008 forum-archived C++ with a documented ABI adjustment |
+| Box2D historical fixed-point variant | All compilation units source-built; complete contact/island units use r131 plus the archived March 15 patch; complete polygon unit uses March 10 forum-archived C++ with a documented ABI adjustment |
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
@@ -49,9 +49,9 @@ The residual regions cover compiler/runtime-sensitive code. The complete
 `b2Triangle` unit and its initializer now compile from C++ and no longer use
 section replacement. `b2Shape::ResetProxy` also compiles from C++ without
 replacement, preserving the release's missing-proxy handling. The GUI-setup
-and thumbnail-rendering replacements are also removed. The contact solver is
-linked from 14,940 C++ bytes and a separately attributed 5,160-byte residual
-velocity method, without its former whole-unit replacement. The complete
+and thumbnail-rendering replacements are also removed. The complete contact
+and island solvers compile from archived C++ without method substitutions
+or solver linker modifications. The complete
 30,768-byte polygon executable unit compiles from archived C++ without method
 selection, instruction rewriting, or residual assembly. Residual regions
 are applied only after the ordinary application link has produced the guarded
@@ -62,7 +62,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Six uppercase `.S` files remain in this corpus, including
+remaining work. Five uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy

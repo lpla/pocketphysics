@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source_revision": "93e8894e2fbd0fec7f69fcdbb38d741b83be6a2a",
+  "clean_builds": {
+    "command": "tools/repro/test_v06_exact.sh",
+    "exit_code": 0,
+    "repetitions": 2,
+    "identical_outputs": ["pocketphysics.arm9", "pocketphysics.arm7", "pocketphysics.nds", "pocketphysics.base.arm9", "pocketphysics.base.arm9.elf", "pocketphysics.arm7.elf", "executable-provenance.json"],
+    "release_rom_sha256": "9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64",
+    "normalized_polygon_object_identity": "10696dc121b12aecdc78e49d327467f565d288d13686efe369727371cb3222cf",
+    "compiled_polygon_source_matches_revision": true
+  },
+  "source_transform_tests": {
+    "command": "tools/repro/test_source_patches.sh",
+    "exit_code": 0,
+    "total_tests": 59,
+    "suites": 9
+  },
+  "reconstruction_source_audit": {
+    "command": "python3 tools/repro/audit_reconstruction_source.py",
+    "exit_code": 0,
+    "text_files": 291,
+    "assembly_files": 6,
+    "long_directives": 147,
+    "scope": "Lexical checks only, not instruction/data semantic proof."
+  },
+  "tracked_binary_inventory": {
+    "command": "python3 tools/repro/audit_tracked_binaries.py --check",
+    "exit_code": 0
+  },
+  "melonds_comparison": {
+    "command": "REPEATS=3 tools/repro/test_v06_inrom.sh",
+    "exit_code": 0,
+    "runs": 9,
+    "measurement_rows": 207,
+    "working_tree_dirty": false,
+    "preceding_dataset": "research/results/polygon-cpp-source/melonds",
+    "identical_preceding_files": ["results.csv", "summary.csv", "roms.txt"],
+    "physical_hardware_validated": false
+  }
+}
