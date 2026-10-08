@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9
+EXPECTED_BASE_ARM9=b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -176,6 +176,21 @@ UL_VRAM="$RECON/dependencies/ulibrary/variants/vram"
 "$TOOL-gcc" "${ul_o2_flags[@]}" -I"$UL_VRAM" -c \
     "$UL_VRAM/texVramManager.c" -o "$UL/texVramManager.o"
 make -C "$UL" libul.a
+# Preserve every C body while reconstructing the font's compilation context.
+UL_TEXT="$BUILD/ulibrary-text"
+python3 "$ROOT/tools/repro/prepare_ulibrary_text.py" "$UL/text.c" "$UL_TEXT"
+"$TOOL-gcc" "${ul_o2_flags[@]}" -ffunction-sections -c \
+    "$UL_TEXT/text-core.c" -o "$UL_TEXT/text-core.o"
+"$TOOL-gcc" "${ul_o2_flags[@]}" -c \
+    "$UL_TEXT/font-source.c" -o "$UL_TEXT/font-source.o"
+(
+    cd "$UL_TEXT"
+    "$TOOL-ld" -r -T "$RECON/dependencies/ulibrary/text-object-layout.ld" \
+        text-core.o font-source.o -o text.o
+)
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/ulibrary/text-object-identity.json" "$UL_TEXT"
+"$TOOL-ar" r "$UL/libul.a" "$UL_TEXT/text.o"
 "$TOOL-gcc" "${ul_o2_flags[@]}" -c "$UL/drawing.c" -o "$UL/drawing.o"
 "$TOOL-gcc" "${ul_o2_flags[@]}" -I"$UL_PAL" -c \
     "$UL_PAL/texPalManager.c" -o "$UL/texPalManager.o"

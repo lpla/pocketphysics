@@ -217,6 +217,9 @@ thumbnail-rendering replacements, adding 1,572 source-compiled bytes.
 The [polygon recovery](polygon-source-recovery.md) compiles the complete
 30,768-byte unit from March 2008 forum-archived C++, with a documented
 pointer-argument ABI adjustment. No polygon residual assembly remains.
+The [font recovery](font-source-recovery.md) adds 808 further source-compiled
+bytes without changing any C body, reconstructing compiler units and their
+relocatable layout instead of using a post-link font replacement.
 
 Five uppercase `.S` files remain in the reconstruction corpus: one zlib
 member, two uLibrary units, the ARM9 residual-region file, and a data-only libfat table. Original
@@ -229,7 +232,7 @@ replacement also remains. The [runtime source rebuild](runtime-source-recovery.m
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 98.97%
+processors, runtime/startup, and post-link replacements. It attributes 99.09%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above

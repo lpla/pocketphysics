@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "reference": "Release-constrained complete C text unit reconstructed by losslessly partitioning the preserved source and restoring its relocatable function/data order. No instruction edits or residual font assembly. Independent unmasked full ARM9 and final ROM hash gates are required.",
+  "objects": {
+    "text.o": {
+      "identity_sha256": "4b5eb0cdaba793fdc72623fa43a6de5876aab33e02efe71ff682fefc130164fd",
+      "allocated_bytes": 4804,
+      "text_bytes": 2680,
+      "source_text_bytes": 2680,
+      "residual_text_bytes": 0
+    }
+  }
+}

@@ -51,9 +51,11 @@ contact and island units from upstream r131 and the preserved March 2008 patch.
 The [UI report](docs/ui-source-recovery.md) removes two application replacements.
 The [polygon report](docs/polygon-source-recovery.md) recovers the complete
 30,768-byte C++ unit from preserved March 2008 forum source.
+The [font report](docs/font-source-recovery.md) removes another replacement
+by reconstructing compiler units without changing any historical C body.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-98.97% of both processors' executable-section bytes to source-compiled
-implementations. Another 6,900 bytes still contain unresolved reconstruction;
+99.09% of both processors' executable-section bytes to source-compiled
+implementations. Another 6,092 bytes still contain unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
@@ -98,6 +100,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical TinyXML source recovery](docs/tinyxml-source-recovery.md)
 - [Historical triangle source recovery](docs/triangle-source-recovery.md)
 - [Historical polygon source recovery](docs/polygon-source-recovery.md)
+- [Historical font source recovery](docs/font-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

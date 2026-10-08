@@ -12,16 +12,16 @@ source. The current outputs have no unattributed executable-section bytes.
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
 | Source-compiled application | 23,416 | 88,796 | 112,212 |
-| Source-compiled dependencies | 4,340 | 423,516 | 427,856 |
+| Source-compiled dependencies | 4,340 | 424,324 | 428,664 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
 | Residual dependency reconstruction | 0 | 4,412 | 4,412 |
-| Residual ARM9 section replacement | 0 | 2,488 | 2,488 |
+| Residual ARM9 section replacement | 0 | 1,680 | 1,680 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **668,600 bytes (98.97%)**.
-Residual reconstruction accounts for **6,900 bytes (1.02%)**. The remaining
+Source-compiled implementations account for **669,408 bytes (99.09%)**.
+Residual reconstruction accounts for **6,092 bytes (0.90%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.
@@ -45,16 +45,20 @@ their unknown executable input sections fail the audit. The
 identity and method-boundary gates constrain its source classification;
 unknown executable input sections remain rejected.
 
+The complete [uLibrary text unit](font-source-recovery.md), including font
+creation, now compiles from unchanged C bodies in reconstructed compiler units.
+Its complete-object identity constrains that classification; no font section
+replacement remains.
+
 ## Remaining Boundary
 
 | Linked residual implementation | Executable-section bytes |
 | --- | ---: |
 | uLibrary historical mixed unit | 3,980 |
 | FAT directory entry creation | 1,448 |
-| Font creation | 808 |
 | Paletted-alpha image conversion | 432 |
 | Keyboard label rendering | 232 |
-| Total | 6,900 |
+| Total | 6,092 |
 
 The archive-only zlib `deflate` reconstruction is an additional source-recovery
 task, but contributes no code to this release ROM and is excluded from the

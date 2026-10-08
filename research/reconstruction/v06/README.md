@@ -15,7 +15,7 @@ Two independent clean builds reproduce these identities:
 
 | Artifact | Size | SHA-256 |
 | --- | ---: | --- |
-| Pre-reconstruction ARM9 link | 827,636 B | `3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9` |
+| Pre-reconstruction ARM9 link | 827,636 B | `b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c` |
 | Final ARM9 payload | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
 | ARM7 payload | 62,828 B | `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec` |
 | Packaged ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
@@ -53,7 +53,9 @@ and thumbnail-rendering replacements are also removed. The complete contact
 and island solvers compile from archived C++ without method substitutions
 or solver linker modifications. The complete
 30,768-byte polygon executable unit compiles from archived C++ without method
-selection, instruction rewriting, or residual assembly. Residual regions
+selection, instruction rewriting, or residual assembly.
+The complete uLibrary text/font unit also compiles from unchanged C bodies
+in reconstructed compiler units, without a font replacement. Residual regions
 are applied only after the ordinary application link has produced the guarded
 pre-reconstruction ARM9 hash above. This makes a
 change in any normal source object, dependency, archive order, or link layout

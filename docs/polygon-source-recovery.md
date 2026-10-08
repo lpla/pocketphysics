@@ -20,6 +20,10 @@ and full linked-payload gates.
 This is source recovery, not a performance optimization. The historical bugs
 and numerical behavior remain part of the preserved release specimen.
 
+The [complete archived-source validation](../research/results/archived-polygon-source/)
+preserves two clean builds and nine fresh melonDS runs at the polygon-recovery
+revision, before the subsequent solver and font recoveries.
+
 ## Archival Evidence
 
 Two fixed-point Box2D patches survive as attachments on the original Box2D
@@ -86,7 +90,7 @@ nonallocated ARM attributes are not program data and are excluded.
 
 Relocation-masked comparisons are diagnostic only. Acceptance requires the
 unmasked ARM9 link to retain SHA-256
-`3530689f0d236794d48d4195cf3e2cb6ae0ddf0cbb00f6adc2e49a23590757c9`
+`b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c`
 before the remaining non-polygon reconstructed regions are applied. The final
 ARM9 and packaged ROM must retain their canonical release identities.
 
