@@ -68,3 +68,18 @@ Mathematical safety and reproducibility do not establish a speedup. Selection
 requires the measured processing and cadence results, followed by broader
 sketch workloads and physical Nintendo DS validation. Until accepted evidence
 supports promotion, this remains an experimental profile.
+
+## Result
+
+The [published datasets](../research/results/velocity-gate/) contain the
+primary timing comparison and a separately instrumented operation-count pass.
+Physics measures 111,049 ticks for the candidate versus 111,032 for the
+selected control; complete-frame time measures 556,758 versus 556,860.
+The differences are tiny, mixed, and partly synchronization-shaped.
+
+More importantly, the counter pass records 4,148 half-gate eligible body
+updates and no newly eligible wider-gate updates in each repetition. The
+workload never exercises the intended additional saving. It cannot establish
+a benefit or a general regression from widening the bound. The selected
+profile remains unchanged. A high-velocity touch/drag/collision workload is
+required before this candidate can be evaluated in its intended domain.

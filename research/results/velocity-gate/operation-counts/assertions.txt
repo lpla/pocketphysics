@@ -1,0 +1,5 @@
+melonds selected: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds selected: zero heap growth and all ROM correctness flags pass
+melonds wide-gate-counts: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds wide-gate-counts: zero heap growth and all ROM correctness flags pass
+melonds wide-gate-counts: recorded scene, hit-test, final-state, and render-work evidence matches selected

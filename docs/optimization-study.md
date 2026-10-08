@@ -146,6 +146,12 @@ are needed before treating these small placement effects as robust gains.
 
 ## Selection Rule
 
+The subsequent [wider velocity-gate study](velocity-gate-study.md) records a
+negative coverage result: none of 4,148 body updates in the standard sketch
+are newly eligible under the proposed bound. Tiny mixed timing differences
+therefore cannot demonstrate the intended saving. The wider bound remains
+experimental and is not included in the selected profile.
+
 An optimization enters the pre-hardware selected profile only when:
 
 1. Behavioral, topology, allocation, checksum, and cadence assertions pass.
