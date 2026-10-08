@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
 OUT_A="$ROOT/research-artifacts/build/perf-check-a"
 OUT_B="$ROOT/research-artifacts/build/perf-check-b"
-EXPECTED_SHA="cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45"
+EXPECTED_SHA="bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd44b478d"
 
 sha256_file() {
     shasum -a 256 "$1" | awk '{print $1}'
@@ -26,4 +26,5 @@ if [ "$sha_a" != "$sha_b" ] || [ "$sha_a" != "$EXPECTED_SHA" ]; then
     exit 1
 fi
 
+cmp "$OUT_A/pocketphysics-v0.6-blocksds.elf" "$OUT_B/pocketphysics-v0.6-blocksds.elf"
 echo "Byte-identical perf rebuilds verified: $sha_a"

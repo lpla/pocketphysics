@@ -83,3 +83,8 @@ The primary guarded specimen measures 6,223 touch ticks, 1,629 hit-test ticks,
 (2.20%, approximately 1.04 microseconds). Other differences are tiny and are
 not credited as a general speedup. Correctness-driven promotion must retain
 this tradeoff in its record and revalidate the resulting release-role builds.
+
+The guard is enabled in the current `perf` and `bench-improved` roles. The
+explicit `bench-improved-polygon-control` profile retains the preceding timing
+binary for both this experiment and the wider-gate study. Other previously
+recorded attribution profiles retain their original experimental definitions.

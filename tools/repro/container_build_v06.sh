@@ -53,7 +53,7 @@ case "$BUILD_PROFILE" in
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
-        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_LINE_ITCM -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
+        PROFILE_DEFS=(-DPP_PERF_PROFILE -DPP_RUNTIME_FIXES -DPP_POLYGON_VALIDATION_GUARD -DPP_RENDER_BATCHED -DPP_PHYSICS_ITCM -DPP_CANVAS_LINE_ITCM -DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS -DPP_BOX2D_LENGTH_FIXED_ESTIMATE -DPP_BOX2D_VELOCITY_GATE)
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports, physics ITCM, and Canvas::drawLine ITCM"
@@ -100,7 +100,7 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm/O3 benchmark"
         ;;
-    bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation)
+    bench-improved|bench-improved-polygon-control|bench-improved-polygon-guard|bench-improved-polygon-validation)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
@@ -108,7 +108,7 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports, physics ITCM, and Canvas::drawLine ITCM benchmark"
-        if [[ "$BUILD_PROFILE" != bench-improved ]]; then
+        if [[ "$BUILD_PROFILE" != bench-improved-polygon-control ]]; then
             PROFILE_DEFS+=(-DPP_POLYGON_VALIDATION_GUARD)
         fi
         if [[ "$BUILD_PROFILE" == bench-improved-polygon-validation ]]; then

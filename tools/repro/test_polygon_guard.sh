@@ -9,7 +9,7 @@ REPEATS="${REPEATS:-3}"
 if [[ "${SKIP_BUILDS:-0}" != 1 ]]; then
     for entry in selected first second validation; do
         profile=bench-improved-polygon-guard
-        [[ "$entry" == selected ]] && profile=bench-improved
+        [[ "$entry" == selected ]] && profile=bench-improved-polygon-control
         [[ "$entry" == validation ]] && profile=bench-improved-polygon-validation
         BUILD_PROFILE="$profile" OUT="$OUT/$entry" "$ROOT/tools/repro/build_v06_blocksds.sh"
     done

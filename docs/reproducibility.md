@@ -140,7 +140,7 @@ Expected uninstrumented result:
 The improved role enables the selected bug fixes and optimizations, ARM code,
 fixed-point Box2D, the original DS hardware divider/square-root/trigonometry
 path, two conservative later-Box2D backports, physics and line-renderer ITCM
-placement, batched rendering, and whole-program LTO. The uninstrumented ITCM
+placement, batched rendering, polygon-validation guards, and whole-program LTO. The uninstrumented ITCM
 section remains well below the ARM9's 32 KiB limit. LTO archives are created
 with `arm-none-eabi-gcc-ar`, which loads GCC's LTO plugin; plain `ar` was
 empirically found to produce unresolved archive symbols.
@@ -153,7 +153,7 @@ tools/repro/test_v06_perf.sh
 Expected uninstrumented result:
 
 ```text
-cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45  814080 bytes
+bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd44b478d  814080 bytes
 ```
 
 The accepted and rejected changes are documented in
@@ -185,6 +185,8 @@ The default full loop performs:
 - Historical benchmark overlay build on the exact source output with base-hash guards.
 - Three complete in-ROM runs for all roles in melonDS.
 - Correctness, allocation, checksum, sample-count, and timing assertions.
+- Sanitized polygon API negative controls and shared ARM9 validation cases,
+  in a separate regression specimen from the primary timing builds.
 
 Generated build products and raw logs are written under `research-artifacts/`.
 Versioned evidence is published in [`research/results`](../research/results/)

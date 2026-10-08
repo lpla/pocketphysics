@@ -20,7 +20,7 @@ testable claims.
 | Historical source reconstruction | Two clean source builds reproduce ARM7, ARM9, and the ROM byte for byte | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 | Archival repack control | Historical ndstool reproduces the reference ROM from verified payloads | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 | Modern source port | v0.6 C++ source on checksum-locked BlocksDS dependencies | `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06` |
-| Improved source port | Modern port with measured correctness and performance changes | `cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45` |
+| Improved source port | Modern port with measured correctness and performance changes | `bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd44b478d` |
 
 The historical reconstruction is the canonical exact build. Every linked
 implementation compiles from C/C++ or original low-level source assembly with

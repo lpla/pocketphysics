@@ -11,6 +11,9 @@ profile and all historical reconstruction inputs remain unchanged.
 The candidate profile is `bench-nds-hw-arm-wide-gate`. It retains the selected
 ARM/LTO, DS hardware math, fixed-estimate backport, physics ITCM, and line ITCM
 settings, and enables `PP_BOX2D_WIDE_VELOCITY_GATE`.
+Its timing control is frozen at the preceding pre-polygon-guard specimen;
+the runner uses `bench-improved-polygon-control` to retain that published ROM
+identity after the correctness guard enters the current improved role.
 The separate `bench-nds-hw-arm-wide-gate-counts` profile classifies each
 processed body as half-gate eligible, newly eligible only under the wider gate,
 or still requiring length calculation. This extra instrumentation is not used
