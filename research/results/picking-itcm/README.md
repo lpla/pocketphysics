@@ -54,6 +54,10 @@ establish a general performance regression. Larger scenes and selection-heavy
 touch tests are required to determine where the tradeoff is beneficial.
 No physical Nintendo DS result is claimed.
 
+The [runtime boundary](../../../docs/benchmarking.md#runtime-boundary) applies
+to both specimens. This harness does not measure the normal VBlank-driven
+full renderer and foreground audio/input loop.
+
 ## Reproduction
 
 ```sh

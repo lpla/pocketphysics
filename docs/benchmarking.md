@@ -27,6 +27,41 @@ This is intentionally not a synthetic Box2D loop. It includes the interaction
 path that makes the software feel responsive: touch processing, object creation,
 selection queries, simulation, and drawing.
 
+### Runtime Boundary
+
+This is a component-integration harness, not a replay of the complete normal
+application event loop. The modern benchmark enters after GUI construction but
+before background/text initialization, motion setup, the final VBlank-handler
+installation, and the normal foreground loop. The historical overlay enters
+at the corresponding pre-loop boundary. Each specimen directly sequences
+touch dispatch, `World::step`, and canvas rendering in the benchmark.
+
+The normal application instead
+[draws and polls input in its VBlank handler](https://github.com/lpla/pocketphysics/blob/e9b621e/arm9/source/main.cpp#L328)
+and
+[steps physics and processes audio commands in the foreground loop](https://github.com/lpla/pocketphysics/blob/e9b621e/arm9/source/main.cpp#L1181).
+Its drawing path also includes backgrounds, GUI bands, projection changes,
+and optional dual-screen work. The benchmark does not measure that full path,
+touchscreen acquisition latency, ARM7 audio command processing, scrolling,
+motion accessories, or interruption of foreground hardware-math operations
+by the application renderer.
+
+Accordingly, `frame_total` means the complete **instrumented direct sequence**,
+not a full normal-application or physical-display frame. Its cadence gates
+are specific to this harness. Faster measured physics and hit testing are
+evidence for those compiled operations, not sufficient evidence of whole-app
+responsiveness, IRQ safety, or hardware input latency. A separate normal-loop
+replay with full startup, IRQ accounting, input scheduling, and frame output
+is required before hardware-readiness conclusions.
+
+Physics and display periods must also remain distinct. The historical
+[integration step](https://github.com/lpla/pocketphysics/blob/e9b621e/arm9/source/world.h#L14)
+is `1/20` second, not `1/60`. The harness preserves that step while testing a
+nominal 60 Hz display interval. Its 240 physics steps therefore advance
+approximately twelve seconds of simulated time. The fixed-point historical
+overlay passes raw `0x0ccc` (3,276/65,536 second) rather than an exact real
+`0.05`; numeric-mode differences are part of the declared comparison.
+
 ## Correctness Gates
 
 Timing rows are rejected unless all of these hold:

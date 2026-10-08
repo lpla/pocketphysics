@@ -71,6 +71,10 @@ topology bounds are not full per-body trajectory equivalence. Physical-console
 validation and the [broader coverage matrix](../../../docs/research-frontier.md)
 remain open.
 
+The [runtime boundary](../../../docs/benchmarking.md#runtime-boundary) also
+applies: complete-frame timing covers the directly sequenced integration
+harness, not the normal full-GUI VBlank/foreground/audio loop.
+
 ## Reproduction
 
 ```sh

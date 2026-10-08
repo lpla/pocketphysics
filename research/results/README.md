@@ -13,6 +13,11 @@ Every dataset is bound to a clean source revision and exact ROM identities.
 Optimization screening is published separately from the final
 historical/modern/improved comparison.
 
+`frame_total` covers the benchmark's directly sequenced touch/physics/canvas
+pipeline. It does not cover the normal full-GUI VBlank handler and foreground
+audio/input loop. The [runtime boundary](../../docs/benchmarking.md#runtime-boundary)
+limits cadence and responsiveness conclusions for every dataset below.
+
 ## Primary melonDS Comparison
 
 - [Current guarded improved build and fresh three-role comparison](polygon-promotion/)

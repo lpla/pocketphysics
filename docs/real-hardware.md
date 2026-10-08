@@ -4,6 +4,13 @@ melonDS is the pre-hardware baseline, but it cannot establish Nintendo DS cache,
 bus, flashcart, firmware, or display behavior. The benchmark ROMs therefore
 write the same in-ROM records to FAT for physical collection.
 
+These specimens measure the directly sequenced touch/physics/canvas integration
+harness. They do not run the normal full-GUI VBlank handler and foreground
+audio/input loop. Physical collection of this harness validates its hardware
+timings, not whole-application input latency or IRQ safety. The separate
+[runtime-loop acceptance work](research-frontier.md) and
+[measurement boundary](benchmarking.md#runtime-boundary) remain necessary.
+
 ## Build Specimens
 
 ```sh

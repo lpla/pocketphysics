@@ -15,6 +15,15 @@ insufficient. This target is separate from the accepted linked-ROM identity.
 
 ## Application Coverage
 
+- **Normal application scheduling:** the current integration harness enters
+  before final initialization and directly sequences touch, physics, and canvas
+  drawing. It does not execute the normal VBlank-driven full renderer with
+  foreground physics/input/audio processing. A separate runtime-loop replay
+  must account for IRQ/foreground overlap, skipped or delayed input samples,
+  full GUI/background and dual-screen drawing, frame output, and hardware
+  divider/square-root interruption. Existing harness cadence is not full-app
+  hardware readiness. The simulation's approximately 20 Hz integration step
+  and nominal 60 Hz display target must remain separately documented.
 - **Fast stylus dragging and collisions:** the standard sketch never enters
   the newly eligible domain of the wider velocity gate. A further workload
   must exercise that domain through the real mouse-joint/touch path, preserve
@@ -36,6 +45,9 @@ insufficient. This target is separate from the accepted linked-ROM identity.
 - **Fixed-point arithmetic:** memory sanitizer coverage does not audit all
   signed shifts, overflows, division boundaries, or hardware arithmetic unit
   ownership. A complete arithmetic contract and boundary matrix remain open.
+  This includes force/impulse scale conversions across the application and
+  mouse-joint dependency API, response under rapid dragging, and fixed-point
+  range safety before proposing any change to physical behavior.
 
 ## Optimization and Hardware
 

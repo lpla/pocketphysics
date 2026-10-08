@@ -87,6 +87,13 @@ reported performance value is read from the ROM's cascaded ARM9 timers.
 It also runs sanitized polygon API negative controls and shared ARM9 regression
 cases separately from the primary performance specimens.
 
+The primary benchmark calls the real touch, physics, and canvas operations in
+a direct integration harness. It does not run the complete normal VBlank-driven
+GUI/audio loop. Its frame/cadence results are harness-specific, not physical
+input latency or whole-app hardware readiness; the
+[protocol boundary](docs/benchmarking.md#runtime-boundary) and
+[remaining runtime tests](docs/research-frontier.md) make that distinction explicit.
+
 Individual entry points:
 
 ```sh
