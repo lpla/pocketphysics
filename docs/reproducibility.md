@@ -71,8 +71,8 @@ The script performs these steps:
    tracked/downloaded C, C++, and mnemonic assembly corpus. Check the 26
    recovered C objects against normalized historical ELF identities.
 5. Clean-build ARM7 and ARM9 with the recovered flags and object order.
-6. Guard the ordinary ARM9 link hash, then link the reviewed residual mnemonic
-   sections at their recovered addresses.
+6. Guard the complete ordinary ARM9 link hash. No post-link replacement or
+   reconstructed executable region is inserted into either processor payload.
 7. Package with historical ndstool 1.36, title, and icon.
 8. Refuse output unless the ARM7, ARM9, and ROM hashes match the public release.
 
@@ -96,7 +96,9 @@ It is a lexical check, not a high-level recovery proof. The
 [runtime source report](runtime-source-recovery.md) documents startup, libgcc,
 newlib, and libstdc++ independently; compiler/assembler/linker/packager
 executables remain pinned bootstrap tools.
-See [C-Source Recovery](c-source-recovery.md) for the remaining program boundaries.
+The [linked-source validation](../research/results/linked-source-complete/)
+records zero residual executable bytes in both processor payloads.
+See [C-Source Recovery](c-source-recovery.md) for the remaining archive-only boundary.
 
 ## Archival Repack Control
 

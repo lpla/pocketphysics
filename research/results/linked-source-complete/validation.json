@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "source_revision": "5192b6c851186c122c896f4aa7b2b8eb7553d5bf",
+  "clean_builds": {
+    "command": "tools/repro/test_v06_exact.sh",
+    "exit_code": 0,
+    "repetitions": 2,
+    "identical_outputs": ["pocketphysics.arm9", "pocketphysics.arm7", "pocketphysics.nds", "pocketphysics.base.arm9", "pocketphysics.base.arm9.elf", "pocketphysics.arm7.elf", "executable-provenance.json"],
+    "ordinary_arm9_matches_packaged_payload": true,
+    "post_link_replacements": 0,
+    "release_rom_sha256": "9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64",
+    "normalized_png_object_identity": "1202a41211ef4d48bfb23d3e0c98821dffc27d8e2b8aefd4e032d2a608fa7dc5",
+    "normalized_combined_image_object_identity": "b495d04b80c6e3842ed85dadf502b60b5801b3f8665a25f88a9676b457d13ebc",
+    "normalized_alpha_object_identity": "163f15f146330b21434d71871d77f3abacf17e8fda83616472002b41e6af9e8b",
+    "source_executable_bytes": 675500,
+    "residual_executable_bytes": 0,
+    "linker_generated_executable_bytes": 80
+  },
+  "source_transform_tests": {
+    "command": "tools/repro/test_source_patches.sh",
+    "exit_code": 0,
+    "total_tests": 85,
+    "suites": 14
+  },
+  "reconstruction_source_audit": {
+    "command": "python3 tools/repro/audit_reconstruction_source.py",
+    "exit_code": 0,
+    "text_files": 291,
+    "assembly_files": 2,
+    "long_directives": 105,
+    "scope": "Lexical checks only, not instruction/data semantic proof. Remaining assembly is archive-only zlib deflate and a data-only libfat table."
+  },
+  "tracked_binary_inventory": {
+    "command": "python3 tools/repro/audit_tracked_binaries.py --check",
+    "exit_code": 0
+  },
+  "melonds_comparison": {
+    "command": "REPEATS=3 tools/repro/test_v06_inrom.sh",
+    "exit_code": 0,
+    "runs": 9,
+    "measurement_rows": 207,
+    "working_tree_dirty": false,
+    "preceding_dataset": "research/results/ordinary-arm9-source/melonds",
+    "identical_preceding_files": ["results.csv", "summary.csv", "roms.txt"],
+    "physical_hardware_validated": false
+  }
+}

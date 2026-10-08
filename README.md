@@ -112,6 +112,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Ordinary ARM9 link source recovery](docs/ordinary-arm9-source-recovery.md)
 - [Historical PNG loader source recovery](docs/png-loader-source-recovery.md)
 - [Historical alpha conversion source recovery](docs/alpha-source-recovery.md)
+- [Complete linked-source validation](research/results/linked-source-complete/)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

@@ -59,6 +59,10 @@ the zero-sized data sections. Debug/file/compiler metadata is excluded.
 
 ## Acceptance
 
+The [public validation dataset](../research/results/linked-source-complete/)
+records two clean exact builds and nine fresh three-role melonDS runs bound to
+a clean source revision, including the subsequent alpha recovery.
+
 The [source tests](../tools/repro/test_prepare_ulibrary_png.py) pin the input,
 check the complete transformation, reject changed inputs, constrain the
 data-only discard, and require complete-object verification in the recipe.

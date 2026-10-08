@@ -52,6 +52,10 @@ Unknown executable sections in this member fail the provenance auditor.
 
 ## Acceptance
 
+The [public validation dataset](../research/results/linked-source-complete/)
+preserves both clean-build identities, the zero-residual executable inventory,
+and nine fresh three-role melonDS runs bound to a clean source revision.
+
 ```sh
 tools/repro/test_source_patches.sh
 tools/repro/test_v06_exact.sh

@@ -67,6 +67,11 @@ ARM9/ARM7 payload gates, not by moving transcriptions to another container.
 
 ## Reproduction
 
+The [linked-source validation dataset](../research/results/linked-source-complete/)
+preserves this inventory, the exact hash records, and repeated melonDS evidence
+for a named clean source revision. Earlier inventories describe their own
+specimens and are retained without retrospective reclassification.
+
 ```sh
 tools/repro/test_v06_exact.sh
 ```
