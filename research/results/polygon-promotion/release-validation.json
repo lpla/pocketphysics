@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "source_revision": "b459dd285119bf1557f90c2367df9ab452698c42",
+  "working_tree_dirty_during_builds": false,
+  "command": "tools/repro/test_v06_perf.sh",
+  "exit_code": 0,
+  "independent_fresh_output_trees": 2,
+  "identical_complete_elf": true,
+  "identical_rom": true,
+  "rom_sha256": "bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd44b478d",
+  "rom_size_bytes": 814080,
+  "complete_arm9_elf_sha256": "635f4391bf85b067c83d1d377f7b863cad00bad48dd871781ad72a553d6d5b60",
+  "optional_picking_profile_preserves_selected_release": true,
+  "physical_hardware_validated": false
+}

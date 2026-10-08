@@ -54,8 +54,9 @@ measurements.
 
 The [picking-ITCM study](picking-itcm-study.md) isolates broad-phase query code
 placement without changing geometry. Its independent build and complete
-function-range placement gates pass, but the selected profile remains unchanged
-pending a clean-source timing decision and broader selection workloads.
+function-range placement gates pass. The clean six-run comparison improves hit
+tests but increases physics and complete-frame time in this scene. The selected
+profile remains unchanged pending broader selection workloads.
 
 Physical Nintendo DS measurements remain the final acceptance stage. Neither
 the source reconstruction milestone nor passing deterministic emulator runs

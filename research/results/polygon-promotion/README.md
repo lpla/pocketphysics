@@ -29,11 +29,12 @@ Improved release ROM  bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd4
 Complete ARM9 ELF     635f4391bf85b067c83d1d377f7b863cad00bad48dd871781ad72a553d6d5b60
 ```
 
-The release builds also verify that adding the optional picking-ITCM profile
-does not alter the selected binary. They use fresh output trees, not a claim
-of pristine Git state during their construction. The clean replay metadata
-and [instrumented ROM manifest](melonds/roms.txt) independently identify the
-timing specimens; instrumentation necessarily changes the release hashes.
+The [fresh release validation](release-validation.json) records two further
+builds from clean source revision `b459dd285119bf1557f90c2367df9ab452698c42`.
+They verify that adding the optional picking-ITCM profile does not alter the
+selected binary. The clean replay metadata and
+[instrumented ROM manifest](melonds/roms.txt) independently identify the timing
+specimens; instrumentation necessarily changes the release hashes.
 
 ## Results
 

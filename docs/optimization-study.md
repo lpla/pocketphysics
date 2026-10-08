@@ -157,6 +157,15 @@ are newly eligible under the proposed bound. Tiny mixed timing differences
 therefore cannot demonstrate the intended saving. The wider bound remains
 experimental and is not included in the selected profile.
 
+The [picking-ITCM experiment](picking-itcm-study.md) subsequently reduces query
+time by 7.49% but increases physics by 0.39% and complete-frame time by 0.07%
+against the polygon-guarded control. It remains unselected for the general
+release; dense selection/drag workloads may justify revisiting that tradeoff.
+Its six-run clean-source dataset preserves exact recorded state/render
+equivalence, complete ELF/ROM reproducibility, and full function-range placement
+checks. This is neither a universally faster application nor a demonstrated
+general regression.
+
 An optimization enters the pre-hardware selected profile only when:
 
 1. Behavioral, topology, allocation, checksum, and cadence assertions pass.

@@ -53,7 +53,16 @@ time includes display synchronization. The standard scene is not a dense
 selection workload; additional sketch sizes and repeated drag/selection
 patterns are required before extrapolation.
 
-At this checkpoint the candidate passes independent build and placement
-validation. It remains experimental and is not enabled in `perf` or
-`bench-improved`. A clean-source replay dataset is required for the timing
-decision. Physical Nintendo DS validation remains separate.
+The [clean-source dataset](../research/results/picking-itcm/) contains six runs
+and 138 rows with exact recorded scene and render-work equivalence, zero heap
+growth, zero tolerant cadence overruns, and zero timing spread. Hit-test mean
+falls from 1,629 to 1,507 ticks (7.49%), but touch rises from 6,223 to 6,233,
+physics from 110,987 to 111,420 (0.39%), and complete frame from 556,655 to
+557,025 (0.07%). The unrelated physics change is a placement/layout tradeoff,
+not a changed physics algorithm.
+
+The candidate remains experimental and is not enabled in `perf` or
+`bench-improved`. The standard sketch demonstrates a query-phase benefit with
+small costs elsewhere, not a uniformly faster application or a general
+regression. Dense selection/drag workloads and physical Nintendo DS validation
+remain separate work.

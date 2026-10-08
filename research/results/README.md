@@ -53,6 +53,7 @@ byte-identical source build, not from an extracted release payload.
 
 - [Wider velocity gate: timing and operation-domain coverage](velocity-gate/)
 - [Polygon validation: host negative controls and ARM9 API regression cases](polygon-validation/)
+- [Picking ITCM: query-phase gain with whole-application tradeoffs](picking-itcm/)
 - [melonDS 1.1 optimization screening](optimization-screening/melonds/)
 - [Profile definitions, measurements, and reproduction command](optimization-screening/)
 

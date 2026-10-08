@@ -1,0 +1,33 @@
+{
+  "itcm": {
+    "name": ".itcm",
+    "address": 16777216,
+    "size": 15152,
+    "sha256": "35b8a59acf83f5e423e3aa494a415348aee2e5894dcad8c2b559f8685361286a"
+  },
+  "picking_symbols": [
+    {
+      "name": "World::getThingsAt(int, int, Thing**, int, bool)",
+      "address": 16777712
+    },
+    {
+      "name": "World::getThingsAt(int, int, Thing**, int, bool) [clone .constprop.0]",
+      "address": 16779228
+    }
+  ],
+  "picking_functions": [
+    {
+      "name": "_ZN5World11getThingsAtEiiPP5Thingib.constprop.0",
+      "address": 16779228,
+      "size": 1452,
+      "section": ".itcm"
+    },
+    {
+      "name": "_ZN5World11getThingsAtEiiPP5Thingib",
+      "address": 16777712,
+      "size": 1516,
+      "section": ".itcm"
+    }
+  ],
+  "elf_sha256": "ab12c32dd43f33112c0c567f482cc06b742e77ab39755b7e48d4b7ae32d3669f"
+}
