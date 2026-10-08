@@ -400,6 +400,12 @@ void handleInput(void)
 
     canvas = src / "arm9/source/canvas.cpp"
     replace_exact(
+        world,
+        "int World::getThingsAt(int x, int y, Thing ** res_things, int n, bool include_pins)\n",
+        "#ifdef PP_PICKING_ITCM\nITCM_CODE\n#endif\n"
+        "int World::getThingsAt(int x, int y, Thing ** res_things, int n, bool include_pins)\n",
+    )
+    replace_exact(
         canvas,
         "void Canvas::draw(void)\n",
         "#if defined(PP_HOT_ITCM) || defined(PP_RENDER_ITCM) || defined(PP_CANVAS_DRAW_ITCM)\n"

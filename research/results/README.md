@@ -15,6 +15,8 @@ historical/modern/improved comparison.
 
 ## Primary melonDS Comparison
 
+- [Current guarded improved build and fresh three-role comparison](polygon-promotion/)
+- [Complete linked-source reconstruction validation](linked-source-complete/)
 - [melonDS 1.1 final dataset](melonds-final/)
 - [Fresh C-source recovery validation and stricter screening reanalysis](c-source-recovery/)
 - [Source-built runtime and complete libpng validation](runtime-source-recovery/)
@@ -30,7 +32,7 @@ columns count intervals out of 240 simulation/render frames.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Historical release | 5,471 | 2,805 | 278,893 | 554,829 | 0 | 0 | 14,400 |
 | Modern source port | 12,286 | 3,015 | 584,579 | 904,349 | 102 | 87 | 14,400 |
-| Improved source port | 6,239 | 1,594 | 111,032 | 556,860 | 0 | 0 | 0 |
+| Improved source port | 6,223 | 1,629 | 110,987 | 556,655 | 0 | 0 | 0 |
 
 Relative to the modern source port, the improved profile reduces physics time
 by 81.0% and complete-frame time by 38.4%. It removes the reproduced hit-test
@@ -39,11 +41,18 @@ already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
 
+This table uses the current polygon-guarded role. Its
+[promotion record](polygon-promotion/) discloses the guard's small hit-test
+cost, strict versus tolerant frame deadlines, and cross-role numeric-mode
+limits. The earlier datasets preserve their preceding specimen identities.
+
 The historical specimen in this dataset was instrumented from the
 byte-identical source build, not from an extracted release payload.
 
 ## Optimization Attribution
 
+- [Wider velocity gate: timing and operation-domain coverage](velocity-gate/)
+- [Polygon validation: host negative controls and ARM9 API regression cases](polygon-validation/)
 - [melonDS 1.1 optimization screening](optimization-screening/melonds/)
 - [Profile definitions, measurements, and reproduction command](optimization-screening/)
 

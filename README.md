@@ -121,6 +121,8 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Optimization and rejection study](docs/optimization-study.md)
 - [Wider velocity-gate timing and operation coverage](research/results/velocity-gate/)
 - [Polygon validation hardening and regression protocol](docs/polygon-validation-study.md)
+- [Current guarded build: fresh three-role comparison](research/results/polygon-promotion/)
+- [Picking-function ITCM experiment](docs/picking-itcm-study.md)
 - [Open research and acceptance criteria](docs/research-frontier.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)
 - [Tracked binary and external-input provenance](docs/provenance.md)

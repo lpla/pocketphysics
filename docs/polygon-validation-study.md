@@ -88,3 +88,9 @@ The guard is enabled in the current `perf` and `bench-improved` roles. The
 explicit `bench-improved-polygon-control` profile retains the preceding timing
 binary for both this experiment and the wider-gate study. Other previously
 recorded attribution profiles retain their original experimental definitions.
+
+The [promotion comparison](../research/results/polygon-promotion/) revalidates
+all three release roles, retains the historical hash-identical source build,
+and records two identical uninstrumented guarded release builds. It preserves
+negative controls and distinguishes strict frame-budget misses from tolerant
+cadence acceptance.

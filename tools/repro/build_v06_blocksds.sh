@@ -81,7 +81,7 @@ done < "$PACKAGE_LOCK"
 
 CONVEX_TRANSFORM_FLAGS=()
 case "$PROFILE" in
-    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation)
+    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation|bench-improved-query-itcm)
         CONVEX_TRANSFORM_FLAGS+=(--polygon-guard)
         ;;
 esac
