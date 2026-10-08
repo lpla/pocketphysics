@@ -1,4 +1,5 @@
 research/reference/** -text -whitespace
+research/reconstruction/v06/arm9/keyboard-source.patch -whitespace
 research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.* -whitespace
 research/reconstruction/v06/dependencies/box2d/Contrib/b2Triangle.* -whitespace
 research/reconstruction/v06/dependencies/box2d/Dynamics/b2Island.cpp -text -whitespace
