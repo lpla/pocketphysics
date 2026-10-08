@@ -23,6 +23,14 @@ source archive, and their upstream packaging recipes and license notices.
 These source companions are not a claim that the packages themselves have
 been rebuilt byte-identically.
 
+The same release preserves the original zlib 1.2.3 source tarball. A CI download
+from the fossils URL returned different bytes on October 8, 2026 and was rejected
+by the hash gate. The fallback contains the original 496,597-byte archive and
+uses the unchanged locked SHA-256. Independent downloads from the upstream
+`www.zlib.net` fossils URL and the libpng project's SourceForge archive matched
+those bytes. Neither a changed upstream response nor an unverified mirror is
+accepted.
+
 The original GameBrew v0.6 ZIP is also mirrored as a GitHub Release asset on
 this fork because GameBrew blocks some automated runner networks. Both URLs are
 locked to `953c950217b14610039338918d4849f9ba5ab2ef44b9c92bb902296e5961cfb6`.

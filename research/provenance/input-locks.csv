@@ -10,6 +10,7 @@ legacy-sdk,devkitPro Linux SDK,2007-05-03,https://www.libsdl.org/extras/nds/devk
 legacy-toolchain,devkitARM,r21,https://wii.leseratte10.de/devkitPro/devkitARM/r21%20(2007)/14943_devkitARM_r21linux.tar.bz2,7a3e1ab1c7d3f3a98389f3bd78ad52826fe65b2d869c3b1f187c068b989ae203,build_v06_exact.sh and build_v06_repack_control.sh
 source-archive,libnds,df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb,https://github.com/devkitPro/libnds/archive/df7b1022bfb7dc34b34d2d77b2050b0999e7ccfb.tar.gz,bdf7639b54acd9a8354b20a2a232493472229f182a471f1b51c1ae93ba222d2b,build_v06_exact.sh
 source-archive,zlib,1.2.3,https://zlib.net/fossils/zlib-1.2.3.tar.gz,1795c7d067a43174113fdf03447532f373e1c6c57c08d61d9e4e9be5e244b05e,build_v06_exact.sh
+source-archive-mirror,zlib,1.2.3,https://github.com/lpla/pocketphysics/releases/download/reproducibility-inputs-v1/zlib-1.2.3.tar.gz,1795c7d067a43174113fdf03447532f373e1c6c57c08d61d9e4e9be5e244b05e,build_v06_exact.sh
 source-archive,libpng,1.2.8,https://codeload.github.com/pnggroup/libpng/tar.gz/refs/tags/v1.2.8,d3a07a78927fa23ca8bd8c13938011e0d92b6736207e3efd093a86edcde8fc02,build_v06_exact.sh
 source-archive,newlib,1.15.0,https://sourceware.org/pub/newlib/newlib-1.15.0.tar.gz,c4496102d38c59d1a47ddd5481af35caa1f65b76e2a94d9607737e17fd9e4465,build_v06_exact.sh
 source-archive,GCC core,4.1.2,https://ftp.gnu.org/gnu/gcc/gcc-4.1.2/gcc-core-4.1.2.tar.bz2,7be9c5df8000ae35d0928f0a254bfb5e8478cad5e5e57fd07820530c03b3711d,build_v06_exact.sh

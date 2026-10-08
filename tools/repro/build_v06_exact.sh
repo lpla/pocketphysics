@@ -16,24 +16,7 @@ GCC_CORE_SOURCE="$DOWNLOADS/gcc-core-4.1.2.tar.bz2"
 GCC_CPP_SOURCE="$DOWNLOADS/gcc-g++-4.1.2.tar.bz2"
 PRODUCER_SOURCE="$DOWNLOADS/buildscripts-8007fd4.tar.gz"
 
-fetch() {
-    local url="$1"
-    local path="$2"
-    local expected="$3"
-    mkdir -p "$(dirname "$path")"
-    if [ -f "$path" ] && [ "$(shasum -a 256 "$path" | awk '{print $1}')" = "$expected" ]; then
-        return
-    fi
-    rm -f "$path"
-    curl -L --fail --retry 3 --retry-delay 2 "$url" -o "$path"
-    local actual
-    actual="$(shasum -a 256 "$path" | awk '{print $1}')"
-    if [ "$actual" != "$expected" ]; then
-        printf 'Checksum mismatch for %s\nexpected: %s\nactual:   %s\n' \
-            "$path" "$expected" "$actual" >&2
-        exit 1
-    fi
-}
+source "$ROOT/tools/repro/fetch_locked.sh"
 
 fetch \
     'https://www.libsdl.org/extras/nds/devkitPro-20070503-linux.tar.gz' \
@@ -50,7 +33,8 @@ fetch \
 fetch \
     'https://zlib.net/fossils/zlib-1.2.3.tar.gz' \
     "$ZLIB_SOURCE" \
-    '1795c7d067a43174113fdf03447532f373e1c6c57c08d61d9e4e9be5e244b05e'
+    '1795c7d067a43174113fdf03447532f373e1c6c57c08d61d9e4e9be5e244b05e' \
+    'https://github.com/lpla/pocketphysics/releases/download/reproducibility-inputs-v1/zlib-1.2.3.tar.gz'
 fetch \
     'https://codeload.github.com/pnggroup/libpng/tar.gz/refs/tags/v1.2.8' \
     "$PNG_SOURCE" \
