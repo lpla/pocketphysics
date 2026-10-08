@@ -19,6 +19,12 @@
 
 extern State state;
 extern void ppDispatchTouchSample(int px, int py, bool pen_down);
+#ifdef PP_BENCHMARK_GATE_COUNTS
+extern uint32 ppGateTotal;
+extern uint32 ppGateHalfEligible;
+extern uint32 ppGateWideOnlyEligible;
+extern uint32 ppGateLengthRequired;
+#endif
 
 static const u32 kFnvOffset = 2166136261u;
 static const u32 kFnvPrime = 16777619u;
@@ -537,6 +543,14 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	emitValue(file, "behavior_pass", behavior_pass, final_checksum, behavior_pass);
 	emitValue(file, "hit_test_heap_fixed_pass", leak_fixed_pass, hit_checksum, leak_fixed_pass);
 	emitValue(file, "overall_pass", pass, final_checksum, pass);
+#ifdef PP_BENCHMARK_GATE_COUNTS
+	int gate_pass = ppGateTotal > 0 &&
+		ppGateTotal == ppGateHalfEligible + ppGateWideOnlyEligible + ppGateLengthRequired;
+	emitValue(file, "gate_total", ppGateTotal, final_checksum, gate_pass);
+	emitValue(file, "gate_half_eligible", ppGateHalfEligible, final_checksum, gate_pass);
+	emitValue(file, "gate_wide_only_eligible", ppGateWideOnlyEligible, final_checksum, gate_pass);
+	emitValue(file, "gate_length_required", ppGateLengthRequired, final_checksum, gate_pass);
+#endif
 
 	if(file)
 		fclose(file);

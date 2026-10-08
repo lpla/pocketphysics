@@ -11,6 +11,10 @@ profile and all historical reconstruction inputs remain unchanged.
 The candidate profile is `bench-nds-hw-arm-wide-gate`. It retains the selected
 ARM/LTO, DS hardware math, fixed-estimate backport, physics ITCM, and line ITCM
 settings, and enables `PP_BOX2D_WIDE_VELOCITY_GATE`.
+The separate `bench-nds-hw-arm-wide-gate-counts` profile classifies each
+processed body as half-gate eligible, newly eligible only under the wider gate,
+or still requiring length calculation. This extra instrumentation is not used
+for timing acceptance.
 
 ## Arithmetic Bound
 
@@ -55,7 +59,10 @@ selected control once and the candidate twice in independent output trees.
 Both candidate ROMs and complete ELF files must match. The selected control's
 instrumented ROM must retain its published identity. It then performs three
 melonDS repetitions of each profile, using in-ROM timers and exact recorded
-state/render-work equivalence gates.
+state/render-work equivalence gates. It separately replays the operation-count
+profile and checks that its three disjoint categories sum to the independently
+recorded total. Operation-count timings cannot be substituted for the original
+candidate timings.
 
 Mathematical safety and reproducibility do not establish a speedup. Selection
 requires the measured processing and cadence results, followed by broader

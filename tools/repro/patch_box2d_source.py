@@ -21,6 +21,18 @@ def main() -> int:
     world = Path(sys.argv[1]) / "Source/Dynamics/b2World.cpp"
 
     replace_exact(
+        island,
+        '#include "b2Island.h"\n',
+        '#include "b2Island.h"\n'
+        '#ifdef PP_BENCHMARK_GATE_COUNTS\n'
+        'uint32 ppGateTotal = 0;\n'
+        'uint32 ppGateHalfEligible = 0;\n'
+        'uint32 ppGateWideOnlyEligible = 0;\n'
+        'uint32 ppGateLengthRequired = 0;\n'
+        '#endif\n',
+    )
+
+    replace_exact(
         settings,
         """// need to include NDS jtypes.h instead of \n// usual typedefs because NDS jtypes defines\n// them slightly differently, oh well.\n#ifdef TARGET_IS_NDS\n\n#include \"jtypes.h\"\n\n#else\n\ntypedef signed char\tint8;\ntypedef signed short int16;\ntypedef signed int int32;\ntypedef unsigned char uint8;\ntypedef unsigned short uint16;\ntypedef unsigned int uint32;\n\n#endif\n""",
         """#if defined(__NDS__)\n#if defined(TARGET_FLOAT32_IS_FIXED)\n#define float32 LibndsFloat32\n#include <nds/ndstypes.h>\n#undef float32\n#else\n#include <nds/ndstypes.h>\n#endif\n#else\ntypedef signed char\tint8;\ntypedef signed short int16;\ntypedef signed int int32;\ntypedef unsigned char uint8;\ntypedef unsigned short uint16;\ntypedef unsigned int uint32;\n#endif\n""",
@@ -67,6 +79,17 @@ def main() -> int:
 		const float32 halfLinearVelocity = b2_maxLinearVelocity * (181.0f / 256.0f);
 #else
 		const float32 halfLinearVelocity = b2_maxLinearVelocity * 0.5f;
+#endif
+#ifdef PP_BENCHMARK_GATE_COUNTS
+		++ppGateTotal;
+		if (b2Abs(b->m_linearVelocity.x) > halfLinearVelocity ||
+			b2Abs(b->m_linearVelocity.y) > halfLinearVelocity)
+			++ppGateLengthRequired;
+		else if (b2Abs(b->m_linearVelocity.x) > b2_maxLinearVelocity * 0.5f ||
+			b2Abs(b->m_linearVelocity.y) > b2_maxLinearVelocity * 0.5f)
+			++ppGateWideOnlyEligible;
+		else
+			++ppGateHalfEligible;
 #endif
 		if (b2Abs(b->m_linearVelocity.x) > halfLinearVelocity ||
 			b2Abs(b->m_linearVelocity.y) > halfLinearVelocity)

@@ -427,7 +427,7 @@ case "$BUILD_PROFILE" in
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO combined backports with physics and Canvas::drawLine ITCM benchmark"
         ;;
-    bench-nds-hw-arm-wide-gate)
+    bench-nds-hw-arm-wide-gate|bench-nds-hw-arm-wide-gate-counts)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
@@ -435,6 +435,9 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO selected layout with bounded 181/256 velocity gate experiment"
+        if [[ "$BUILD_PROFILE" == "bench-nds-hw-arm-wide-gate-counts" ]]; then
+            PROFILE_DEFS+=(-DPP_BENCHMARK_GATE_COUNTS)
+        fi
         ;;
     *)
         echo "Unknown BUILD_PROFILE: $BUILD_PROFILE" >&2

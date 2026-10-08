@@ -7,6 +7,8 @@ from pathlib import Path
 import random
 import unittest
 
+from check_velocity_gate_counts import check_counts
+
 
 ROOT = Path(__file__).resolve().parents[2]
 BOX2D = None
@@ -72,6 +74,18 @@ class VelocityGateTests(unittest.TestCase):
         recipe = (ROOT / "tools/repro/container_build_v06.sh").read_text()
         selected = recipe.split("    bench-improved)", 1)[1].split("        ;;", 1)[0]
         self.assertNotIn("PP_BOX2D_WIDE_VELOCITY_GATE", selected)
+
+    def test_count_conservation_and_missing_or_duplicate_rows(self):
+        rows = [dict(emulator="melonds", label="counts", iteration="1", metric=name,
+                     count="1", total_ticks=str(value), **{"pass": "1"})
+                for name, value in (("gate_total", 5), ("gate_half_eligible", 3),
+                                    ("gate_wide_only_eligible", 0), ("gate_length_required", 2))]
+        self.assertEqual(len(list(check_counts(rows))), 1)
+        for changed in ([], rows[:-1], rows + [rows[0]],
+                        [dict(rows[0], total_ticks="6"), *rows[1:]],
+                        [dict(rows[0], **{"pass": "0"}), *rows[1:]]):
+            with self.assertRaises(ValueError):
+                list(check_counts(changed))
 
 
 if __name__ == "__main__":
