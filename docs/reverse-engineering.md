@@ -163,7 +163,7 @@ checks for the libraries recovered to C.
 | Triangle compilation unit and initializer compiled from C++ | Complete; linker ordering and strict barycentric comparisons reproduce the release |
 | Shape proxy and two UI regions compiled without section replacement | Complete; release control flow and button coordinates recovered |
 | Contact solver high-level source recovery | 14,940 of 20,100 executable bytes; velocity method remains residual assembly |
-| Polygon/decomposition high-level source recovery | 12,676 of 30,768 executable bytes; six methods remain residual assembly; whole-unit replacement removed |
+| Polygon/decomposition high-level source recovery | Complete 30,768-byte unit from March 2008 forum-archived C++ with a documented pointer-argument ABI adjustment; no residual polygon assembly |
 | Replacement of residual assembly with maintainable high-level source | Incomplete |
 | Removal of ARM9 post-link section replacement | Incomplete |
 | Source rebuild of startup and compiler runtime libraries used by ARM7/ARM9 | Complete; 1,774 archive-member instances and 12 startup/CRT object identities |

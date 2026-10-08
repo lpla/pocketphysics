@@ -2,102 +2,93 @@
 
 ## Result and Boundary
 
-The release's 30,768-byte polygon/decomposition unit now contains **12,676 bytes
-compiled from C++** and **18,092 bytes of explicitly residual ARM assembly**.
-The reviewed layout selects 42 complete compiler-emitted methods and retains
-six unresolved methods. The former whole-unit ARM9 section replacement is
-removed. This is partial source recovery, not a new performance optimization
-or a claim that the remaining assembly has been recovered to C++.
+The complete **30,768-byte polygon/decomposition executable unit** now compiles
+from preserved March 2008 C++ with devkitARM r21 GCC 4.1.2. All 48 method
+boundaries match the release. No polygon instruction transcription, per-method
+compiler configuration, section selection, or post-link replacement is used.
 
-The accepted C++ includes intersection, area, winding, convexity and simplicity
-checks, reversal, polygon/node constructors and destructors, vertex extraction,
-triangle addition, pinch-point resolution, hull construction, triangle
-polygonization, ear checking, usability validation, decomposition orchestration,
-and static initialization. The exact method names, lengths, ordering, and source boundary
-are recorded in the [method inventory](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-method-layout.json).
+The source includes intersection, winding, convexity and simplicity tests,
+constructors, triangulation, parallel-edge merging, convex decomposition,
+usability validation, hull construction, graph traversal, and initialization.
+The [method inventory](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-method-layout.json)
+records names, offsets and executable-section lengths. These counts include
+literal pools and padding, not just instructions. Storage, string data,
+initializer entries and weak inline functions are independently covered by the
+[normalized object identity](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-object-identity.json)
+and full linked-payload gates.
 
-| Unresolved method | Executable-section bytes |
-| --- | ---: |
-| `b2Polygon::MergeParallelEdges` | 1,660 |
-| `TriangulatePolygon` | 6,812 |
-| `DecomposeConvexAndAddTo` | 2,916 |
-| Pointer-argument rightmost-connection search | 4,328 |
-| Vector-argument rightmost-connection wrapper | 120 |
-| `TraceEdge` | 2,256 |
-| Total residual | 18,092 |
+This is source recovery, not a performance optimization. The historical bugs
+and numerical behavior remain part of the preserved release specimen.
 
-Counts include literal pools inside executable sections. The source-built
-56-byte constant storage and four-byte initializer entry are outside this
-denominator. Original weak inline definitions also compile from C++; their
-linkage is independently constrained by the full payload identity.
+## Archival Evidence
 
-## Compiler and Linker Reconstruction
+Two fixed-point Box2D patches survive as attachments on the original Box2D
+forum, preserved by the Internet Archive:
 
-The preserved [C++ unit](../research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.cpp)
-is compiled with devkitARM r21 GCC 4.1.2, the historical fixed-point
-Box2D flags, and `-ffunction-sections`. Forty methods use the baseline
-compiler configuration. The unchanged membership method is selected from a
-second compilation with `-fno-tree-fre`; the complete-object vector constructor
-is selected from a third compilation with `-fno-tree-dominator-opts`. Those
-controls reproduce the release's equality-comparison operand order without
-editing a compiled instruction or changing the C++ algorithm. Only the one
-verified method is selected from each controlled compilation; their other
-definitions, storage, and initializers are not installed. The
-[selection tool](../tools/repro/prepare_polygon_object.py) validates every
-accepted section's length and executable flags. It weakens unselected global
-function definitions and exposes named unit-local constants for assembly
-relocations. It does not rewrite code, data, or relocations. The
-[relocatable linker layout](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-object-layout.ld)
-selects complete sections and discards inactive alternatives. Every output
-section has zero VMA until the final application link.
-The old linker requires exact relative object filenames in this layout; the
-build runs the relocatable link in a fixed directory. An incorrect selector
-leaves orphan sections and is rejected by the normalized object identity gate.
-These configurations are sufficient for binary reproduction; they are not
-proof that the original producer used the same per-method compiler commands.
+| Attachment | Preserved name | Archive evidence |
+| --- | --- | --- |
+| 96 | `box2d_fixed_r127.patch.zip` | HTTP Last-Modified: March 8, 2008 |
+| 97 | `box2d_fixed_2.patch.zip` | ZIP member timestamp: March 10, 2008; HTTP Last-Modified: March 10, 2008 |
 
-The usability check preserves the historical algorithm but declares its inner
-loop counter before the outer side-check loop. The counter is still reset to
-zero at each inner-loop entry. GCC 4.1.2 canonicalizes equal comparisons using
-SSA-name version order; the declaration scope changes that ordering and
-reproduces the released comparison without editing the emitted instruction.
-The complete 3,420-byte method, including its switch table and relocated string
-pointers, matches the release. This source form is a binary-constrained
-reconstruction, not proof of the original author's exact declaration spelling.
+The unmodified [March 8 patch](../research/reference/box2d-fixed-20080308/)
+and [March 10 patch](../research/reference/box2d-fixed-20080310/) are preserved
+with their original licenses, retrieval URLs, and SHA-256 identities. Their
+core diffs identify SVN revision 127; their added files contain the standalone
+fixed-point convex-decomposition contribution. Archive capture dates are later
+than 2008. ZIP and HTTP timestamps support the historical chronology but do
+not independently establish authorship or the exact local checkout used to
+build Pocket Physics.
 
-The [residual methods](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-methods-residual.S)
-contain ARM mnemonics with symbolic calls, internal branches, constant names,
-and typed literal/string data. GNU ld generates ARM-to-Thumb veneers; release
-veneer instructions and absolute program addresses are not embedded as inputs.
-The shared constants and their initialization remain compiler output.
+The March 10 patch supplies the polygon and triangle source used here. The
+[May 2008 SVN r152 import](../research/reference/convex-decomposition-r152/)
+is a useful comparison reference, but it has a larger node structure and a
+different tracing algorithm. It cannot substitute for the pre-release source.
 
-String references require section-relative relocations. A named label at the
-beginning of a mergeable string pool plus an offset is not interchangeable:
-GNU ld can merge the label's first string and then apply that offset, producing
-a different or invalid pointer. The reconstruction preserves the two historical
-string-pool sections and uses their section symbols and original string
-offsets. This recovers the released assertion pointers without hardcoding
-their final addresses or patching compiled instructions.
+## Reconstruction Delta
 
-## Evidence and Acceptance
+The [compiled polygon source](../research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.cpp)
+and [header](../research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.h)
+retain the archived source ordering and line numbers. The sole substantive
+delta is the incoming-node overload of `GetRightestConnection`: its argument
+is a pointer in the released binary rather than the reference declared in
+the archived patch. The definition, member access, identity comparison, and
+two callers are adapted consistently. The altered declarations are marked
+inline without shifting assertion line numbers.
 
-The [validation archive](../research/results/polygon-cpp-source/) preserves
-the two-build identities, complete byte-provenance report, unit-test record,
-and fresh three-role melonDS experiment at the accepted source revision.
+This ABI adjustment is binary-constrained reconstruction. It is not evidence
+that the forum attachment itself was the producer's final source. No original
+producer checkout or build log has been found.
 
-Function sizes from a previously combined object were not sufficient boundary
-evidence: duplicate discarded definitions could overwrite size metadata in the
-old linker. Method boundaries were cross-checked against input-section lengths,
-the reviewed order, and the release payload. Preliminary relocation-masked
-comparisons were diagnostic only. Acceptance requires the entire relocated
-30,768-byte unit to match without masks, followed by the full ARM9 hash gate
-with the polygon replacement absent.
+The preserved source naturally produces the 140-byte ARM node layout, the
+pointer-returning `TraceEdge`, the released assertion filename and line 1601,
+and the compiler's historical comparison operand order. The release's direction
+subtraction and triangle boundary tests are retained without modern correction.
+There is no inactive compiler-context function or `#line` override.
 
-The [object identity](../research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-object-identity.json)
-covers allocated contents and layout, relocations, exported symbols, and ELF
-flags. It is a release-constrained reconstruction identity, not an independently
-preserved original distribution object. Unknown polygon executable sections
-fail the provenance audit; only inventoried C++ sections receive source credit.
+## Compiler and Acceptance
+
+The complete unit is compiled once, without `-ffunction-sections`, using the
+historical Box2D flags:
+
+```text
+-O2 -fomit-frame-pointer -ffast-math
+-march=armv5te -mtune=arm946e-s -mthumb-interwork
+-DARM9 -fno-rtti -fno-exceptions
+-DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS
+```
+
+The [boundary verifier](../tools/repro/verify_polygon_object.py) checks the
+complete executable section and all 48 symbol boundaries, including local
+initialization functions. It reads the compiler object without modifying it.
+The normalized gate covers allocated section contents and layout, relocations,
+exported symbols and ELF flags. Debug paths, compiler comments and
+nonallocated ARM attributes are not program data and are excluded.
+
+Relocation-masked comparisons are diagnostic only. Acceptance requires the
+unmasked ARM9 link to retain SHA-256
+`4848cad81a714afc2aeb140ebaf8085c54a49b61dfdfb05fba70b890eaaf0927`
+before the remaining non-polygon reconstructed regions are applied. The final
+ARM9 and packaged ROM must retain their canonical release identities.
 
 ```sh
 tools/repro/test_source_patches.sh
@@ -105,8 +96,9 @@ tools/repro/test_v06_exact.sh
 REPEATS=3 tools/repro/test_v06_inrom.sh
 ```
 
-The clean-build test independently compares payloads, ELF files, ROMs, and
-provenance reports. The final ROM must retain SHA-256
+The clean-build test independently compares payloads, ELF files, ROMs and
+byte-provenance reports. The final ROM must retain SHA-256
 `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64`.
-melonDS validates the derived touch/physics/render experiment; neither byte
-identity nor emulator testing proves physical Nintendo DS performance.
+melonDS validates the derived touch/physics/render experiment using in-ROM
+ARM9 timing; byte identity and emulator testing do not prove physical
+Nintendo DS performance.

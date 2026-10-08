@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "reference": "Release-constrained mixed C++/assembly recovery, not an independently preserved original archive member. The C++ sections are unchanged compiler output. Six remaining methods are explicit mnemonic assembly. The full ARM9 payload matches without the polygon whole-unit section replacement; identities are comparison gates, not build inputs.",
+  "reference": "Complete March 2008 forum-archived C++ unit with a documented pointer-argument ABI reconstruction. Baseline devkitARM r21 flags; no method selection, instruction edits, or residual assembly. The identity is a release-constrained comparison gate, not an independently preserved distribution object or a build input.",
   "objects": {
     "b2Polygon.o": {
-      "identity_sha256": "65e45c5b25a4f1bffef04731b9a5400d399af7c2d1e24583964f826b7b57ad94",
-      "allocated_bytes": 33248,
+      "identity_sha256": "10696dc121b12aecdc78e49d327467f565d288d13686efe369727371cb3222cf",
+      "allocated_bytes": 32636,
       "text_bytes": 30768,
-      "source_text_bytes": 12676,
-      "residual_text_bytes": 18092
+      "source_text_bytes": 30768,
+      "residual_text_bytes": 0
     }
   }
 }

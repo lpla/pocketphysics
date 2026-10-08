@@ -16,10 +16,12 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#include "../Common/b2Math.h"
-#include "../Common/b2Settings.h"
-#include "../Collision/Shapes/b2Shape.h"
-#include "../Dynamics/b2Body.h"
+// This utility works with Box2d version 2.0 (or higher), and not with 1.4.3
+
+#include "../../Source/Common/b2Math.h"
+#include "../../Source/Common/b2Settings.h"
+#include "../../Source/Collision/Shapes/b2Shape.h"
+#include "../../Source/Dynamics/b2Body.h"
 #include "b2Triangle.h"
 #include "b2Polygon.h"
 
@@ -42,15 +44,20 @@ bool intersect(const b2Vec2& a0, const b2Vec2& a1,
 			   const b2Vec2& b0, const b2Vec2& b1, 
 			   b2Vec2& intersectionPoint) {
 
-	float32 x1 = a0.x; float32 y1 = a0.y;
-	float32 x2 = a1.x; float32 y2 = a1.y;
-	float32 x3 = b0.x; float32 y3 = b0.y;
-	float32 x4 = b1.x; float32 y4 = b1.y;
+	if (a0 == b0 || a0 == b1 || a1 == b0 || a1 == b1) return false;
+	float x1 = a0.x; float y1 = a0.y;
+	float x2 = a1.x; float y2 = a1.y;
+	float x3 = b0.x; float y3 = b0.y;
+	float x4 = b1.x; float y4 = b1.y;
 	
-	float32 ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
-	float32 ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
-	float32 denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-	if (b2Abs(denom) < FLOAT32_EPSILON) {
+	//AABB early exit
+	if (b2Max(x1,x2) < b2Min(x3,x4) || b2Max(x3,x4) < b2Min(x1,x2) ) return false;
+	if (b2Max(y1,y2) < b2Min(y3,y4) || b2Max(y3,y4) < b2Min(y1,y2) ) return false;
+	
+	float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
+	float ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
+	float denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+	if (b2Abs(denom) < FLT_EPSILON) {
 		//Lines are too close to parallel to call
 		return false;
 	}
@@ -109,6 +116,7 @@ b2Polygon::b2Polygon() {
 }
 	
 b2Polygon::~b2Polygon() {
+	//printf("About to delete poly with %d vertices\n",nVertices);
 	delete[] x;
 	delete[] y;
 }
@@ -143,8 +151,8 @@ void b2Polygon::MergeParallelEdges(float32 tolerance) {
 		float32 dy0 = y[middle] - y[lower];
 		float32 dx1 = x[upper] - x[middle];
 		float32 dy1 = y[upper] - y[middle];
-		float32 norm0 = b2Sqrt(dx0*dx0+dy0*dy0);
-		float32 norm1 = b2Sqrt(dx1*dx1+dy1*dy1);
+		float32 norm0 = sqrtf(dx0*dx0+dy0*dy0);
+		float32 norm1 = sqrtf(dx1*dx1+dy1*dy1);
 		if ( !(norm0 > 0.0f && norm1 > 0.0f) && newNVertices > 3 ) {
 			//Merge identical points
 			mergeMe[i] = true;
@@ -154,7 +162,7 @@ void b2Polygon::MergeParallelEdges(float32 tolerance) {
 		dx1 /= norm1; dy1 /= norm1;
 		float32 cross = dx0 * dy1 - dx1 * dy0;
 		float32 dot = dx0 * dx1 + dy0 * dy1;
-		if (b2Abs(cross) < tolerance && dot > 0 && newNVertices > 3) {
+		if (fabs(cross) < tolerance && dot > 0 && newNVertices > 3) {
 			mergeMe[i] = true;
 			--newNVertices;
 		} else {
@@ -181,6 +189,7 @@ void b2Polygon::MergeParallelEdges(float32 tolerance) {
 	x = newx;
 	y = newy;
 	nVertices = newNVertices;
+//	printf("%d \n", newNVertices);
 }
 	
     /* 
@@ -197,8 +206,8 @@ b2Vec2* b2Polygon::GetVertexVecs() {
 	
 b2Polygon::b2Polygon(b2Triangle& t) {
 	nVertices = 3;
-	x = new float32[nVertices];
-	y = new float32[nVertices];
+	x = new float[nVertices];
+	y = new float[nVertices];
 	for (int32 i = 0; i < nVertices; ++i) {
 		x[i] = t.x[i];
 		y[i] = t.y[i];
@@ -299,7 +308,7 @@ bool b2Polygon::IsUsable(bool printErrors){
 	if (nVertices < 3 || nVertices > b2_maxPolygonVertices) {noError = false; error = 0;}
 	if (!IsConvex()) {noError = false; error = 1;}
 	if (!IsSimple()) {noError = false; error = 2;}
-	if (GetArea() < FLOAT32_EPSILON) {noError = false; error = 3;}
+	if (GetArea() < FLT_EPSILON) {noError = false; error = 3;}
 
 	//Compute normals
 	b2Vec2* normals = new b2Vec2[nVertices];
@@ -365,7 +374,7 @@ bool b2Polygon::IsUsable(bool printErrors){
 		printf("Found invalid polygon, ");
 		switch(error){
 			case 0:
-				printf("must have between 3 and %d vertices.\n",(int)b2_maxPolygonVertices);
+				printf("must have between 3 and %d vertices.\n",b2_maxPolygonVertices);
 				break;
 			case 1:
 				printf("must be convex.\n");
@@ -427,6 +436,7 @@ bool b2Polygon::IsSimple() {
 	 * For internal use.
      */
 b2Polygon* b2Polygon::Add(b2Triangle& t) {
+//		float32 equalTol = .001f;
         // First, find vertices that connect
         int32 firstP = -1;
         int32 firstT = -1;
@@ -473,8 +483,9 @@ b2Polygon* b2Polygon::Add(b2Triangle& t) {
         }
 		
         // Didn't find it
-        if (secondP == -1)
-            return NULL;
+        if (secondP == -1) {
+		    return NULL;
+		}
 		
         // Find tip index on triangle
         int32 tipT = 0;
@@ -483,8 +494,8 @@ b2Polygon* b2Polygon::Add(b2Triangle& t) {
         if (tipT == firstT || tipT == secondT)
             tipT = 2;
 		
-        float32* newx = new float32[nVertices + 1];
-        float32* newy = new float32[nVertices + 1];
+        float32* newx = new float[nVertices + 1];
+        float32* newy = new float[nVertices + 1];
         int32 currOut = 0;
         for (int32 i = 0; i < nVertices; i++) {
             newx[currOut] = x[i];
@@ -503,7 +514,7 @@ b2Polygon* b2Polygon::Add(b2Triangle& t) {
 }
 	
     /**
-     * Adds this polygon to a PolygonDef.
+     * Adds this polygon to a PolyDef.
      */
 void b2Polygon::AddTo(b2PolygonDef& pd) {
 	if (nVertices < 3) return;
@@ -674,7 +685,7 @@ int32 TriangulatePolygon(float32* xv, float32* yv, int32 vNum, b2Triangle* resul
 					float32 cross12 = b2Abs( b2Cross(d1,d2) );
 					float32 cross23 = b2Abs( b2Cross(d2,d3) );
 					float32 cross31 = b2Abs( b2Cross(d3,d1) );
-					//Find the minimum angle
+					//Find the maximum minimum angle
 					float32 minCross = b2Min(cross12, b2Min(cross23,cross31));
 					if (minCross > earMaxMinCross){
 						earIndex = i;
@@ -701,7 +712,14 @@ int32 TriangulatePolygon(float32* xv, float32* yv, int32 vNum, b2Triangle* resul
 					dump.printFormatted();
 					printf("Please submit this dump to ewjordan at Box2d forums\n");
 				}
-                return -1;
+				for (int32 i = 0; i < bufferSize; i++) {
+					results[i].Set(buffer[i]);
+				}
+		
+				delete[] buffer;
+		
+				if (bufferSize > 0) return bufferSize;
+                else return -1;
 			}
 			
             // Clip off the ear:
@@ -799,11 +817,13 @@ int32 PolygonizeTriangles(b2Triangle* triangulated, int32 triangulatedLength, b2
                 else {
                     b2Polygon poly(triangulated[currTri]);
 					covered[currTri] = 1;
-                    for (int32 i = 0; i < triangulatedLength; i++) {
-                        if (covered[i]) {
+					int32 index = 0;
+                    for (int32 i = 0; i < 2*triangulatedLength; ++i,++index) {
+						while (index >= triangulatedLength) index -= triangulatedLength;
+                        if (covered[index]) {
                             continue;
 						}
-                        b2Polygon* newP = poly.Add(triangulated[i]);
+                        b2Polygon* newP = poly.Add(triangulated[index]);
                         if (!newP) {
                             continue;
 						}
@@ -812,11 +832,11 @@ int32 PolygonizeTriangles(b2Triangle* triangulated, int32 triangulatedLength, b2
 							newP = NULL;
                             continue;
 						}
-                        if (newP->IsConvex()) {
+                        if (newP->IsConvex()) { //Or should it be IsUsable?  Maybe re-write IsConvex to apply the angle threshold from Box2d
                             poly.Set(*newP);
 							delete newP;
 							newP = NULL;
-                            covered[i] = 1;
+                            covered[index] = 1;
                         } else {
 							delete newP;
 							newP = NULL;
@@ -891,7 +911,7 @@ void ReversePolygon(b2Polygon& p){
 	ReversePolygon(p.x,p.y,p.nVertices);
 }
 	
-void ReversePolygon(float32* x, float32* y, int n) {
+void ReversePolygon(float* x, float* y, int n) {
         if (n == 1)
             return;
         int32 low = 0;
@@ -947,7 +967,7 @@ int32 DecomposeConvex(b2Polygon* p, b2Polygon* results, int32 maxPolys) {
 
     /**
 	 * Decomposes a polygon into convex polygons and adds all pieces to a b2BodyDef
-     * using a prototype b2PolygonDef. All fields of the prototype are used for every
+     * using a prototype b2PolyDef. All fields of the prototype are used for every
      * shape except the vertices (friction, restitution, density, etc).
      * 
      * If you want finer control, you'll have to add everything by hand.
@@ -955,23 +975,23 @@ int32 DecomposeConvex(b2Polygon* p, b2Polygon* results, int32 maxPolys) {
      * This is the simplest method to add a complicated polygon to a body.
 	 *
 	 * Until Box2D's b2BodyDef behavior changes, this method returns a pointer to
-	 * a heap-allocated array of b2PolygonDefs, which must be deleted by the user
+	 * a heap-allocated array of b2PolyDefs, which must be deleted by the user
 	 * after the b2BodyDef is added to the world.
      */
-b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body,
+void DecomposeConvexAndAddTo(b2Polygon* p, b2Body* bd,
 								   b2PolygonDef* prototype) {
 
-        if (p->nVertices < 3) return NULL;
+        if (p->nVertices < 3) return;
         b2Polygon* decomposed = new b2Polygon[p->nVertices - 2]; //maximum number of polys
         int32 nPolys = DecomposeConvex(p, decomposed, p->nVertices - 2);
-        if(nPolys == -1)
-        	return 0;
 //		printf("npolys: %d",nPolys);
 		b2PolygonDef* pdarray = new b2PolygonDef[2*p->nVertices];//extra space in case of splits
 		int32 extra = 0;
         for (int32 i = 0; i < nPolys; ++i) {
             b2PolygonDef* toAdd = &pdarray[i+extra];
+			 *toAdd = *prototype;
 			 //Hmm, shouldn't have to do all this...
+			 /*
 			 toAdd->type = prototype->type;
 			 toAdd->friction = prototype->friction;
 			 toAdd->restitution = prototype->restitution;
@@ -979,7 +999,7 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 			 toAdd->userData = prototype->userData;
 			 toAdd->categoryBits = prototype->categoryBits;
 			 toAdd->maskBits = prototype->maskBits;
-			 toAdd->groupIndex = prototype->groupIndex;
+			 toAdd->groupIndex = prototype->groupIndex;//*/
 			 //decomposed[i].print();
 			b2Polygon curr = decomposed[i];
 			//TODO ewjordan: move this triangle handling to a better place so that
@@ -993,7 +1013,7 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 						int32 upper = (j == curr.nVertices - 1) ? (0) : (j + 1);
 						float32 dx0 = curr.x[middle] - curr.x[lower]; float32 dy0 = curr.y[middle] - curr.y[lower];
 						float32 dx1 = curr.x[upper] - curr.x[middle];	float32 dy1 = curr.y[upper] - curr.y[middle];
-						float32 norm0 = b2Sqrt(dx0*dx0+dy0*dy0);	float32 norm1 = b2Sqrt(dx1*dx1+dy1*dy1);
+						float32 norm0 = sqrtf(dx0*dx0+dy0*dy0);	float32 norm1 = sqrtf(dx1*dx1+dy1*dy1);
 						if ( !(norm0 > 0.0f && norm1 > 0.0f) ) {
 							//Identical points, don't do anything!
 							goto Skip;
@@ -1002,12 +1022,12 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 						dx1 /= norm1; dy1 /= norm1;
 						float32 cross = dx0 * dy1 - dx1 * dy0;
 						float32 dot = dx0*dx1 + dy0*dy1;
-						if (b2Abs(cross) < b2_angularSlop && dot > 0) {
+						if (fabs(cross) < b2_angularSlop && dot > 0) {
 							//Angle too close, split the triangle across from this point.
 							//This is guaranteed to result in two triangles that satify
 							//the tolerance (one of the angles is 90 degrees)
 							float32 dx2 = curr.x[lower] - curr.x[upper]; float32 dy2 = curr.y[lower] - curr.y[upper];
-							float32 norm2 = b2Sqrt(dx2*dx2+dy2*dy2);
+							float32 norm2 = sqrtf(dx2*dx2+dy2*dy2);
 							if (norm2 == 0.0f) {
 								goto Skip;
 							}
@@ -1026,9 +1046,7 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 							b2Polygon p2(newX2,newY2,3);
 							if (p1.IsUsable()){
 								p1.AddTo(*toAdd);
-								body->CreateShape(toAdd);
-								body->SetMassFromShapes();
-								//bd->AddShape(world->Create(toAdd));
+								bd->CreateShape(toAdd);
 								++extra;
 							} else if (B2_POLYGON_REPORT_ERRORS){
 								printf("Didn't add unusable polygon.  Dumping vertices:\n");
@@ -1036,9 +1054,7 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 							}
 							if (p2.IsUsable()){
 								p2.AddTo(pdarray[i+extra]);
-								body->CreateShape(&pdarray[i+extra]);
-								body->SetMassFromShapes();
-								//bd->AddShape(world->Create(&pdarray[i+extra]));
+								bd->CreateShape(&pdarray[i+extra]);
 							} else if (B2_POLYGON_REPORT_ERRORS){
 								printf("Didn't add unusable polygon.  Dumping vertices:\n");
 								p2.print();
@@ -1050,9 +1066,7 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 			}
 			if (decomposed[i].IsUsable()){
 				decomposed[i].AddTo(*toAdd);
-				body->CreateShape(toAdd);
-				body->SetMassFromShapes();
-				//bd->AddShape(world->Create(toAdd));
+				bd->CreateShape(toAdd);
 			} else if (B2_POLYGON_REPORT_ERRORS){
 				printf("Didn't add unusable polygon.  Dumping vertices:\n");
 				decomposed[i].print();
@@ -1060,8 +1074,9 @@ b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body
 Skip:
 			;
         }
+		delete[] pdarray;
         delete[] decomposed;
-		return pdarray; //needs to be deleted after body is created
+		return;// pdarray; //needs to be deleted after body is created
 }
 
 	
@@ -1107,7 +1122,7 @@ b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert) {
         int32* edgeList = new int32[nVert];
         int32 numEdges = 0;
 		
-        float32 minY = FLOAT32_MAX;
+        float32 minY = FLT_MAX;
         int32 minYIndex = nVert;
         for (int32 i = 0; i < nVert; ++i) {
             if (cloudY[i] < minY) {
@@ -1129,8 +1144,8 @@ b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert) {
                     continue;
                 newdx = cloudX[i] - cloudX[startIndex];
                 newdy = cloudY[i] - cloudY[startIndex];
-                float32 nrm = b2Sqrt(newdx * newdx + newdy * newdy);
-                nrm = (nrm == float32(0)) ? float32(1) : nrm;
+                float32 nrm = sqrtf(newdx * newdx + newdy * newdy);
+                nrm = (nrm == 0.0f) ? 1.0f : nrm;
                 newdx /= nrm;
                 newdy /= nrm;
                 
@@ -1147,8 +1162,8 @@ b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert) {
             edgeList[numEdges++] = winIndex;
             dx = cloudX[winIndex] - cloudX[startIndex];
             dy = cloudY[winIndex] - cloudY[startIndex];
-            float32 nrm = b2Sqrt(dx * dx + dy * dy);
-            nrm = (nrm == float32(0)) ? float32(1) : nrm;
+            float32 nrm = sqrtf(dx * dx + dy * dy);
+            nrm = (nrm == 0.0f) ? 1.0f : nrm;
             dx /= nrm;
             dy /= nrm;
             startIndex = winIndex;
@@ -1186,7 +1201,7 @@ bool IsRighter(float32 sinA, float32 cosA, float32 sinB, float32 cosB){
 	}
 }
 
-//Fix for C++'s obnoxious behavior for the % operator for negative numbers...
+//Fix for obnoxious behavior for the % operator for negative numbers...
 int32 remainder(int32 x, int32 modulus){
 	int32 rem = x % modulus;
 	while (rem < 0){
@@ -1212,180 +1227,7 @@ We check the seg from current vertex to next vertex for intersections
 
 */
 
-/*b2Polygon TraceEdge(b2Polygon* p, bool debug) {
-	//Intersections closer than this will be considered the same point
-	const float32 EPS_TOL = .001f;//FLOAT32_EPSILON;//.0001f;
-
-	//Find vertex with minimum y value
-	float32 minY = FLOAT32_MAX;
-	float32 maxX = -FLOAT32_MAX;
-	int32 minYIndex = p->nVertices;
-	for (int32 i = 0; i < p->nVertices; ++i) {
-		if (p->y[i] < minY) {
-			minY = p->y[i];
-			minYIndex = i;
-			maxX = p->x[i];
-		} else if (p->y[i] == minY && p->x[i] > maxX) {
-			minYIndex = i;
-			maxX = p->x[i];
-		}
-	}
-
-	//Initialize growable array
-	//4*p->nVertices should mean it almost never
-	//has to actually grow.
-	//TODO ewjordan: what is the actual upper bound?
-	//Would be great to get rid of this growable array nonsense.
-	b2Vec2* results = new b2Vec2[4*p->nVertices];
-	int32 rCapacity = 4*p->nVertices;
-	int32 rSize = 0;
-	
-	int32 currentIndex = minYIndex;
-	int32 nextIndex;
-	b2Vec2 currentLoc(p->x[currentIndex],p->y[currentIndex]);
-	b2Vec2 lastDir(1.0f,0.0f);
-
-	//Get the initial direction
-	nextIndex = remainder(currentIndex+1,p->nVertices);//(currentIndex+1)%p->nVertices;
-	b2Vec2 testPoint(p->x[nextIndex],p->y[nextIndex]);
-	b2Vec2 testDir = testPoint - currentLoc;
-	testDir.Normalize();
-	float32 plusSin = b2Cross(lastDir,testDir);
-	float32 plusCos = b2Dot(lastDir,testDir);
-	nextIndex = remainder(currentIndex-1,p->nVertices);//(currentIndex-1)%p->nVertices;
-	b2Vec2 testPoint2(p->x[nextIndex],p->y[nextIndex]);
-	testDir = testPoint2 - currentLoc;
-	testDir.Normalize();
-	float32 minusSin = b2Cross(lastDir,testDir);
-	float32 minusCos = b2Dot(lastDir,testDir);
-	if (IsRighter(plusSin,plusCos,minusSin,minusCos)) nextIndex = remainder(currentIndex+1,p->nVertices);//(currentIndex+1)%p->nVertices;
-	bool notDone = true;
-	int32 counter = 0;
-	while (notDone){
-		counter++;
-		if (counter == 20){
-			printf("*****\n*****\n*****\nJumping out of loop because of counter, dumping problem polygon:\n");
-			p->printFormatted();
-		}
-		if (rSize > 1 && (currentLoc.x == results[0].x && currentLoc.y == results[0].y)){
-			//We're done, don't even bother adding this point to the list
-			notDone = false;
-			continue;
-		}
-		if (rSize >= rCapacity-1){
-			//Grow results array [yuk, by hand]
-			b2Vec2* old = results;
-			results = new b2Vec2[rCapacity + p->nVertices];
-			memcpy(results, old, rCapacity * sizeof(b2Vec2));
-			//for (int32 i=0; i<rSize; ++i){
-			//	results[i] = old[i];
-			//}
-			delete[] old;
-			rCapacity += p->nVertices;
-		}
-		//Add current loc to the list
-		results[rSize] = currentLoc;
-		++rSize;
-
-		//Find the next loc to shoot a test seg to
-		b2Vec2 testLoc(p->x[nextIndex],p->y[nextIndex]);
-		b2Vec2 testDir = testLoc - currentLoc;
-		testDir.Normalize();
-		b2Vec2 crossingPoint;
-		b2Vec2 savedCrossing;
-		bool haveCrossing = false;
-		int32 crossIndexA = 0;
-		int32 crossIndexB = 0;
-
-		//Check crossings
-		for (int32 i=0; i < p->nVertices; ++i){
-			int32 iplus = remainder(i+1,p->nVertices);//(i+1)%p->nVertices;
-			if (i == currentIndex || i == nextIndex || iplus == currentIndex || i == nextIndex) continue;
-			
-			bool crosses = intersect(currentLoc,testLoc,b2Vec2(p->x[i],p->y[i]),b2Vec2(p->x[iplus],p->y[iplus]),crossingPoint);
-			if (debug && crosses){
-				printf("\ncurrentLoc: %f,%f\n",currentLoc.x,currentLoc.y);
-				printf("testLoc: %f,%f\n",testLoc.x,testLoc.y);
-				printf("cross1: %f,%f\n",p->x[i],p->y[i]);
-				printf("cross2: %f,%f\n",p->x[iplus],p->y[iplus]);
-				if (crosses) printf("crossingPoint: %f,%f\n",crossingPoint.x,crossingPoint.y);
-			}
-			if ( b2Abs(currentLoc.x-crossingPoint.x) < EPS_TOL && b2Abs(currentLoc.y-crossingPoint.y) < EPS_TOL) continue;
-			if (crosses){
-				b2Vec2 delta = crossingPoint - currentLoc;
-				float32 deltaNorm = delta.Length();
-				if (deltaNorm < EPS_TOL) continue;
-			}
-			if (haveCrossing && crosses){
-				//Need to see if this new crossing point is "better" than current one
-				b2Vec2 newDisp = (crossingPoint - currentLoc);
-				b2Vec2 oldDisp = (savedCrossing - currentLoc);
-				float32 newDist = newDisp.Normalize();
-				float32 oldDist = oldDisp.Normalize();
-				if (newDist < oldDist - EPS_TOL){
-					//It's closer, so we hit it first
-					crossIndexA = i;
-					crossIndexB = iplus;
-					savedCrossing = crossingPoint;
-				} else if (oldDist < newDist - EPS_TOL){
-					//do nothing, keep old value
-				} else {
-					//We consider the two points to be identical, and must resolve by angle tests
-					float32 oldCos = b2Dot(oldDisp,testDir);
-					float32 newCos = b2Dot(newDisp,testDir);
-					if (newCos < oldCos){
-						crossIndexA = i;
-						crossIndexB = iplus;
-						savedCrossing = crossingPoint;
-					}
-				}
-			} else if (crosses){
-				crossIndexA = i;
-				crossIndexB = iplus;
-				haveCrossing = true;
-				savedCrossing = crossingPoint;
-			}
-		}
-		b2Vec2 nextLoc = haveCrossing?savedCrossing:testLoc;
-		if (!haveCrossing){
-			int32 diff = nextIndex - currentIndex;
-			nextIndex = remainder(nextIndex+diff,p->nVertices);//(nextIndex+diff)%p->nVertices;
-			currentIndex = remainder(currentIndex+diff,p->nVertices);//(currentIndex+diff)%p->nVertices;
-		} else{
-			//figure out whether to go next to crossIndexA or crossIndexB
-			b2Vec2 toA(p->x[crossIndexA]-nextLoc.x,p->y[crossIndexA]-nextLoc.y);
-			b2Vec2 toB(p->x[crossIndexB]-nextLoc.x,p->y[crossIndexB]-nextLoc.y);
-			toA.Normalize();
-			toB.Normalize();
-			float32 sinA1 = b2Cross(testDir,toA);
-			float32 sinB1 = b2Cross(testDir,toB);
-			float32 cosA1 = b2Dot(testDir, toA);
-			float32 cosB1 = b2Dot(testDir, toB);
-			if (IsRighter(sinA1,cosA1,sinB1,cosB1)){
-				nextIndex = crossIndexA;
-				currentIndex = crossIndexB;
-			} else {
-				nextIndex = crossIndexB;
-				currentIndex = crossIndexA;
-			}
-		}
-		lastDir = nextLoc - currentLoc;
-		float32 norm = lastDir.Normalize();
-		b2Assert(norm > 0.0f);
-		currentLoc = nextLoc;
-	}
-
-	b2Polygon retVal(results,rSize);
-	delete[] results;
-	return retVal;
-}
-
 b2Polygon TraceEdge(b2Polygon* p){
-	return TraceEdge(p, false);
-}*/
-
-
-b2Polygon *TraceEdge(b2Polygon* p){
 	b2PolyNode* nodes = new b2PolyNode[p->nVertices*p->nVertices];//overkill, but sufficient (order of mag. is right)
 	int32 nNodes = 0;
 
@@ -1400,14 +1242,14 @@ b2Polygon *TraceEdge(b2Polygon* p){
 		nodes[i].AddConnection(nodes[iminus]);
 	}
 
-	//Process intersection nodes
+	//Process intersection nodes - horribly inefficient
 	bool dirty = true;
+	int counter = 0;
 	while (dirty){
 		dirty = false;
 		for (int32 i=0; i < nNodes; ++i){
 			for (int32 j=0; j < nodes[i].nConnected; ++j){
 				for (int32 k=0; k < nNodes; ++k){
-					
 					if (k==i || &nodes[k] == nodes[i].connected[j]) continue;
 					for (int32 l=0; l < nodes[k].nConnected; ++l){
 				
@@ -1415,12 +1257,20 @@ b2Polygon *TraceEdge(b2Polygon* p){
 							 nodes[k].connected[l] == &nodes[i]) continue;
 						//Check intersection
 						b2Vec2 intersectPt;
-						//printf("checking intersection: %d, %d, %d, %d\n",i,j,k,l);
+						//if (counter > 100) printf("checking intersection: %d, %d, %d, %d\n",i,j,k,l);
 						bool crosses = intersect(nodes[i].position,nodes[i].connected[j]->position,
 												 nodes[k].position,nodes[k].connected[l]->position,
 												 intersectPt);
 						if (crosses){
-							//printf("Found crossing\n");
+							/*if (counter > 100) {
+								printf("Found crossing at %f, %f\n",intersectPt.x, intersectPt.y);
+								printf("Locations: %f,%f - %f,%f | %f,%f - %f,%f\n",
+												nodes[i].position.x, nodes[i].position.y,
+												nodes[i].connected[j]->position.x, nodes[i].connected[j]->position.y,
+												nodes[k].position.x,nodes[k].position.y,
+												nodes[k].connected[l]->position.x,nodes[k].connected[l]->position.y);
+								printf("Memory addresses: %d, %d, %d, %d\n",(int)&nodes[i],(int)nodes[i].connected[j],(int)&nodes[k],(int)nodes[k].connected[l]);
+							}*/
 							dirty = true;
 							//Destroy and re-hook connections at crossing point
 							b2PolyNode* connj = nodes[i].connected[j];
@@ -1439,76 +1289,163 @@ b2Polygon *TraceEdge(b2Polygon* p){
 							nodes[nNodes].AddConnection(*connl);
 							connl->AddConnection(nodes[nNodes]);
 							++nNodes;
+							goto SkipOut;
 						}
 					}
 				}
 			}
 		}
+		SkipOut:
+		++counter;
+		//if (counter > 100) printf("Counter: %d\n",counter);
 	}
+	
+	/*
+	// Debugging: check for connection consistency
+	for (int32 i=0; i<nNodes; ++i) {
+		int32 nConn = nodes[i].nConnected;
+		for (int32 j=0; j<nConn; ++j) {
+			if (nodes[i].connected[j]->nConnected == 0) b2Assert(false);
+			b2PolyNode* connect = nodes[i].connected[j];
+			bool found = false;
+			for (int32 k=0; k<connect->nConnected; ++k) {
+				if (connect->connected[k] == &nodes[i]) found = true;
+			}
+			b2Assert(found);
+		}
+	}*/
 
 	//Collapse duplicate points
-	const float32 COLLAPSE_DIST = FLOAT32_EPSILON;
-	for (int32 i=0; i < nNodes; ++i){
-		for (int32 j=i+1; j < nNodes; ++j){
-			b2Vec2 diff = nodes[i].position - nodes[j].position;
-			if (diff.Length() < COLLAPSE_DIST){
-				b2PolyNode* inode = &nodes[i];
-				b2PolyNode* jnode = &nodes[j];
-				//Move all of j's connections to i, and orphan j
-				int32 njConn = jnode->nConnected;
-				for (int32 k=0; k < njConn; ++k){
-					inode->AddConnection(*(jnode->connected[k]));
-					jnode->connected[k]->AddConnection(*inode);
-					jnode->connected[k]->RemoveConnection(*jnode);
-					jnode->RemoveConnectionByIndex(k);
+	bool foundDupe = true;
+	int nActive = nNodes;
+	while (foundDupe){
+		foundDupe = false;
+		for (int32 i=0; i < nNodes; ++i){
+			if (nodes[i].nConnected == 0) continue;
+			for (int32 j=i+1; j < nNodes; ++j){
+				if (nodes[j].nConnected == 0) continue;
+				b2Vec2 diff = nodes[i].position - nodes[j].position;
+				if (diff.LengthSquared() <= COLLAPSE_DIST_SQR){
+					if (nActive <= 3) return b2Polygon();
+					//printf("Found dupe, %d left\n",nActive);
+					--nActive;
+					foundDupe = true;
+					b2PolyNode* inode = &nodes[i];
+					b2PolyNode* jnode = &nodes[j];
+					//Move all of j's connections to i, and orphan j
+					int32 njConn = jnode->nConnected;
+					for (int32 k=0; k < njConn; ++k){
+						b2PolyNode* knode = jnode->connected[k];
+						b2Assert(knode != jnode);
+						if (knode != inode) {
+							inode->AddConnection(*knode);
+							knode->AddConnection(*inode);
+						}
+						knode->RemoveConnection(*jnode);
+						//printf("knode %d on node %d now has %d connections\n",k,j,knode->nConnected);
+						//printf("Found duplicate point.\n");
+					}
+					//printf("Orphaning node at address %d\n",(int)jnode);
+					//for (int32 k=0; k<njConn; ++k) {
+					//	if (jnode->connected[k]->IsConnectedTo(*jnode)) printf("Problem!!!\n");
+					//}
+					/*
+					for (int32 k=0; k < njConn; ++k){
+						jnode->RemoveConnectionByIndex(k);
+					}*/
+					jnode->nConnected = 0;
 				}
-				b2Assert(jnode->nConnected == 0);
 			}
 		}
 	}
+	
+	/*
+	// Debugging: check for connection consistency
+	for (int32 i=0; i<nNodes; ++i) {
+		int32 nConn = nodes[i].nConnected;
+		printf("Node %d has %d connections\n",i,nConn);
+		for (int32 j=0; j<nConn; ++j) {
+			if (nodes[i].connected[j]->nConnected == 0) {
+				printf("Problem with node %d connection at address %d\n",i,(int)(nodes[i].connected[j]));
+				b2Assert(false);
+			}
+			b2PolyNode* connect = nodes[i].connected[j];
+			bool found = false;
+			for (int32 k=0; k<connect->nConnected; ++k) {
+				if (connect->connected[k] == &nodes[i]) found = true;
+			}
+			if (!found) printf("Connection %d (of %d) on node %d (of %d) did not have reciprocal connection.\n",j,nConn,i,nNodes);
+			b2Assert(found);
+		}
+	}//*/
 
 	//Now walk the edge of the list
 
-	//Find node with minimum y value
-	float32 minY = FLOAT32_MAX;
-	float32 maxX = -FLOAT32_MAX;
+	//Find node with minimum y value (max x if equal)
+	float32 minY = FLT_MAX;
+	float32 maxX = -FLT_MAX;
 	int32 minYIndex = -1;
 	for (int32 i = 0; i < nNodes; ++i) {
-		if (nodes[i].position.y < minY && nodes[i].nConnected > 0) {
+		if (nodes[i].position.y < minY && nodes[i].nConnected > 1) {
 			minY = nodes[i].position.y;
 			minYIndex = i;
 			maxX = nodes[i].position.x;
-		} else if (nodes[i].position.y == minY && nodes[i].position.x > maxX && nodes[i].nConnected > 0) {
+		} else if (nodes[i].position.y == minY && nodes[i].position.x > maxX && nodes[i].nConnected > 1) {
 			minYIndex = i;
 			maxX = nodes[i].position.x;
 		}
 	}
 
 	b2Vec2 origDir(1.0f,0.0f);
-	b2Vec2* resultVecs = new b2Vec2[nNodes*nNodes];
+	b2Vec2* resultVecs = new b2Vec2[4*nNodes];// nodes may be visited more than once, unfortunately - change to growable array!
 	int32 nResultVecs = 0;
 	b2PolyNode* currentNode = &nodes[minYIndex];
 	b2PolyNode* startNode = currentNode;
+	b2Assert(currentNode->nConnected > 0);
 	b2PolyNode* nextNode = currentNode->GetRightestConnection(origDir);
+	if (!nextNode) goto CleanUp; // Borked, clean up our mess and return
 	resultVecs[0] = startNode->position;
 	++nResultVecs;
 	while (nextNode != startNode){
-		if (nResultVecs > nNodes*nNodes){
-			assert(false);//something messed up
+		if (nResultVecs > 4*nNodes){
+			/*
+			printf("%d, %d, %d\n",(int)startNode,(int)currentNode,(int)nextNode);
+			printf("%f, %f -> %f, %f\n",currentNode->position.x,currentNode->position.y, nextNode->position.x, nextNode->position.y);
+				p->printFormatted();
+				printf("Dumping connection graph: \n");
+				for (int32 i=0; i<nNodes; ++i) {
+					printf("nodex[%d] = %f; nodey[%d] = %f;\n",i,nodes[i].position.x,i,nodes[i].position.y);
+					printf("//connected to\n");
+					for (int32 j=0; j<nodes[i].nConnected; ++j) {
+						printf("connx[%d][%d] = %f; conny[%d][%d] = %f;\n",i,j,nodes[i].connected[j]->position.x, i,j,nodes[i].connected[j]->position.y);
+					}
+				}
+				printf("Dumping results thus far: \n");
+				for (int32 i=0; i<nResultVecs; ++i) {
+					printf("x[%d]=map(%f,-3,3,0,width); y[%d] = map(%f,-3,3,height,0);\n",i,resultVecs[i].x,i,resultVecs[i].y);
+				}
+			//*/
+			b2Assert(false); //nodes should never be visited four times apiece (proof?), so we've probably hit a loop...crap
 		}
 		resultVecs[nResultVecs++] = nextNode->position;
 		b2PolyNode* oldNode = currentNode;
 		currentNode = nextNode;
+		//printf("Old node connections = %d; address %d\n",oldNode->nConnected, (int)oldNode);
+		//printf("Current node connections = %d; address %d\n",currentNode->nConnected, (int)currentNode);
 		nextNode = currentNode->GetRightestConnection(oldNode);
+		if (!nextNode) goto CleanUp; // There was a problem, so jump out of the loop and use whatever garbage we've generated so far
+		//printf("nextNode address: %d\n",(int)nextNode);
 	}
 
+	CleanUp:
+	
 	float32* xres = new float32[nResultVecs];
 	float32* yres = new float32[nResultVecs];
 	for (int32 i=0; i<nResultVecs; ++i){
 		xres[i] = resultVecs[i].x;
 		yres[i] = resultVecs[i].y;
 	}
-	b2Polygon *retval = new b2Polygon(xres,yres,nResultVecs);
+	b2Polygon retval(xres,yres,nResultVecs);
 	delete[] resultVecs;
 	delete[] yres;
 	delete[] xres;
@@ -1518,14 +1455,20 @@ b2Polygon *TraceEdge(b2Polygon* p){
 
 b2PolyNode::b2PolyNode(){
 	nConnected = 0;
+	visited = false;
 }
 b2PolyNode::b2PolyNode(b2Vec2& pos){
 	position = pos;
 	nConnected = 0;
+	visited = false;
 }
 
 void b2PolyNode::AddConnection(b2PolyNode& toMe){
 	b2Assert(nConnected < MAX_CONNECTED);
+	// Ignore duplicate additions
+	for (int32 i=0; i<nConnected; ++i) {
+		if (connected[i] == &toMe) return;
+	}
 	connected[nConnected] = &toMe;
 	++nConnected;
 }
@@ -1533,8 +1476,8 @@ void b2PolyNode::AddConnection(b2PolyNode& toMe){
 void b2PolyNode::RemoveConnection(b2PolyNode& fromMe){
 	bool isFound = false;
 	int32 foundIndex = -1;
-	for (int i=0; i<nConnected; ++i){
-		if (fromMe.position == connected[i]->position){
+	for (int32 i=0; i<nConnected; ++i){
+		if (&fromMe == connected[i]) {//.position == connected[i]->position){
 			isFound = true;
 			foundIndex = i;
 			break;
@@ -1542,6 +1485,7 @@ void b2PolyNode::RemoveConnection(b2PolyNode& fromMe){
 	}
 	b2Assert(isFound);
 	--nConnected;
+	//printf("nConnected: %d\n",nConnected);
 	for (int32 i=foundIndex; i < nConnected; ++i){
 		connected[i] = connected[i+1];
 	}
@@ -1555,26 +1499,41 @@ void b2PolyNode::RemoveConnectionByIndex(int32 index){
 }
 bool b2PolyNode::IsConnectedTo(b2PolyNode& me){
 	bool isFound = false;
-	for (int i=0; i<nConnected; ++i){
-		if (me.position == connected[i]->position){
+	for (int32 i=0; i<nConnected; ++i){
+		if (&me == connected[i]) {//.position == connected[i]->position){
 			isFound = true;
 			break;
 		}
 	}
 	return isFound;
 }
-b2PolyNode* b2PolyNode::GetRightestConnection(b2PolyNode* incoming){ // Altered to reconstruct the released pointer-argument ABI.
-	if (nConnected == 0) return NULL;
+b2PolyNode* b2PolyNode::GetRightestConnection(b2PolyNode* incoming){
+	if (nConnected == 0) b2Assert(false); // This means the connection graph is inconsistent
+	if (nConnected == 1) {
+		//b2Assert(false);
+		// Because of the possibility of collapsing nearby points,
+		// we may end up with "spider legs" dangling off of a region.
+		// The correct behavior here is to turn around.
+		return incoming;
+	}
 	b2Vec2 inDir = position - incoming->position;
 	float32 inLength = inDir.Normalize();
-	b2Assert(inLength > FLOAT32_EPSILON);
+	b2Assert(inLength > FLT_EPSILON);
 	
 	b2PolyNode* result = NULL;
-	for (int i=0; i<nConnected; ++i){
+	for (int32 i=0; i<nConnected; ++i){
 		if (connected[i] == incoming) continue;
 		b2Vec2 testDir = connected[i]->position - position;
-		float32 testLength = testDir.Normalize();
-		b2Assert (testLength > FLOAT32_EPSILON);
+		float32 testLengthSqr = testDir.LengthSquared();
+		testDir.Normalize();
+		/*
+		if (testLengthSqr < COLLAPSE_DIST_SQR) {
+			printf("Problem with connection %d\n",i);
+			printf("This node has %d connections\n",nConnected);
+			printf("That one has %d\n",connected[i]->nConnected);
+			if (this == connected[i]) printf("This points at itself.\n");
+		}*/
+		b2Assert (testLengthSqr >= COLLAPSE_DIST_SQR);
 		float32 myCos = b2Dot(inDir,testDir);
 		float32 mySin = b2Cross(inDir,testDir);
 		if (result){
@@ -1587,6 +1546,12 @@ b2PolyNode* b2PolyNode::GetRightestConnection(b2PolyNode* incoming){ // Altered 
 			}
 		} else{
 			result = connected[i];
+		}
+	}
+	if (B2_POLYGON_REPORT_ERRORS && !result) {
+		printf("nConnected = %d\n",nConnected);
+		for (int32 i=0; i<nConnected; ++i) {
+			printf("connected[%d] @ %d\n",i,(int)connected[i]);
 		}
 	}
 	b2Assert(result);

@@ -20,6 +20,7 @@
 #define B2_TRIANGLE_H
 
 #include "../Common/b2Math.h"
+#include "../Collision/Shapes/b2PolygonShape.h"
 
 class b2Triangle{
 public:

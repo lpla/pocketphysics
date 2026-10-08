@@ -213,12 +213,12 @@ The [contact solver](contact-source-recovery.md) replaces 14,940 further bytes
 with C++ while explicitly retaining its 5,160-byte velocity method as residual
 assembly. The [UI recovery](ui-source-recovery.md) removes GUI-setup and
 thumbnail-rendering replacements, adding 1,572 source-compiled bytes.
-The [polygon recovery](polygon-source-recovery.md) selects 42 complete C++
-methods totaling 12,676 bytes and removes the polygon whole-unit replacement;
-six methods totaling 18,092 bytes remain explicitly residual assembly.
+The [polygon recovery](polygon-source-recovery.md) compiles the complete
+30,768-byte unit from March 2008 forum-archived C++, with a documented
+pointer-argument ABI adjustment. No polygon residual assembly remains.
 
-Seven uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, two uLibrary units, two Box2D
+Six uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, two uLibrary units, one Box2D
 components, the ARM9 residual-region file, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
@@ -229,7 +229,7 @@ replacement also remains. The [runtime source rebuild](runtime-source-recovery.m
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 95.02%
+processors, runtime/startup, and post-link replacements. It attributes 97.69%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above

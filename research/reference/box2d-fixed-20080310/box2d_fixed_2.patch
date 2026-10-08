@@ -1,0 +1,4018 @@
+Index: Source/Dynamics/b2Island.cpp
+===================================================================
+--- Source/Dynamics/b2Island.cpp	(revision 127)
++++ Source/Dynamics/b2Island.cpp	(working copy)
+@@ -164,12 +164,24 @@
+ 		b->m_angularVelocity *= b2Clamp(1.0f - step.dt * b->m_angularDamping, 0.0f, 1.0f);
+ 
+ 		// Check for large velocities.
++#ifdef TARGET_FLOAT32_IS_FIXED
++				// Fixed point code written this way to prevent
++				// overflows, float code is optimized for speed
++
++		float32 vMagnitude = b->m_linearVelocity.Length();
++		if(vMagnitude > b2_maxLinearVelocity) {
++			b->m_linearVelocity *= b2_maxLinearVelocity/vMagnitude;
++		}
++		b->m_angularVelocity = b2Clamp(b->m_angularVelocity, 
++			-b2_maxAngularVelocity, b2_maxAngularVelocity);
++
++#else
++
+ 		if (b2Dot(b->m_linearVelocity, b->m_linearVelocity) > b2_maxLinearVelocitySquared)
+ 		{
+ 			b->m_linearVelocity.Normalize();
+ 			b->m_linearVelocity *= b2_maxLinearVelocity;
+ 		}
+-
+ 		if (b->m_angularVelocity * b->m_angularVelocity > b2_maxAngularVelocitySquared)
+ 		{
+ 			if (b->m_angularVelocity < 0.0f)
+@@ -181,6 +193,8 @@
+ 				b->m_angularVelocity = b2_maxAngularVelocity;
+ 			}
+ 		}
++#endif
++
+ 	}
+ 
+ 	b2ContactSolver contactSolver(step, m_contacts, m_contactCount, m_allocator);
+@@ -261,7 +275,7 @@
+ 
+ 	if (allowSleep)
+ 	{
+-		float32 minSleepTime = FLT_MAX;
++		float32 minSleepTime = FLOAT32_MAX;
+ 
+ 		const float32 linTolSqr = b2_linearSleepTolerance * b2_linearSleepTolerance;
+ 		const float32 angTolSqr = b2_angularSleepTolerance * b2_angularSleepTolerance;
+Index: Source/Dynamics/b2World.h
+===================================================================
+--- Source/Dynamics/b2World.h	(revision 127)
++++ Source/Dynamics/b2World.h	(working copy)
+@@ -129,6 +129,8 @@
+ 	/// @return the head of the world joint list.
+ 	b2Joint* GetJointList();
+ 
++	void SetGravity(b2Vec2 g) { m_gravity = g; }
++
+ public:
+ 	//--------------- Internals Below -------------------
+ 	// Internal yet public to make life easier.
+Index: Source/Dynamics/b2Body.cpp
+===================================================================
+--- Source/Dynamics/b2Body.cpp	(revision 127)
++++ Source/Dynamics/b2Body.cpp	(working copy)
+@@ -286,7 +286,7 @@
+ 	}
+ }
+ 
+-bool b2Body::SetXForm(const b2Vec2& position, float angle)
++bool b2Body::SetXForm(const b2Vec2& position, float32 angle)
+ {
+ 	b2Assert(m_world->m_lock == false);
+ 	if (m_world->m_lock == true)
+Index: Source/Dynamics/Joints/b2MouseJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2MouseJoint.cpp	(revision 127)
++++ Source/Dynamics/Joints/b2MouseJoint.cpp	(working copy)
+@@ -108,7 +108,18 @@
+ 
+ 	// Cdot = v + cross(w, r)
+ 	b2Vec2 Cdot = b->m_linearVelocity + b2Cross(b->m_angularVelocity, r);
++
++#ifdef TARGET_FLOAT32_IS_FIXED
++	b2Vec2 force = -b2Mul(m_mass, Cdot + (m_beta * step.inv_dt) * m_C + m_gamma * step.dt * m_force);
++	float32 forceLength = force.Length();
++	if(forceLength > 200.0) {
++		force *= 200.0/forceLength;
++	}
++	force *= step.inv_dt;
++
++#else
+ 	b2Vec2 force = -step.inv_dt * b2Mul(m_mass, Cdot + (m_beta * step.inv_dt) * m_C + m_gamma * step.dt * m_force);
++#endif
+ 
+ 	b2Vec2 oldForce = m_force;
+ 	m_force += force;
+Index: Source/Dynamics/Joints/b2DistanceJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2DistanceJoint.cpp	(revision 127)
++++ Source/Dynamics/Joints/b2DistanceJoint.cpp	(working copy)
+@@ -72,7 +72,7 @@
+ 	float32 cr1u = b2Cross(r1, m_u);
+ 	float32 cr2u = b2Cross(r2, m_u);
+ 	m_mass = b1->m_invMass + b1->m_invI * cr1u * cr1u + b2->m_invMass + b2->m_invI * cr2u * cr2u;
+-	b2Assert(m_mass > FLT_EPSILON);
++	b2Assert(m_mass > FLOAT32_EPSILON);
+ 	m_mass = 1.0f / m_mass;
+ 
+ 	if (b2World::s_enableWarmStarting)
+Index: Source/Dynamics/Joints/b2PulleyJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2PulleyJoint.cpp	(revision 127)
++++ Source/Dynamics/Joints/b2PulleyJoint.cpp	(working copy)
+@@ -55,7 +55,7 @@
+ 	b2Vec2 d2 = anchor2 - ga2;
+ 	length2 = d2.Length();
+ 	ratio = r;
+-	b2Assert(ratio > FLT_EPSILON);
++	b2Assert(ratio > FLOAT32_EPSILON);
+ 	float32 C = length1 + ratio * length2;
+ 	maxLength1 = C - ratio * b2_minPulleyLength;
+ 	maxLength2 = (C - b2_minPulleyLength) / ratio;
+@@ -163,9 +163,9 @@
+ 	m_limitMass1 = b1->m_invMass + b1->m_invI * cr1u1 * cr1u1;
+ 	m_limitMass2 = b2->m_invMass + b2->m_invI * cr2u2 * cr2u2;
+ 	m_pulleyMass = m_limitMass1 + m_ratio * m_ratio * m_limitMass2;
+-	b2Assert(m_limitMass1 > FLT_EPSILON);
+-	b2Assert(m_limitMass2 > FLT_EPSILON);
+-	b2Assert(m_pulleyMass > FLT_EPSILON);
++	b2Assert(m_limitMass1 > FLOAT32_EPSILON);
++	b2Assert(m_limitMass2 > FLOAT32_EPSILON);
++	b2Assert(m_pulleyMass > FLOAT32_EPSILON);
+ 	m_limitMass1 = 1.0f / m_limitMass1;
+ 	m_limitMass2 = 1.0f / m_limitMass2;
+ 	m_pulleyMass = 1.0f / m_pulleyMass;
+Index: Source/Dynamics/Joints/b2PrismaticJoint.cpp
+===================================================================
+--- Source/Dynamics/Joints/b2PrismaticJoint.cpp	(revision 127)
++++ Source/Dynamics/Joints/b2PrismaticJoint.cpp	(working copy)
+@@ -97,12 +97,12 @@
+ 	m_linearJacobian.Set(-ay1, -b2Cross(e, ay1), ay1, b2Cross(r2, ay1));
+ 	m_linearMass =	invMass1 + invI1 * m_linearJacobian.angular1 * m_linearJacobian.angular1 +
+ 					invMass2 + invI2 * m_linearJacobian.angular2 * m_linearJacobian.angular2;
+-	b2Assert(m_linearMass > FLT_EPSILON);
++	b2Assert(m_linearMass > FLOAT32_EPSILON);
+ 	m_linearMass = 1.0f / m_linearMass;
+ 
+ 	// Compute angular constraint effective mass.
+ 	m_angularMass = invI1 + invI2;
+-	if (m_angularMass > FLT_EPSILON)
++	if (m_angularMass > FLOAT32_EPSILON)
+ 	{
+ 		m_angularMass = 1.0f / m_angularMass;
+ 	}
+@@ -115,7 +115,7 @@
+ 		m_motorJacobian.Set(-ax1, -b2Cross(e, ax1), ax1, b2Cross(r2, ax1));
+ 		m_motorMass =	invMass1 + invI1 * m_motorJacobian.angular1 * m_motorJacobian.angular1 +
+ 						invMass2 + invI2 * m_motorJacobian.angular2 * m_motorJacobian.angular2;
+-		b2Assert(m_motorMass > FLT_EPSILON);
++		b2Assert(m_motorMass > FLOAT32_EPSILON);
+ 		m_motorMass = 1.0f / m_motorMass;
+ 
+ 		if (m_enableLimit)
+Index: Source/Dynamics/b2World.cpp
+===================================================================
+--- Source/Dynamics/b2World.cpp	(revision 127)
++++ Source/Dynamics/b2World.cpp	(working copy)
+@@ -566,6 +566,7 @@
+ 
+ 				// Compute the time of impact.
+ 				toi = b2TimeOfImpact(c->m_shape1, b1->m_sweep, c->m_shape2, b2->m_sweep);
++
+ 				b2Assert(0.0f <= toi && toi <= 1.0f);
+ 
+ 				if (toi > 0.0f && toi < 1.0f)
+@@ -578,7 +579,7 @@
+ 				c->m_flags |= b2Contact::e_toiFlag;
+ 			}
+ 
+-			if (FLT_EPSILON < toi && toi < minTOI)
++			if (FLOAT32_EPSILON < toi && toi < minTOI)
+ 			{
+ 				// This is the minimum TOI found so far.
+ 				minContact = c;
+@@ -586,7 +587,7 @@
+ 			}
+ 		}
+ 
+-		if (minContact == NULL || 1.0f - 100.0f * FLT_EPSILON < minTOI)
++		if (minContact == NULL || 1.0f - 100.0f * FLOAT32_EPSILON < minTOI)
+ 		{
+ 			// No more TOI events. Done!
+ 			break;
+@@ -689,7 +690,7 @@
+ 
+ 		b2TimeStep subStep;
+ 		subStep.dt = (1.0f - minTOI) * step.dt;
+-		b2Assert(subStep.dt > FLT_EPSILON);
++		b2Assert(subStep.dt > FLOAT32_EPSILON);
+ 		subStep.inv_dt = 1.0f / subStep.dt;
+ 		subStep.maxIterations = step.maxIterations;
+ 
+Index: Source/Dynamics/Contacts/b2ContactSolver.cpp
+===================================================================
+--- Source/Dynamics/Contacts/b2ContactSolver.cpp	(revision 127)
++++ Source/Dynamics/Contacts/b2ContactSolver.cpp	(working copy)
+@@ -94,12 +94,14 @@
+ 
+ 				float32 kNormal = b1->m_invMass + b2->m_invMass;
+ 				kNormal += b1->m_invI * (r1Sqr - rn1 * rn1) + b2->m_invI * (r2Sqr - rn2 * rn2);
+-				b2Assert(kNormal > FLT_EPSILON);
++
++				b2Assert(kNormal > FLOAT32_EPSILON);
+ 				ccp->normalMass = 1.0f / kNormal;
+ 
+ 				float32 kEqualized = b1->m_mass * b1->m_invMass + b2->m_mass * b2->m_invMass;
+ 				kEqualized += b1->m_mass * b1->m_invI * (r1Sqr - rn1 * rn1) + b2->m_mass * b2->m_invI * (r2Sqr - rn2 * rn2);
+-				b2Assert(kEqualized > FLT_EPSILON);
++
++				b2Assert(kEqualized > FLOAT32_EPSILON);
+ 				ccp->equalizedMass = 1.0f / kEqualized;
+ 
+ 				b2Vec2 tangent = b2Cross(normal, 1.0f);
+@@ -108,7 +110,8 @@
+ 				float32 rt2 = b2Dot(r2, tangent);
+ 				float32 kTangent = b1->m_invMass + b2->m_invMass;
+ 				kTangent += b1->m_invI * (r1Sqr - rt1 * rt1) + b2->m_invI * (r2Sqr - rt2 * rt2);
+-				b2Assert(kTangent > FLT_EPSILON);
++
++				b2Assert(kTangent > FLOAT32_EPSILON);
+ 				ccp->tangentMass = 1.0f /  kTangent;
+ 
+ 				// Setup a velocity bias for restitution.
+@@ -204,8 +207,35 @@
+ 			// Relative velocity at contact
+ 			b2Vec2 dv = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2) - b1->m_linearVelocity - b2Cross(b1->m_angularVelocity, r1);
+ 
++
++#ifdef TARGET_FLOAT32_IS_FIXED
+ 			// Compute normal force
+ 			float32 vn = b2Dot(dv, normal);
++			float32 lambda = - ccp->normalMass * (vn - ccp->velocityBias);
++			// b2Clamp the accumulated force
++			float32 newForce = b2Max(m_step.dt * ccp->normalForce + lambda, 0.0f);
++			lambda = newForce - m_step.dt * ccp->normalForce;
++
++			// Apply contact impulse
++			b2Vec2 P = lambda * normal;
++
++			b1->m_linearVelocity -= invMass1 * P;
++			b1->m_angularVelocity -= invI1 * b2Cross(r1, P);
++
++			b2->m_linearVelocity += invMass2 * P;
++			b2->m_angularVelocity += invI2 * b2Cross(r2, P);
++
++			if(newForce > 20000.0 * m_step.dt) {
++				ccp->normalForce = 20000.0;
++			} else if(newForce < -20000.0 * m_step.dt) {
++				ccp->normalForce = -20000.0;
++			} else {
++				ccp->normalForce = m_step.inv_dt * newForce;
++			}
++#else 
++
++			// Compute normal force
++			float32 vn = b2Dot(dv, normal);
+ 			float32 lambda = - m_step.inv_dt * ccp->normalMass * (vn - ccp->velocityBias);
+ 
+ 			// b2Clamp the accumulated force
+@@ -222,6 +252,7 @@
+ 			b2->m_angularVelocity += invI2 * b2Cross(r2, P);
+ 
+ 			ccp->normalForce = newForce;
++#endif
+ 		}
+ 
+ 		// Solve tangent constraints
+Index: Source/Common/b2Math.h
+===================================================================
+--- Source/Common/b2Math.h	(revision 127)
++++ Source/Common/b2Math.h	(working copy)
+@@ -24,18 +24,46 @@
+ #include <cfloat>
+ #include <cstdlib>
+ 
++#include <stdio.h>
++
++#ifdef TARGET_FLOAT32_IS_FIXED
++
++inline Fixed b2Min(const Fixed& a, const Fixed& b)
++{
++  return a < b ? a : b;
++}
++
++inline Fixed b2Max(const Fixed& a, const Fixed& b)
++{
++  return a > b ? a : b;
++}
++
++inline Fixed b2Clamp(Fixed a, Fixed low, Fixed high)
++{
++	return b2Max(low, b2Min(a, high));
++}
++
++inline bool b2IsValid(Fixed x)
++{
++	return true;
++}
++
++#define	b2Sqrt(x)	sqrt(x)
++#define	b2Atan2(y, x)	atan2(y, x)
++
++#else
++
+ /// This function is used to ensure that a floating point number is
+ /// not a NaN or infinity.
+-inline bool b2IsValid(float x)
++inline bool b2IsValid(float32 x)
+ {
+-#if defined( WIN32 ) || defined (_WIN32_WCE)
++#ifdef _MSC_VER
+ 	return _finite(x) != 0;
+ #else
+ 	return finite(x) != 0;
+ #endif
+ }
+ 
+-
+ /// This is a approximate yet fast inverse square-root.
+ inline float32 b2InvSqrt(float32 x)
+ {
+@@ -53,7 +81,18 @@
+ 	return x;
+ }
+ 
++#define	b2Sqrt(x)	sqrtf(x)
++#define	b2Atan2(y, x)	atan2f(y, x)
++
++#endif
++
++inline float32 b2Abs(float32 a)
++{
++	return a > 0.0f ? a : -a;
++}
++
+ /// A 2D column vector.
++
+ struct b2Vec2
+ {
+ 	/// Default constructor does nothing (for performance).
+@@ -92,7 +131,20 @@
+ 	/// Get the length of this vector (the norm).
+ 	float32 Length() const
+ 	{
+-		return sqrtf(x * x + y * y);
++#ifdef TARGET_FLOAT32_IS_FIXED
++		float est = b2Abs(x) + b2Abs(y);
++		if(est == 0.0f) {
++			return 0.0;
++		} else if(est < 0.1) {
++			return (1.0/256.0) * b2Vec2(x<<8, y<<8).Length();
++		} else if(est < 180.0f) {
++			return b2Sqrt(x * x + y * y);
++		} else {
++			return 256.0 * (b2Vec2(x>>8, y>>8).Length());
++		}
++#else
++		return b2Sqrt(x * x + y * y);
++#endif 
+ 	}
+ 
+ 	/// Get the length squared. For performance, use this instead of
+@@ -103,19 +155,48 @@
+ 	}
+ 
+ 	/// Convert this vector into a unit vector. Returns the length.
++#ifdef TARGET_FLOAT32_IS_FIXED
+ 	float32 Normalize()
+ 	{
+ 		float32 length = Length();
+-		if (length < FLT_EPSILON)
++		if (length < FLOAT32_EPSILON)
+ 		{
+ 			return 0.0f;
++		} 
++#ifdef NORMALIZE_BY_INVERT_MULTIPLY
++		if (length < (1.0/16.0)) {
++			x = x << 4;
++			y = y << 4;
++			return (1.0/16.0)*Normalize();
++		} else if(length > 16.0) {
++			x = x >> 4;
++			y = y >> 4;
++			return 16.0*Normalize();
+ 		}
+ 		float32 invLength = 1.0f / length;
+ 		x *= invLength;
+ 		y *= invLength;
++#else
++		x /= length;
++		y /= length;
++#endif
++		return length;
++	}
++#else
++	float32 Normalize()
++	{
++		float32 length = Length();
++		if (length < FLOAT32_EPSILON)
++		{
++			return 0.0f;
++		}
++		float32 invLength = 1.0f / length;
++		x *= invLength;
++		y *= invLength;
+ 
+ 		return length;
+ 	}
++#endif
+ 
+ 	/// Does this vector contain finite coordinates?
+ 	bool IsValid() const
+@@ -189,17 +270,82 @@
+ 	/// a rotation matrix).
+ 	float32 GetAngle() const
+ 	{
+-		return atan2f(col1.y, col1.x);
++		return b2Atan2(col1.y, col1.x);
+ 	}
+ 
++#ifdef TARGET_FLOAT32_IS_FIXED
++
+ 	/// Compute the inverse of this matrix, such that inv(A) * A = identity.
+ 	b2Mat22 Invert() const
+ 	{
+ 		float32 a = col1.x, b = col2.x, c = col1.y, d = col2.y;
++		float32 det = a * d - b * c;
+ 		b2Mat22 B;
++		int n = 0;
++
++		if(b2Abs(det) <= (FLOAT32_EPSILON<<8))
++		{
++			n = 3;
++			a = a<<n; b = b<<n; 
++			c = c<<n; d = d<<n;
++			det = a * d - b * c;
++			b2Assert(det != 0.0f);
++			det = float32(1) / det;
++			B.col1.x = ( det * d) << n;	B.col2.x = (-det * b) << n;
++			B.col1.y = (-det * c) << n;	B.col2.y = ( det * a) << n;
++		} 
++		else
++		{
++			n = (b2Abs(det) >= 16.0)? 4 : 0;
++			b2Assert(det != 0.0f);
++			det = float32(1<<n) / det;
++			B.col1.x = ( det * d) >> n;	B.col2.x = (-det * b) >> n;
++			B.col1.y = (-det * c) >> n;	B.col2.y = ( det * a) >> n;
++		}
++		
++		return B;
++	}
++
++	// Solve A * x = b
++	b2Vec2 Solve(const b2Vec2& b) const
++	{
++		float32 a11 = col1.x, a12 = col2.x, a21 = col1.y, a22 = col2.y;
++		float32 det = a11 * a22 - a12 * a21;
++		int n = 0;
++		b2Vec2 x;
++
++		
++		if(b2Abs(det) <= (FLOAT32_EPSILON<<8))
++		{
++			n = 3;
++			a11 = col1.x<<n; a12 = col2.x<<n;
++			a21 = col1.y<<n; a22 = col2.y<<n;
++			det = a11 * a22 - a12 * a21;
++			b2Assert(det != 0.0f);
++			det = float32(1) / det;
++			x.x = (det * (a22 * b.x - a12 * b.y)) << n;
++			x.y = (det * (a11 * b.y - a21 * b.x)) << n;
++		} 
++		else 
++		{
++			n = (b2Abs(det) >= 16.0) ? 4 : 0;
++			b2Assert(det != 0.0f);
++			det = float32(1<<n) / det;
++			x.x = (det * (a22 * b.x - a12 * b.y)) >> n;
++			x.y = (det * (a11 * b.y - a21 * b.x)) >> n;
++		}
++
++		return x;
++	}
++
++#else
++	b2Mat22 Invert() const
++	{
++		float32 a = col1.x, b = col2.x, c = col1.y, d = col2.y;
++		b2Mat22 B;
+ 		float32 det = a * d - b * c;
+ 		b2Assert(det != 0.0f);
+-		det = 1.0f / det;
++		det = float32(1.0f) / det;
+ 		B.col1.x =  det * d;	B.col2.x = -det * b;
+ 		B.col1.y = -det * c;	B.col2.y =  det * a;
+ 		return B;
+@@ -218,6 +364,7 @@
+ 		x.y = det * (a11 * b.y - a21 * b.x);
+ 		return x;
+ 	}
++#endif
+ 
+ 	b2Vec2 col1, col2;
+ };
+@@ -386,14 +533,9 @@
+ 	return b2MulT(T.R, v - T.position);
+ }
+ 
+-inline float32 b2Abs(float32 a)
+-{
+-	return a > 0.0f ? a : -a;
+-}
+-
+ inline b2Vec2 b2Abs(const b2Vec2& a)
+ {
+-	b2Vec2 b; b.Set(fabsf(a.x), fabsf(a.y));
++	b2Vec2 b; b.Set(b2Abs(a.x), b2Abs(a.y));
+ 	return b;
+ }
+ 
+@@ -450,11 +592,13 @@
+ 	b = tmp;
+ }
+ 
+-/// Random number in range [-1,1]
++#define	RAND_LIMIT	32767
++
++// Random number in range [-1,1]
+ inline float32 b2Random()
+ {
+-	float32 r = (float32)rand();
+-	r /= RAND_MAX;
++	float32 r = (float32)(rand() & (RAND_LIMIT));
++	r /= RAND_LIMIT;
+ 	r = 2.0f * r - 1.0f;
+ 	return r;
+ }
+@@ -462,8 +606,8 @@
+ /// Random floating point number in range [lo, hi]
+ inline float32 b2Random(float32 lo, float32 hi)
+ {
+-	float32 r = (float32)rand();
+-	r /= RAND_MAX;
++	float32 r = (float32)(rand() & (RAND_LIMIT));
++	r /= RAND_LIMIT;
+ 	r = (hi - lo) * r + lo;
+ 	return r;
+ }
+Index: Source/Common/b2Settings.cpp
+===================================================================
+--- Source/Common/b2Settings.cpp	(revision 127)
++++ Source/Common/b2Settings.cpp	(working copy)
+@@ -48,4 +48,4 @@
+ 	b2Assert(b2_byteCount >= size);
+ 	b2_byteCount -= size;
+ 	free(bytes);
+-}
+\ No newline at end of file
++}
+Index: Source/Common/b2Settings.h
+===================================================================
+--- Source/Common/b2Settings.h	(revision 127)
++++ Source/Common/b2Settings.h	(working copy)
+@@ -24,14 +24,43 @@
+ #define B2_NOT_USED(x) x
+ #define b2Assert(A) assert(A)
+ 
++
++				// need to include NDS jtypes.h instead of 
++				// usual typedefs because NDS jtypes defines
++				// them slightly differently, oh well.
++#ifdef TARGET_IS_NDS
++
++#include "jtypes.h"
++
++#else
++
+ typedef signed char	int8;
+ typedef signed short int16;
+ typedef signed int int32;
+ typedef unsigned char uint8;
+ typedef unsigned short uint16;
+ typedef unsigned int uint32;
++
++#endif
++
++#ifdef	TARGET_FLOAT32_IS_FIXED
++
++#include "Fixed.h"
++
++typedef Fixed float32;
++#define	FLOAT32_MAX	FIXED_MAX
++#define	FLOAT32_MIN	FIXED_MIN
++#define	FLOAT32_EPSILON	FIXED_EPSILON
++
++#else
++
+ typedef float float32;
++#define	FLOAT32_MAX	FLT_MAX
++#define	FLOAT32_MIN	FLT_MIN
++#define	FLOAT32_EPSILON	FLT_EPSILON
+ 
++#endif
++
+ const float32 b2_pi = 3.14159265359f;
+ 
+ /// @file
+@@ -76,7 +105,11 @@
+ 
+ /// The maximum linear velocity of a body. This limit is very large and is used
+ /// to prevent numerical problems. You shouldn't need to adjust this.
++#ifdef TARGET_FLOAT32_IS_FIXED
++const float32 b2_maxLinearVelocity = 100.0f;
++#else
+ const float32 b2_maxLinearVelocity = 200.0f;
++#endif
+ const float32 b2_maxLinearVelocitySquared = b2_maxLinearVelocity * b2_maxLinearVelocity;
+ 
+ /// The maximum angular velocity of a body. This limit is very large and is used
+Index: Source/Common/b2Math.cpp
+===================================================================
+--- Source/Common/b2Math.cpp	(revision 127)
++++ Source/Common/b2Math.cpp	(working copy)
+@@ -25,7 +25,7 @@
+ void b2Sweep::GetXForm(b2XForm* xf, float32 t) const
+ {
+ 	// center = p + R * localCenter
+-	if (1.0f - t0 > FLT_EPSILON)
++	if (1.0f - t0 > FLOAT32_EPSILON)
+ 	{
+ 		float32 alpha = (t - t0) / (1.0f - t0);
+ 		xf->position = (1.0f - alpha) * c0 + alpha * c;
+@@ -44,7 +44,7 @@
+ 
+ void b2Sweep::Advance(float32 t)
+ {
+-	if (t0 < t && 1.0f - t0 > FLT_EPSILON)
++	if (t0 < t && 1.0f - t0 > FLOAT32_EPSILON)
+ 	{
+ 		float32 alpha = (t - t0) / (1.0f - t0);
+ 		c0 = (1.0f - alpha) * c0 + alpha * c;
+Index: Source/Collision/b2Distance.cpp
+===================================================================
+--- Source/Collision/b2Distance.cpp	(revision 127)
++++ Source/Collision/b2Distance.cpp	(working copy)
+@@ -34,7 +34,7 @@
+ 	b2Vec2 d = points[0] - points[1];
+ 	float32 length = d.Normalize();
+ 	float32 lambda = b2Dot(r, d);
+-	if (lambda <= 0.0f || length < FLT_EPSILON)
++	if (lambda <= 0.0f || length < FLOAT32_EPSILON)
+ 	{
+ 		// The simplex is reduced to a point.
+ 		*x1 = p1s[1];
+@@ -91,13 +91,17 @@
+ 
+ 	float32 n = b2Cross(ab, ac);
+ 
++#ifdef TARGET_FLOAT32_IS_FIXED
++	n = (n < 0.0)? -1.0 : ((n > 0.0)? 1.0 : 0.0);
++#endif
++
+ 	// Should not be in edge ab region.
+ 	float32 vc = n * b2Cross(a, b);
+ 	b2Assert(vc > 0.0f || sn > 0.0f || sd > 0.0f);
+ 
+ 	// In edge bc region?
+ 	float32 va = n * b2Cross(b, c);
+-	if (va <= 0.0f && un >= 0.0f && ud >= 0.0f)
++	if (va <= 0.0f && un >= 0.0f && ud >= 0.0f && (un+ud) > 0.0f)
+ 	{
+ 		b2Assert(un + ud > 0.0f);
+ 		float32 lambda = un / (un + ud);
+@@ -111,7 +115,7 @@
+ 
+ 	// In edge ac region?
+ 	float32 vb = n * b2Cross(c, a);
+-	if (vb <= 0.0f && tn >= 0.0f && td >= 0.0f)
++	if (vb <= 0.0f && tn >= 0.0f && td >= 0.0f && (tn+td > 0.f))
+ 	{
+ 		b2Assert(tn + td > 0.0f);
+ 		float32 lambda = tn / (tn + td);
+@@ -137,7 +141,7 @@
+ 
+ static bool InPoints(const b2Vec2& w, const b2Vec2* points, int32 pointCount)
+ {
+-	const float32 k_tolerance = 100.0f * FLT_EPSILON;
++	const float32 k_tolerance = 100.0f * FLOAT32_EPSILON;
+ 	for (int32 i = 0; i < pointCount; ++i)
+ 	{
+ 		b2Vec2 d = b2Abs(w - points[i]);
+@@ -184,7 +188,7 @@
+ 				*x2 = w2;
+ 			}
+ 			g_GJK_Iterations = iter;
+-			return sqrtf(vSqr);
++			return b2Sqrt(vSqr);
+ 		}
+ 
+ 		switch (pointCount)
+@@ -220,24 +224,27 @@
+ 			return 0.0f;
+ 		}
+ 
+-		float32 maxSqr = -FLT_MAX;
++		float32 maxSqr = -FLOAT32_MAX;
+ 		for (int32 i = 0; i < pointCount; ++i)
+ 		{
+ 			maxSqr = b2Max(maxSqr, b2Dot(points[i], points[i]));
+ 		}
+ 
+-		if (pointCount == 3 || vSqr <= 100.0f * FLT_EPSILON * maxSqr)
++#ifdef TARGET_FLOAT32_IS_FIXED
++		if (pointCount == 3 || vSqr <= 5.0*FLOAT32_EPSILON * maxSqr)
++#else
++		if (pointCount == 3 || vSqr <= 100.0f * FLOAT32_EPSILON * maxSqr)
++#endif
+ 		{
+ 			g_GJK_Iterations = iter;
+ 			v = *x2 - *x1;
+ 			vSqr = b2Dot(v, v);
+-
+-			return sqrtf(vSqr);
++			return b2Sqrt(vSqr);
+ 		}
+ 	}
+ 
+ 	g_GJK_Iterations = maxIterations;
+-	return sqrtf(vSqr);
++	return b2Sqrt(vSqr);
+ }
+ 
+ static float32 DistanceCC(
+@@ -261,7 +268,7 @@
+ 		*x2 = p2 - r2 * d;
+ 		return distance;
+ 	}
+-	else if (dSqr > FLT_EPSILON * FLT_EPSILON)
++	else if (dSqr > FLOAT32_EPSILON * FLOAT32_EPSILON)
+ 	{
+ 		d.Normalize();
+ 		*x1 = p1 + r1 * d;
+Index: Source/Collision/b2Collision.cpp
+===================================================================
+--- Source/Collision/b2Collision.cpp	(revision 127)
++++ Source/Collision/b2Collision.cpp	(working copy)
+@@ -40,7 +40,7 @@
+ 	b2Vec2 d = p2 - p1;
+ 	b2Vec2 n = b2Cross(d, 1.0f);
+ 
+-	const float32 k_slop = 100.0f * FLT_EPSILON;
++	const float32 k_slop = 100.0f * FLOAT32_EPSILON;
+ 	float32 denom = -b2Dot(r, n);
+ 
+ 	// Cull back facing collision and ignore parallel segments.
+Index: Source/Collision/b2BroadPhase.h
+===================================================================
+--- Source/Collision/b2BroadPhase.h	(revision 127)
++++ Source/Collision/b2BroadPhase.h	(working copy)
+@@ -31,8 +31,15 @@
+ #include "b2PairManager.h"
+ #include <climits>
+ 
+-const uint16 b2_invalid = USHRT_MAX;
+-const uint16 b2_nullEdge = USHRT_MAX;
++#ifdef TARGET_FLOAT32_IS_FIXED
++#define	B2BROADPHASE_MAX	(USHRT_MAX/2)
++#else
++#define	B2BROADPHASE_MAX	USHRT_MAX
++
++#endif
++
++const uint16 b2_invalid = B2BROADPHASE_MAX;
++const uint16 b2_nullEdge = B2BROADPHASE_MAX;
+ struct b2BoundValues;
+ 
+ struct b2Bound
+Index: Source/Collision/b2CollideCircle.cpp
+===================================================================
+--- Source/Collision/b2CollideCircle.cpp	(revision 127)
++++ Source/Collision/b2CollideCircle.cpp	(working copy)
+@@ -39,14 +39,14 @@
+ 	}
+ 
+ 	float32 separation;
+-	if (distSqr < FLT_EPSILON)
++	if (distSqr < FLOAT32_EPSILON)
+ 	{
+ 		separation = -radiusSum;
+ 		manifold->normal.Set(0.0f, 1.0f);
+ 	}
+ 	else
+ 	{
+-		float32 dist = sqrtf(distSqr);
++		float32 dist = b2Sqrt(distSqr);
+ 		separation = dist - radiusSum;
+ 		float32 a = 1.0f / dist;
+ 		manifold->normal.x = a * d.x;
+@@ -79,11 +79,12 @@
+ 
+ 	// Find the min separating edge.
+ 	int32 normalIndex = 0;
+-	float32 separation = -FLT_MAX;
++	float32 separation = -FLOAT32_MAX;
+ 	const float32 radius = circle->m_radius;
+ 	for (int32 i = 0; i < polygon->m_vertexCount; ++i)
+ 	{
+ 		float32 s = b2Dot(polygon->m_normals[i], cLocal - polygon->m_vertices[i]);
++
+ 		if (s > radius)
+ 		{
+ 			// Early out.
+@@ -98,7 +99,7 @@
+ 	}
+ 
+ 	// If the center is inside the polygon ...
+-	if (separation < FLT_EPSILON)
++	if (separation < FLOAT32_EPSILON)
+ 	{
+ 		manifold->pointCount = 1;
+ 		manifold->normal = b2Mul(xf1.R, polygon->m_normals[normalIndex]);
+@@ -117,10 +118,11 @@
+ 	int32 vertIndex1 = normalIndex;
+ 	int32 vertIndex2 = vertIndex1 + 1 < polygon->m_vertexCount ? vertIndex1 + 1 : 0;
+ 	b2Vec2 e = polygon->m_vertices[vertIndex2] - polygon->m_vertices[vertIndex1];
++
+ 	float32 length = e.Normalize();
+ 
+ 	// If the edge length is zero ...
+-	if (length < FLT_EPSILON)
++	if (length < FLOAT32_EPSILON)
+ 	{
+ 		b2Vec2 d = cLocal - polygon->m_vertices[vertIndex1];
+ 		float32 dist = d.Normalize();
+Index: Source/Collision/Shapes/b2CircleShape.cpp
+===================================================================
+--- Source/Collision/Shapes/b2CircleShape.cpp	(revision 127)
++++ Source/Collision/Shapes/b2CircleShape.cpp	(working copy)
+@@ -71,13 +71,13 @@
+ 	float32 sigma = c * c - rr * b;
+ 
+ 	// Check for negative discriminant and short segment.
+-	if (sigma < 0.0f || rr < FLT_EPSILON)
++	if (sigma < 0.0f || rr < FLOAT32_EPSILON)
+ 	{
+ 		return false;
+ 	}
+ 
+ 	// Find the point of intersection of the line with the circle.
+-	float32 a = -(c + sqrtf(sigma));
++	float32 a = -(c + b2Sqrt(sigma));
+ 
+ 	// Is the intersection point on the segment?
+ 	if (0.0f <= a && a <= maxLambda * rr)
+Index: Source/Collision/Shapes/b2PolygonShape.cpp
+===================================================================
+--- Source/Collision/Shapes/b2PolygonShape.cpp	(revision 127)
++++ Source/Collision/Shapes/b2PolygonShape.cpp	(working copy)
+@@ -82,7 +82,7 @@
+ 	}
+ 
+ 	// Centroid
+-	b2Assert(area > FLT_EPSILON);
++	b2Assert(area > FLOAT32_EPSILON);
+ 	c *= 1.0f / area;
+ 	return c;
+ }
+@@ -98,17 +98,17 @@
+ 	}
+ 	p[count] = p[0];
+ 
+-	float32 minArea = FLT_MAX;
++	float32 minArea = FLOAT32_MAX;
+ 	
+ 	for (int32 i = 1; i <= count; ++i)
+ 	{
+ 		b2Vec2 root = p[i-1];
+ 		b2Vec2 ux = p[i] - root;
+ 		float32 length = ux.Normalize();
+-		b2Assert(length > FLT_EPSILON);
++		b2Assert(length > FLOAT32_EPSILON);
+ 		b2Vec2 uy(-ux.y, ux.x);
+-		b2Vec2 lower(FLT_MAX, FLT_MAX);
+-		b2Vec2 upper(-FLT_MAX, -FLT_MAX);
++		b2Vec2 lower(FLOAT32_MAX, FLOAT32_MAX);
++		b2Vec2 upper(-FLOAT32_MAX, -FLOAT32_MAX);
+ 
+ 		for (int32 j = 0; j < count; ++j)
+ 		{
+@@ -132,7 +132,7 @@
+ 		}
+ 	}
+ 
+-	b2Assert(minArea < FLT_MAX);
++	b2Assert(minArea < FLOAT32_MAX);
+ }
+ 
+ b2PolygonShape::b2PolygonShape(const b2ShapeDef* def)
+@@ -158,7 +158,7 @@
+ 		int32 i1 = i;
+ 		int32 i2 = i + 1 < m_vertexCount ? i + 1 : 0;
+ 		b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
+-		b2Assert(edge.LengthSquared() > FLT_EPSILON * FLT_EPSILON);
++		b2Assert(edge.LengthSquared() > FLOAT32_EPSILON * FLOAT32_EPSILON);
+ 		m_normals[i] = b2Cross(edge, 1.0f);
+ 		m_normals[i].Normalize();
+ 	}
+@@ -409,7 +409,7 @@
+ 	massData->mass = m_density * area;
+ 
+ 	// Center of mass
+-	b2Assert(area > FLT_EPSILON);
++	b2Assert(area > FLOAT32_EPSILON);
+ 	center *= 1.0f / area;
+ 	massData->center = center;
+ 
+Index: Source/Collision/b2CollidePoly.cpp
+===================================================================
+--- Source/Collision/b2CollidePoly.cpp	(revision 127)
++++ Source/Collision/b2CollidePoly.cpp	(working copy)
+@@ -71,7 +71,7 @@
+ 
+ 	// Find support vertex on poly2 for -normal.
+ 	int32 index = 0;
+-	float32 minDot = FLT_MAX;
++	float32 minDot = FLOAT32_MAX;
+ 	for (int32 i = 0; i < poly2->m_vertexCount; ++i)
+ 	{
+ 		float32 dot = b2Dot(poly2->m_vertices[i], normal1);
+@@ -101,7 +101,7 @@
+ 
+ 	// Find edge normal on poly1 that has the largest projection onto d.
+ 	int32 edge = 0;
+-	float32 maxDot = -FLT_MAX;
++	float32 maxDot = -FLOAT32_MAX;
+ 	for (int32 i = 0; i < count1; ++i)
+ 	{
+ 		float32 dot = b2Dot(poly1->m_normals[i], dLocal1);
+@@ -197,7 +197,7 @@
+ 
+ 	// Find the incident edge on poly2.
+ 	int32 index = 0;
+-	float32 minDot = FLT_MAX;
++	float32 minDot = FLOAT32_MAX;
+ 	for (int32 i = 0; i < poly2->m_vertexCount; ++i)
+ 	{
+ 		float32 dot = b2Dot(normal1, poly2->m_normals[i]);
+Index: Source/Collision/b2Collision.h
+===================================================================
+--- Source/Collision/b2Collision.h	(revision 127)
++++ Source/Collision/b2Collision.h	(working copy)
+@@ -133,7 +133,7 @@
+ inline bool b2AABB::IsValid() const
+ {
+ 	b2Vec2 d = upperBound - lowerBound;
+-	bool valid = d.x >= 0.0f && d.y >= 0;
++	bool valid = d.x >= 0.0f && d.y >= 0.0f;
+ 	valid = valid && lowerBound.IsValid() && upperBound.IsValid();
+ 	return valid;
+ }
+Index: Source/Collision/b2TimeOfImpact.cpp
+===================================================================
+--- Source/Collision/b2TimeOfImpact.cpp	(revision 127)
++++ Source/Collision/b2TimeOfImpact.cpp	(working copy)
+@@ -29,7 +29,7 @@
+ 	float32 r2 = shape2->GetSweepRadius();
+ 
+ 	b2Assert(sweep1.t0 == sweep2.t0);
+-	b2Assert(1.0f - sweep1.t0 > FLT_EPSILON);
++	b2Assert(1.0f - sweep1.t0 > FLOAT32_EPSILON);
+ 
+ 	float32 t0 = sweep1.t0;
+ 	b2Vec2 v1 = sweep1.c - sweep1.c0;
+@@ -79,7 +79,7 @@
+ 
+ 		// Compute upper bound on remaining movement.
+ 		float32 approachVelocityBound = b2Dot(normal, v1 - v2) + b2Abs(omega1) * r1 + b2Abs(omega2) * r2;
+-		if (b2Abs(approachVelocityBound) < FLT_EPSILON)
++		if (b2Abs(approachVelocityBound) < FLOAT32_EPSILON)
+ 		{
+ 			alpha = 1.0f;
+ 			break;
+@@ -98,7 +98,7 @@
+ 		}
+ 
+ 		// Ensure significant advancement.
+-		if (newAlpha < (1.0f + 100.0f * FLT_EPSILON) * alpha)
++		if (newAlpha < (1.0f + 100.0f * FLOAT32_EPSILON) * alpha)
+ 		{
+ 			break;
+ 		}
+Index: Source/Collision/b2PairManager.cpp
+===================================================================
+--- Source/Collision/b2PairManager.cpp	(revision 127)
++++ Source/Collision/b2PairManager.cpp	(working copy)
+@@ -393,4 +393,4 @@
+ 		}
+ 	}
+ #endif
+-}
+\ No newline at end of file
++}
+Index: Source/Collision/b2BroadPhase.cpp
+===================================================================
+--- Source/Collision/b2BroadPhase.cpp	(revision 127)
++++ Source/Collision/b2BroadPhase.cpp	(working copy)
+@@ -72,8 +72,8 @@
+ 	m_proxyCount = 0;
+ 
+ 	b2Vec2 d = worldAABB.upperBound - worldAABB.lowerBound;
+-	m_quantizationFactor.x = USHRT_MAX / d.x;
+-	m_quantizationFactor.y = USHRT_MAX / d.y;
++	m_quantizationFactor.x = float32(B2BROADPHASE_MAX) / d.x;
++	m_quantizationFactor.y = float32(B2BROADPHASE_MAX) / d.y;
+ 
+ 	for (uint16 i = 0; i < b2_maxProxies - 1; ++i)
+ 	{
+@@ -148,16 +148,16 @@
+ 	// Bump lower bounds downs and upper bounds up. This ensures correct sorting of
+ 	// lower/upper bounds that would have equal values.
+ 	// TODO_ERIN implement fast float to uint16 conversion.
+-	lowerValues[0] = (uint16)(m_quantizationFactor.x * (minVertex.x - m_worldAABB.lowerBound.x)) & (USHRT_MAX - 1);
++	lowerValues[0] = (uint16)(m_quantizationFactor.x * (minVertex.x - m_worldAABB.lowerBound.x)) & (B2BROADPHASE_MAX - 1);
+ 	upperValues[0] = (uint16)(m_quantizationFactor.x * (maxVertex.x - m_worldAABB.lowerBound.x)) | 1;
+ 
+-	lowerValues[1] = (uint16)(m_quantizationFactor.y * (minVertex.y - m_worldAABB.lowerBound.y)) & (USHRT_MAX - 1);
++	lowerValues[1] = (uint16)(m_quantizationFactor.y * (minVertex.y - m_worldAABB.lowerBound.y)) & (B2BROADPHASE_MAX - 1);
+ 	upperValues[1] = (uint16)(m_quantizationFactor.y * (maxVertex.y - m_worldAABB.lowerBound.y)) | 1;
+ }
+ 
+ void b2BroadPhase::IncrementTimeStamp()
+ {
+-	if (m_timeStamp == USHRT_MAX)
++	if (m_timeStamp == B2BROADPHASE_MAX)
+ 	{
+ 		for (uint16 i = 0; i < b2_maxProxies; ++i)
+ 		{
+Index: Examples/TestBed/Tests/Pulleys.h
+===================================================================
+--- Examples/TestBed/Tests/Pulleys.h	(revision 127)
++++ Examples/TestBed/Tests/Pulleys.h	(working copy)
+@@ -83,7 +83,7 @@
+ 
+ 		float32 ratio = m_joint1->GetRatio();
+ 		float32 L = m_joint1->GetLength1() + ratio * m_joint1->GetLength2();
+-		DrawString(5, m_textLine, "L1 + %4.2f * L2 = %4.2f", ratio, L);
++		DrawString(5, m_textLine, "L1 + %4.2f * L2 = %4.2f", (float) ratio, (float) L);
+ 		m_textLine += 15;
+ 	}
+ 
+Index: Examples/TestBed/Tests/MotorsAndLimits.h
+===================================================================
+--- Examples/TestBed/Tests/MotorsAndLimits.h	(revision 127)
++++ Examples/TestBed/Tests/MotorsAndLimits.h	(working copy)
+@@ -131,7 +131,7 @@
+ 		float32 torque1 = m_joint1->GetMotorTorque();
+ 		float32 torque2 = m_joint2->GetMotorTorque();
+ 		float32 force3 = m_joint3->GetMotorForce();
+-		DrawString(5, m_textLine, "Motor Torque = %4.0f, %4.0f : Motor Force = %4.0f", torque1, torque2, force3);
++		DrawString(5, m_textLine, "Motor Torque = %4.0f, %4.0f : Motor Force = %4.0f", (float) torque1, (float) torque2, (float) force3);
+ 		m_textLine += 15;
+ 	}
+ 
+Index: Examples/TestBed/Tests/DistanceTest.h
+===================================================================
+--- Examples/TestBed/Tests/DistanceTest.h	(revision 127)
++++ Examples/TestBed/Tests/DistanceTest.h	(working copy)
+@@ -102,7 +102,7 @@
+ 		b2Vec2 x1, x2;
+ 		float32 distance = b2Distance(&x1, &x2, m_shape1, m_body1->GetXForm(), m_shape2, m_body2->GetXForm());
+ 
+-		DrawString(5, m_textLine, "distance = %g", distance);
++		DrawString(5, m_textLine, "distance = %g", (float) distance);
+ 		m_textLine += 15;
+ 
+ 		extern int32 g_GJK_Iterations;
+Index: Examples/TestBed/Tests/SliderCrank.h
+===================================================================
+--- Examples/TestBed/Tests/SliderCrank.h	(revision 127)
++++ Examples/TestBed/Tests/SliderCrank.h	(working copy)
+@@ -123,7 +123,7 @@
+ 		DrawString(5, m_textLine, "Keys: (f) toggle friction, (m) toggle motor");
+ 		m_textLine += 15;
+ 		float32 torque = m_joint1->GetMotorTorque();
+-		DrawString(5, m_textLine, "Motor Torque = %5.0f", torque);
++		DrawString(5, m_textLine, "Motor Torque = %5.0f", (float) torque);
+ 		m_textLine += 15;
+ 	}
+ 
+Index: Examples/TestBed/Tests/Gears.h
+===================================================================
+--- Examples/TestBed/Tests/Gears.h	(revision 127)
++++ Examples/TestBed/Tests/Gears.h	(working copy)
+@@ -121,12 +121,12 @@
+ 		
+ 		ratio = m_joint4->GetRatio();
+ 		value = m_joint1->GetJointAngle() + ratio * m_joint2->GetJointAngle();
+-		DrawString(5, m_textLine, "theta1 + %4.2f * theta2 = %4.2f", ratio, value);
++		DrawString(5, m_textLine, "theta1 + %4.2f * theta2 = %4.2f", (float) ratio, (float) value);
+ 		m_textLine += 15;
+ 
+ 		ratio = m_joint5->GetRatio();
+ 		value = m_joint2->GetJointAngle() + ratio * m_joint3->GetJointTranslation();
+-		DrawString(5, m_textLine, "theta2 + %4.2f * delta = %4.2f", ratio, value);
++		DrawString(5, m_textLine, "theta2 + %4.2f * delta = %4.2f", (float) ratio, (float) value);
+ 		m_textLine += 15;
+ 	}
+ 
+Index: Examples/TestBed/Tests/TestEntries.cpp
+===================================================================
+--- Examples/TestBed/Tests/TestEntries.cpp	(revision 127)
++++ Examples/TestBed/Tests/TestEntries.cpp	(working copy)
+@@ -22,7 +22,7 @@
+ #ifdef __APPLE__
+ #include <GLUT/glut.h>
+ #else
+-#include "freeglut/gl/glut.h"
++#include "freeglut/GL/glut.h"
+ #endif
+ 
+ #include "ApplyForce.h"
+Index: Examples/TestBed/Tests/BroadPhaseTest.h
+===================================================================
+--- Examples/TestBed/Tests/BroadPhaseTest.h	(revision 127)
++++ Examples/TestBed/Tests/BroadPhaseTest.h	(working copy)
+@@ -25,7 +25,7 @@
+ #ifdef __APPLE__
+ #include <GLUT/glut.h>
+ #else
+-#include "freeglut/gl/glut.h"
++#include "freeglut/GL/glut.h"
+ #endif
+ 
+ const int32 k_actorCount = 256;
+Index: Examples/TestBed/Tests/VaryingFriction.h
+===================================================================
+--- Examples/TestBed/Tests/VaryingFriction.h	(revision 127)
++++ Examples/TestBed/Tests/VaryingFriction.h	(working copy)
+@@ -27,7 +27,7 @@
+ 	{
+ 		{
+ 			b2PolygonDef sd;
+-			sd.SetAsBox(100.0f, 20.0f);
++			sd.SetAsBox(50.0f, 20.0f);
+ 
+ 			b2BodyDef bd;
+ 			bd.position.Set(0.0f, -20.0f);
+Index: Examples/TestBed/Tests/TimeOfImpact.h
+===================================================================
+--- Examples/TestBed/Tests/TimeOfImpact.h	(revision 127)
++++ Examples/TestBed/Tests/TimeOfImpact.h	(working copy)
+@@ -84,7 +84,7 @@
+ 
+ 		float32 toi = b2TimeOfImpact(m_shape1, sweep1, m_shape2, sweep2);
+ 
+-		DrawString(5, m_textLine, "toi = %g", toi);
++		DrawString(5, m_textLine, "toi = %g", (float) toi);
+ 		m_textLine += 15;
+ 
+ 		b2XForm xf2;
+Index: Examples/TestBed/Framework/Render.cpp
+===================================================================
+--- Examples/TestBed/Framework/Render.cpp	(revision 127)
++++ Examples/TestBed/Framework/Render.cpp	(working copy)
+@@ -21,7 +21,7 @@
+ #ifdef __APPLE__
+ #include <GLUT/glut.h>
+ #else
+-#include "freeglut/gl/glut.h"
++#include "freeglut/GL/glut.h"
+ #endif
+ 
+ #include <cstdio>
+Index: Examples/TestBed/Framework/Test.cpp
+===================================================================
+--- Examples/TestBed/Framework/Test.cpp	(revision 127)
++++ Examples/TestBed/Framework/Test.cpp	(working copy)
+@@ -23,7 +23,7 @@
+ #include <GLUT/glut.h>
+ #define APIENTRY
+ #else
+-#include "freeglut/gl/glut.h"
++#include "freeglut/GL/glut.h"
+ #endif
+ 
+ #include <cstdio>
+@@ -222,7 +222,7 @@
+ 
+ void Test::Step(Settings* settings)
+ {
+-	float32 timeStep = settings->hz > 0.0f ? 1.0f / settings->hz : 0.0f;
++	float32 timeStep = settings->hz > 0.0f ? 1.0f / settings->hz : float32(0.0f);
+ 
+ 	if (settings->pause)
+ 	{
+Index: Examples/TestBed/Framework/Main.cpp
+===================================================================
+--- Examples/TestBed/Framework/Main.cpp	(revision 127)
++++ Examples/TestBed/Framework/Main.cpp	(working copy)
+@@ -18,7 +18,7 @@
+ 
+ #include <cstdio>
+ 
+-#include "glui/gl/glui.h"
++#include "glui/GL/glui.h"
+ 
+ #include "Render.h"
+ #include "Test.h"
+@@ -67,10 +67,10 @@
+ 
+ b2Vec2 ConvertScreenToWorld(int32 x, int32 y)
+ {
+-	float32 u = x / float32(tw);
+-	float32 v = (th - y) / float32(th);
++	float u = x / float(tw);
++	float v = (th - y) / float(th);
+ 
+-	float32 ratio = float32(tw) / float32(th);
++	float ratio = float32(tw) / float32(th);
+ 	b2Vec2 extents(ratio * 25.0f, 25.0f);
+ 	extents *= viewZoom;
+ 
+@@ -304,8 +304,9 @@
+ 		glui->add_spinner("Iterations", GLUI_SPINNER_INT, &settings.iterationCount);
+ 	iterationSpinner->set_int_limits(1, 100);
+ 
++	float hz = settings.hz;
+ 	GLUI_Spinner* hertzSpinner =
+-		glui->add_spinner("Hertz", GLUI_SPINNER_FLOAT, &settings.hz);
++		glui->add_spinner("Hertz", GLUI_SPINNER_FLOAT, &hz);
+ 	hertzSpinner->set_float_limits(5.0f, 200.0f);
+ 
+ 	glui->add_checkbox("Position Correction", &settings.enablePositionCorrection);
+Index: Examples/TestBed/Framework/Test.h
+===================================================================
+--- Examples/TestBed/Framework/Test.h	(revision 127)
++++ Examples/TestBed/Framework/Test.h	(working copy)
+@@ -159,4 +159,5 @@
+ 	b2MouseJoint* m_mouseJoint;
+ };
+ 
+-#endif
+\ No newline at end of file
++#endif
++
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Makefile	2008-03-08 14:02:49.000000000 -0800
+@@ -0,0 +1,29 @@
++PATCH=	box2d_fixed.patch
++
++all:
++	(cd Contrib/freeglut; make)
++	(cd Contrib/glui; make)
++	(cd Source; make)
++	(cd Examples/TestBed; make)
++
++clean:
++	(cd Contrib/freeglut; make clean)
++	(cd Contrib/glui; make clean)
++	(cd Source; make clean)
++	(cd Examples/TestBed; make clean)
++
++patch:
++	svn diff > $(PATCH)
++	- diff --unified /dev/null Makefile >> $(PATCH)
++	- diff --unified /dev/null Documentation/latex/Makefile >> $(PATCH)
++	- diff --unified /dev/null Contrib/freeglut/Makefile >> $(PATCH)
++	- diff --unified /dev/null Contrib/glui/Makefile >> $(PATCH)
++	- diff --unified /dev/null Source/Makefile >> $(PATCH)
++	- diff --unified /dev/null Examples/TestBed/Makefile >> $(PATCH)
++	- diff --unified /dev/null Source/Common/Fixed.h >> $(PATCH)
++	- diff --unified /dev/null Source/Common/jtypes.h >> $(PATCH)
++	- diff --unified /dev/null Source/Contrib/b2Polygon.cpp >> $(PATCH)
++	- diff --unified /dev/null Source/Contrib/b2Polygon.h >> $(PATCH)
++	- diff --unified /dev/null Source/Contrib/b2Triangle.cpp >> $(PATCH)
++	- diff --unified /dev/null Source/Contrib/b2Triangle.h >> $(PATCH)
++
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Documentation/latex/Makefile	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,39 @@
++all: clean refman.dvi
++
++ps: refman.ps
++
++pdf: refman.pdf
++
++ps_2on1: refman_2on1.ps
++
++pdf_2on1: refman_2on1.pdf
++
++refman.ps: refman.dvi
++	dvips -o refman.ps refman.dvi
++
++refman.pdf: refman.ps
++	ps2pdf refman.ps refman.pdf
++
++refman.dvi: refman.tex doxygen.sty
++	echo "Running latex..."
++	latex refman.tex
++	echo "Running makeindex..."
++	makeindex refman.idx
++	echo "Rerunning latex...."
++	latex refman.tex
++	latex_count=5 ; \
++	while egrep -s 'Rerun (LaTeX|to get cross-references right)' refman.log && [ $$latex_count -gt 0 ] ;\
++	    do \
++	      echo "Rerunning latex...." ;\
++	      latex refman.tex ;\
++	      latex_count=`expr $$latex_count - 1` ;\
++	    done
++
++refman_2on1.ps: refman.ps
++	psnup -2 refman.ps >refman_2on1.ps
++
++refman_2on1.pdf: refman_2on1.ps
++	ps2pdf refman_2on1.ps refman_2on1.pdf
++
++clean:
++	rm -f *.ps *.dvi *.aux *.toc *.idx *.ind *.ilg *.log *.out refman.pdf
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Contrib/freeglut/Makefile	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,35 @@
++all:	libglut.a
++
++CFLAGS=	-g -O2 -DTARGET_HOST_UNIX_X11 -DHAVE_FCNTL_H -DHAVE_SYS_IOCTL_H
++
++
++OBJECTS=	\
++	freeglut_callbacks.o \
++	freeglut_cursor.o \
++	freeglut_display.o \
++	freeglut_ext.o \
++	freeglut_font_data.o \
++	freeglut_font.o \
++	freeglut_gamemode.o \
++	freeglut_geometry.o \
++	freeglut_glutfont_definitions.o \
++	freeglut_init.o \
++	freeglut_joystick.o \
++	freeglut_main.o \
++	freeglut_menu.o \
++	freeglut_misc.o \
++	freeglut_overlay.o \
++	freeglut_state.o \
++	freeglut_stroke_mono_roman.o \
++	freeglut_stroke_roman.o \
++	freeglut_structure.o \
++	freeglut_teapot.o \
++	freeglut_videoresize.o \
++	freeglut_window.o
++
++libglut.a:	$(OBJECTS)
++	ar cr libglut.a $(OBJECTS)
++	ranlib libglut.a
++
++clean:
++	rm -f $(OBJECTS) libglut.a
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Contrib/glui/Makefile	2008-03-07 19:54:45.000000000 -0800
+@@ -0,0 +1,45 @@
++all:	libglui.a
++
++CXXFLAGS=	-g -O2 -I../freeglut -L../freeglut -DGLUI_FREEGLUT
++
++OBJECTS=	\
++	algebra3.o \
++	arcball.o \
++	glui_add_controls.o \
++	glui_bitmap_img_data.o \
++	glui_bitmaps.o \
++	glui_button.o \
++	glui_checkbox.o \
++	glui_column.o \
++	glui_commandline.o \
++	glui_control.o \
++	glui.o \
++	glui_edittext.o \
++	glui_filebrowser.o \
++	glui_listbox.o \
++	glui_list.o \
++	glui_mouse_iaction.o \
++	glui_node.o \
++	glui_panel.o \
++	glui_radio.o \
++	glui_rollout.o \
++	glui_rotation.o \
++	glui_scrollbar.o \
++	glui_separator.o \
++	glui_spinner.o \
++	glui_statictext.o \
++	glui_string.o \
++	glui_textbox.o \
++	glui_translation.o \
++	glui_tree.o \
++	glui_treepanel.o \
++	glui_window.o \
++	quaternion.o
++
++
++libglui.a:	$(OBJECTS)
++	ar cr libglui.a $(OBJECTS)
++
++clean:
++	rm -f $(OBJECTS) libglui.a
++
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Makefile	2008-03-07 19:46:08.000000000 -0800
+@@ -0,0 +1,106 @@
++TARGETS= Gen/float/libbox2d.a Gen/fixed/libbox2d.a
++
++ifdef DEVKITPRO
++TARGETS += Gen/nds-float/lib/libbox2d.a Gen/nds-fixed/lib/libbox2d.a
++endif
++
++all:	$(TARGETS)
++
++clean:
++	rm -rf Gen
++
++CXXFLAGS=	-g -O2
++
++SOURCES = \
++	./Dynamics/b2Body.cpp \
++	./Dynamics/b2Island.cpp \
++	./Dynamics/b2World.cpp \
++	./Dynamics/b2ContactManager.cpp \
++	./Dynamics/Contacts/b2Contact.cpp \
++	./Dynamics/Contacts/b2PolyContact.cpp \
++	./Dynamics/Contacts/b2CircleContact.cpp \
++	./Dynamics/Contacts/b2PolyAndCircleContact.cpp \
++	./Dynamics/Contacts/b2ContactSolver.cpp \
++	./Dynamics/b2WorldCallbacks.cpp \
++	./Dynamics/Joints/b2MouseJoint.cpp \
++	./Dynamics/Joints/b2PulleyJoint.cpp \
++	./Dynamics/Joints/b2Joint.cpp \
++	./Dynamics/Joints/b2RevoluteJoint.cpp \
++	./Dynamics/Joints/b2PrismaticJoint.cpp \
++	./Dynamics/Joints/b2DistanceJoint.cpp \
++	./Dynamics/Joints/b2GearJoint.cpp \
++	./Common/b2StackAllocator.cpp \
++	./Common/b2Math.cpp \
++	./Common/b2BlockAllocator.cpp \
++	./Common/b2Settings.cpp \
++	./Collision/b2Collision.cpp \
++	./Collision/b2Distance.cpp \
++	./Collision/Shapes/b2Shape.cpp \
++	./Collision/Shapes/b2CircleShape.cpp \
++	./Collision/Shapes/b2PolygonShape.cpp \
++	./Collision/b2TimeOfImpact.cpp \
++	./Collision/b2PairManager.cpp \
++	./Collision/b2CollidePoly.cpp \
++	./Collision/b2CollideCircle.cpp \
++	./Collision/b2BroadPhase.cpp \
++	./Contrib/b2Polygon.cpp \
++	./Contrib/b2Triangle.cpp
++
++FLOAT_OBJECTS= $(addprefix Gen/float/,$(SOURCES:.cpp=.o))
++
++Gen/float/%.o:		%.cpp
++	mkdir -p $(dir $@)
++	c++ $(CXXFLAGS) -c -o $@ $<
++
++
++Gen/float/libbox2d.a:	$(FLOAT_OBJECTS)
++	ar cr $@ $^
++	ranlib $@ 
++
++
++FIXED_OBJECTS= $(addprefix Gen/fixed/,$(SOURCES:.cpp=.o)) 
++
++Gen/fixed/%.o:		%.cpp
++	@mkdir -p $(dir $@)
++	c++ $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -c -o $@ $^
++
++
++Gen/fixed/libbox2d.a:	$(FIXED_OBJECTS)
++	ar cr $@ $^
++	ranlib $@ 
++
++
++NDS_OBJECTS= $(addprefix Gen/nds-fixed/,$(SOURCES:.cpp=.o)) 
++
++Gen/nds-fixed/%.o:		%.cpp
++	@mkdir -p $(dir $@)
++	arm-eabi-g++ -g -O2 -fomit-frame-pointer -ffast-math \
++		-march=armv5te -mtune=arm946e-s -mthumb-interwork \
++		-DARM9 -fno-rtti -fno-exceptions -c \
++		-DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS \
++		-I$(DEVKITPRO)/libnds/include \
++		-o $@ $^
++
++Gen/nds-fixed/lib/libbox2d.a:	$(NDS_OBJECTS)
++	@mkdir -p $(dir $@)
++	arm-eabi-ar cr $@ $^
++	arm-eabi-ranlib $@ 
++
++
++NDS_OBJECTS= $(addprefix Gen/nds-float/,$(SOURCES:.cpp=.o))
++
++Gen/nds-float/%.o:		%.cpp
++	@mkdir -p $(dir $@)
++	arm-eabi-g++ -g -O2 -fomit-frame-pointer -ffast-math \
++		-march=armv5te -mtune=arm946e-s -mthumb-interwork \
++		-DARM9 -fno-rtti -fno-exceptions -c \
++		-DTARGET_IS_NDS \
++		-I$(DEVKITPRO)/libnds/include \
++		-o $@ $^
++
++Gen/nds-float/lib/libbox2d.a:	$(NDS_OBJECTS)
++	@mkdir -p $(dir $@)
++	arm-eabi-ar cr $@ $^
++	arm-eabi-ranlib $@ 
++
++
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Examples/TestBed/Makefile	2008-03-07 19:55:42.000000000 -0800
+@@ -0,0 +1,37 @@
++all:	Gen/float/testbed Gen/fixed/testbed
++
++clean:
++	rm -rf Gen
++
++PROJECT=	../..
++
++CXXFLAGS=	-g -O2 -I$(PROJECT)/Contrib -I$(PROJECT)/Include -DGLUI_FREEGLUT
++
++LDFLAGS=	-L$(PROJECT)/Contrib/freeglut -L$(PROJECT)/Contrib/glui \
++
++SOURCES=	Framework/Main.cpp \
++		Framework/Test.cpp \
++		Framework/Render.cpp \
++		Tests/BroadPhaseTest.cpp \
++		Tests/Biped.cpp \
++		Tests/BipedDef.cpp \
++		Tests/TestEntries.cpp 
++
++FLOAT_OBJECTS= $(addprefix Gen/float/,$(SOURCES:.cpp=.o))
++
++Gen/float/%.o:		%.cpp
++	mkdir -p $(dir $@)
++	c++ $(CXXFLAGS) -c -o $@ $<
++
++Gen/float/testbed:	$(FLOAT_OBJECTS)
++	g++ -o $@ $^ $(LDFLAGS) -L$(PROJECT)/Source/Gen/float -lbox2d -lglui -lglut -lGLU -lGL
++
++
++FIXED_OBJECTS= $(addprefix Gen/fixed/,$(SOURCES:.cpp=.o))
++
++Gen/fixed/%.o:		%.cpp
++	mkdir -p $(dir $@)
++	c++ $(CXXFLAGS) -DTARGET_FLOAT32_IS_FIXED -c -o $@ $<
++
++Gen/fixed/testbed:	$(FIXED_OBJECTS)
++	g++ -o $@ $^ $(LDFLAGS) -L$(PROJECT)/Source/Gen/fixed -lbox2d -lglui -lglut -lGLU -lGL
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Common/Fixed.h	2008-03-07 20:21:51.000000000 -0800
+@@ -0,0 +1,454 @@
++/*
++Copyright (c) 2006 Henry Strickland & Ryan Seto
++              2007-2008 Tobias Weyand (modifications and extensions)
++
++Permission is hereby granted, free of charge, to any person obtaining a
++copy of this software and associated documentation files (the "Software"),
++to deal in the Software without restriction, including without limitation
++the rights to use, copy, modify, merge, publish, distribute, sublicense,
++and/or sell copies of the Software, and to permit persons to whom the
++Software is furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included
++in all copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
++THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
++OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++OTHER DEALINGS IN THE SOFTWARE.
++
++        (* http://www.opensource.org/licenses/mit-license.php *)
++*/
++
++#ifndef _FIXED_H_
++#define _FIXED_H_
++
++#include <stdio.h>
++
++#ifdef TARGET_IS_NDS
++
++#include "nds.h"
++
++#endif
++
++#define FIXED_BP        16
++#define FIXED_MAX       ((1<<(32-FIXED_BP-1))-1)
++#define FIXED_MIN       (-(1<<(32-FIXED_BP-1)))
++#define FIXED_EPSILON   (Fixed(0.00007f))
++
++#define G_1_DIV_PI		20861
++
++class Fixed {
++
++	private:
++	
++		int	g; // the guts
++	
++		const static int BP= FIXED_BP;  // how many low bits are right of Binary Point
++		const static int BP2= BP*2;  // how many low bits are right of Binary Point
++		const static int BPhalf= BP/2;  // how many low bits are right of Binary Point
++	
++		double STEP();  // smallest step we can represent
++	
++		// for private construction via guts
++		enum FixedRaw { RAW };
++		Fixed(FixedRaw, int guts);
++	
++	public:
++	
++		Fixed();
++		Fixed(const Fixed &a);
++		Fixed(float a);
++		Fixed(double a);
++		Fixed(int a);
++		Fixed(long a);
++	
++		Fixed& operator =(const Fixed a);
++		Fixed& operator =(float a);
++		Fixed& operator =(double a);
++		Fixed& operator =(int a);
++		Fixed& operator =(long a);
++	
++		operator float();
++		operator double();
++		operator int();
++		operator long();
++		operator unsigned short();
++	
++		operator float() const;
++	
++		Fixed operator +() const;
++		Fixed operator -() const;
++
++		Fixed operator +(const Fixed a) const;
++		Fixed operator -(const Fixed a) const;
++#if 1
++		// more acurate, using long long
++		Fixed operator *(const Fixed a) const;
++#else
++		// faster, but with only half as many bits right of binary point
++		Fixed operator *(const Fixed a) const;
++#endif
++		Fixed operator /(const Fixed a) const;
++
++		Fixed operator *(unsigned short a) const;
++		Fixed operator *(int a) const;
++	
++		Fixed operator +(float a) const;
++		Fixed operator -(float a) const;
++		Fixed operator *(float a) const;
++		Fixed operator /(float a) const;
++	
++		Fixed operator +(double a) const;
++		Fixed operator -(double a) const;
++		Fixed operator *(double a) const;
++		Fixed operator /(double a) const;
++	
++		Fixed operator >>(int a) const;
++		Fixed operator <<(int a) const;
++	
++		Fixed& operator +=(Fixed a);
++		Fixed& operator -=(Fixed a);
++		Fixed& operator *=(Fixed a);
++		Fixed& operator /=(Fixed a);
++	
++		Fixed& operator +=(int a);
++		Fixed& operator -=(int a);
++		Fixed& operator *=(int a);
++		Fixed& operator /=(int a);
++	
++		Fixed& operator +=(long a);
++		Fixed& operator -=(long a);
++		Fixed& operator *=(long a);
++		Fixed& operator /=(long a);
++	
++		Fixed& operator +=(float a);
++		Fixed& operator -=(float a);
++		Fixed& operator *=(float a);
++		Fixed& operator /=(float a);
++	
++		Fixed& operator +=(double a);
++		Fixed& operator -=(double a);
++		Fixed& operator *=(double a);
++		Fixed& operator /=(double a);
++	
++		bool operator ==(const Fixed a) const;
++		bool operator !=(const Fixed a) const;
++		bool operator <=(const Fixed a) const;
++		bool operator >=(const Fixed a) const;
++		bool operator  <(const Fixed a) const;
++		bool operator  >(const Fixed a) const;
++	
++		bool operator ==(float a) const;
++		bool operator !=(float a) const;
++		bool operator <=(float a) const;
++		bool operator >=(float a) const;
++		bool operator  <(float a) const;
++		bool operator  >(float a) const;
++	
++		bool operator ==(double a) const;
++		bool operator !=(double a) const;
++		bool operator <=(double a) const;
++		bool operator >=(double a) const;
++		bool operator  <(double a) const;
++		bool operator  >(double a) const;
++	
++		bool operator  >(int a) const;
++		bool operator  <(int a) const;
++		bool operator  >=(int a) const;
++		bool operator  <=(int a) const;
++	
++		Fixed abs();
++		Fixed sqrt();
++#ifdef TARGET_IS_NDS
++		Fixed cosf();
++		Fixed sinf();
++		Fixed tanf();
++#endif
++};
++
++//
++// Implementation
++//
++
++inline double Fixed::STEP() { return 1.0 / (1<<BP); }  // smallest step we can represent
++
++// for private construction via guts
++inline Fixed::Fixed(FixedRaw, int guts) : g(guts) {}
++
++inline Fixed::Fixed() : g(0) {}
++inline Fixed::Fixed(const Fixed &a) : g( a.g ) {}
++inline Fixed::Fixed(float a) : g( int(a * (float)(1<<BP)) ) {}
++inline Fixed::Fixed(double a) : g( int(a * (double)(1<<BP) ) ) {}
++inline Fixed::Fixed(int a) : g( a << BP ) {}
++inline Fixed::Fixed(long a) : g( a << BP ) {}
++
++inline Fixed& Fixed::operator =(const Fixed a) { g= a.g; return *this; }
++inline Fixed& Fixed::operator =(float a) { g= Fixed(a).g; return *this; }
++inline Fixed& Fixed::operator =(double a) { g= Fixed(a).g; return *this; }
++inline Fixed& Fixed::operator =(int a) { g= Fixed(a).g; return *this; }
++inline Fixed& Fixed::operator =(long a) { g= Fixed(a).g; return *this; }
++
++inline Fixed::operator float() { return g * (float)STEP(); }
++inline Fixed::operator double() { return g * (double)STEP(); }
++inline Fixed::operator int() { return g>>BP; }
++inline Fixed::operator long() { return g>>BP; }
++//#pragma warning(disable: 4244) //HARDWIRE added pragma to prevent VS2005 compilation error
++inline Fixed::operator unsigned short() { return g>>BP; }
++inline Fixed::operator float() const { return g / (float)(1<<BP); }
++
++inline Fixed Fixed::operator +() const { return Fixed(RAW,g); }
++inline Fixed Fixed::operator -() const { return Fixed(RAW,-g); }
++
++inline Fixed Fixed::operator +(const Fixed a) const { return Fixed(RAW, g + a.g); }
++inline Fixed Fixed::operator -(const Fixed a) const { return Fixed(RAW, g - a.g); }
++
++#if 1
++// more acurate, using long long
++inline Fixed Fixed::operator *(const Fixed a) const { return Fixed(RAW,  (int)( ((long long)g * (long long)a.g ) >> BP)); }
++#else
++// faster, but with only half as many bits right of binary point
++inline Fixed Fixed::operator *(const Fixed a) const { return Fixed(RAW, (g>>BPhalf) * (a.g>>BPhalf) ); }
++#endif
++
++
++#ifdef TARGET_IS_NDS
++// Division using the DS's maths coprocessor
++inline Fixed Fixed::operator /(const Fixed a) const
++{
++	//printf("%d %d\n", (long long)g << BP, a.g);
++	return Fixed(RAW, int( div64((long long)g << BP, a.g) ) );
++}
++#else
++inline Fixed Fixed::operator /(const Fixed a) const
++{
++	return Fixed(RAW, int( (((long long)g << BP2) / (long long)(a.g)) >> BP) );
++	//return Fixed(RAW, int( (((long long)g << BP) / (long long)(a.g)) ) );
++}
++#endif
++
++inline Fixed Fixed::operator *(unsigned short a) const { return operator*(Fixed(a)); }
++inline Fixed Fixed::operator *(int a) const { return operator*(Fixed(a)); }
++
++inline Fixed Fixed::operator +(float a) const { return Fixed(RAW, g + Fixed(a).g); }
++inline Fixed Fixed::operator -(float a) const { return Fixed(RAW, g - Fixed(a).g); }
++inline Fixed Fixed::operator *(float a) const { return Fixed(RAW, (g>>BPhalf) * (Fixed(a).g>>BPhalf) ); }
++//inline Fixed Fixed::operator /(float a) const { return Fixed(RAW, int( (((long long)g << BP2) / (long long)(Fixed(a).g)) >> BP) ); }
++inline Fixed Fixed::operator /(float a) const { return operator/(Fixed(a)); }
++
++inline Fixed Fixed::operator +(double a) const { return Fixed(RAW, g + Fixed(a).g); }
++inline Fixed Fixed::operator -(double a) const { return Fixed(RAW, g - Fixed(a).g); }
++inline Fixed Fixed::operator *(double a) const { return Fixed(RAW, (g>>BPhalf) * (Fixed(a).g>>BPhalf) ); }
++//inline Fixed Fixed::operator /(double a) const { return Fixed(RAW, int( (((long long)g << BP2) / (long long)(Fixed(a).g)) >> BP) ); }
++inline Fixed Fixed::operator /(double a) const { return operator/(Fixed(a)); }
++
++inline Fixed Fixed::operator >>(int a) const { return Fixed(RAW, g >> a); }
++inline Fixed Fixed::operator <<(int a) const { return Fixed(RAW, g << a); }
++
++inline Fixed& Fixed::operator +=(Fixed a) { return *this = *this + a; }
++inline Fixed& Fixed::operator -=(Fixed a) { return *this = *this - a; }
++inline Fixed& Fixed::operator *=(Fixed a) { return *this = *this * a; }
++//inline Fixed& Fixed::operator /=(Fixed a) { return *this = *this / a; }
++inline Fixed& Fixed::operator /=(Fixed a) { return *this = operator/(a); }
++
++inline Fixed& Fixed::operator +=(int a) { return *this = *this + (Fixed)a; }
++inline Fixed& Fixed::operator -=(int a) { return *this = *this - (Fixed)a; }
++inline Fixed& Fixed::operator *=(int a) { return *this = *this * (Fixed)a; }
++//inline Fixed& Fixed::operator /=(int a) { return *this = *this / (Fixed)a; }
++inline Fixed& Fixed::operator /=(int a) { return *this = operator/((Fixed)a); }
++
++inline Fixed& Fixed::operator +=(long a) { return *this = *this + (Fixed)a; }
++inline Fixed& Fixed::operator -=(long a) { return *this = *this - (Fixed)a; }
++inline Fixed& Fixed::operator *=(long a) { return *this = *this * (Fixed)a; }
++//inline Fixed& Fixed::operator /=(long a) { return *this = *this / (Fixed)a; }
++inline Fixed& Fixed::operator /=(long a) { return *this = operator/((Fixed)a); }
++
++inline Fixed& Fixed::operator +=(float a) { return *this = *this + a; }
++inline Fixed& Fixed::operator -=(float a) { return *this = *this - a; }
++inline Fixed& Fixed::operator *=(float a) { return *this = *this * a; }
++//inline Fixed& Fixed::operator /=(float a) { return *this = *this / a; }
++inline Fixed& Fixed::operator /=(float a) { return *this = operator/(a); }
++
++inline Fixed& Fixed::operator +=(double a) { return *this = *this + a; }
++inline Fixed& Fixed::operator -=(double a) { return *this = *this - a; }
++inline Fixed& Fixed::operator *=(double a) { return *this = *this * a; }
++//inline Fixed& Fixed::operator /=(double a) { return *this = *this / a; }
++inline Fixed& Fixed::operator /=(double a) { return *this = operator/(a); }
++
++inline Fixed operator +(int a, const Fixed b) { return Fixed(a)+b; }
++inline Fixed operator -(int a, const Fixed b) { return Fixed(a)-b; }
++inline Fixed operator *(int a, const Fixed b) { return Fixed(a)*b; }
++inline Fixed operator /(int a, const Fixed b) { return Fixed(a)/b; };
++
++inline Fixed operator +(float a, const Fixed b) { return Fixed(a)+b; }
++inline Fixed operator -(float a, const Fixed b) { return Fixed(a)-b; }
++inline Fixed operator *(float a, const Fixed b) { return Fixed(a)*b; }
++inline Fixed operator /(float a, const Fixed b) { return Fixed(a)/b; }
++
++inline bool Fixed::operator ==(const Fixed a) const { return g == a.g; }
++inline bool Fixed::operator !=(const Fixed a) const { return g != a.g; }
++inline bool Fixed::operator <=(const Fixed a) const { return g <= a.g; }
++inline bool Fixed::operator >=(const Fixed a) const { return g >= a.g; }
++inline bool Fixed::operator  <(const Fixed a) const { return g  < a.g; }
++inline bool Fixed::operator  >(const Fixed a) const { return g  > a.g; }
++
++inline bool Fixed::operator ==(float a) const { return g == Fixed(a).g; }
++inline bool Fixed::operator !=(float a) const { return g != Fixed(a).g; }
++inline bool Fixed::operator <=(float a) const { return g <= Fixed(a).g; }
++inline bool Fixed::operator >=(float a) const { return g >= Fixed(a).g; }
++inline bool Fixed::operator  <(float a) const { return g  < Fixed(a).g; }
++inline bool Fixed::operator  >(float a) const { return g  > Fixed(a).g; }
++
++inline bool Fixed::operator ==(double a) const { return g == Fixed(a).g; }
++inline bool Fixed::operator !=(double a) const { return g != Fixed(a).g; }
++inline bool Fixed::operator <=(double a) const { return g <= Fixed(a).g; }
++inline bool Fixed::operator >=(double a) const { return g >= Fixed(a).g; }
++inline bool Fixed::operator  <(double a) const { return g  < Fixed(a).g; }
++inline bool Fixed::operator  >(double a) const { return g  > Fixed(a).g; }
++
++inline bool Fixed::operator  >(int a) const { return g > Fixed(a).g; }
++inline bool Fixed::operator  <(int a) const { return g < Fixed(a).g; }
++inline bool Fixed::operator  >=(int a) const{ return g >= Fixed(a).g; };
++inline bool Fixed::operator  <=(int a) const{ return g <= Fixed(a).g; };
++
++inline bool operator ==(float a, const Fixed b) { return Fixed(a) == b; }
++inline bool operator !=(float a, const Fixed b) { return Fixed(a) != b; }
++inline bool operator <=(float a, const Fixed b) { return Fixed(a) <= b; }
++inline bool operator >=(float a, const Fixed b) { return Fixed(a) >= b; }
++inline bool operator  <(float a, const Fixed b) { return Fixed(a)  < b; }
++inline bool operator  >(float a, const Fixed b) { return Fixed(a)  > b; }
++
++inline Fixed operator +(double a, const Fixed b) { return Fixed(a)+b; }
++inline Fixed operator -(double a, const Fixed b) { return Fixed(a)-b; }
++inline Fixed operator *(double a, const Fixed b) { return Fixed(a)*b; }
++inline Fixed operator /(double a, const Fixed b) { return Fixed(a)/b; }
++
++inline bool operator ==(double a, const Fixed b) { return Fixed(a) == b; }
++inline bool operator !=(double a, const Fixed b) { return Fixed(a) != b; }
++inline bool operator <=(double a, const Fixed b) { return Fixed(a) <= b; }
++inline bool operator >=(double a, const Fixed b) { return Fixed(a) >= b; }
++inline bool operator  <(double a, const Fixed b) { return Fixed(a)  < b; }
++inline bool operator  >(double a, const Fixed b) { return Fixed(a)  > b; }
++
++inline bool operator ==(int a, const Fixed b) { return Fixed(a) == b; }
++inline bool operator !=(int a, const Fixed b) { return Fixed(a) != b; }
++inline bool operator <=(int a, const Fixed b) { return Fixed(a) <= b; }
++inline bool operator >=(int a, const Fixed b) { return Fixed(a) >= b; }
++inline bool operator  <(int a, const Fixed b) { return Fixed(a)  < b; }
++inline bool operator  >(int a, const Fixed b) { return Fixed(a)  > b; }
++
++inline int& operator +=(int& a, const Fixed b) { a = (Fixed)a + b; return a; }
++inline int& operator -=(int& a, const Fixed b) { a = (Fixed)a - b; return a; }
++inline int& operator *=(int& a, const Fixed b) { a = (Fixed)a * b; return a; }
++inline int& operator /=(int& a, const Fixed b) { a = (Fixed)a / b; return a; }
++
++inline long& operator +=(long& a, const Fixed b) { a = (Fixed)a + b; return a; }
++inline long& operator -=(long& a, const Fixed b) { a = (Fixed)a - b; return a; }
++inline long& operator *=(long& a, const Fixed b) { a = (Fixed)a * b; return a; }
++inline long& operator /=(long& a, const Fixed b) { a = (Fixed)a / b; return a; }
++
++inline float& operator +=(float& a, const Fixed b) { a = a + b; return a; }
++inline float& operator -=(float& a, const Fixed b) { a = a - b; return a; }
++inline float& operator *=(float& a, const Fixed b) { a = a * b; return a; }
++inline float& operator /=(float& a, const Fixed b) { a = a / b; return a; }
++
++inline double& operator +=(double& a, const Fixed b) { a = a + b; return a; }
++inline double& operator -=(double& a, const Fixed b) { a = a - b; return a; }
++inline double& operator *=(double& a, const Fixed b) { a = a * b; return a; }
++inline double& operator /=(double& a, const Fixed b) { a = a / b; return a; }
++
++inline Fixed Fixed::abs() { return (g>0) ? Fixed(RAW, g) : Fixed(RAW, -g); }
++inline Fixed abs(Fixed f) { return f.abs(); }
++
++//inline Fixed atan2(Fixed a, Fixed b) { return atan2f((float) a, (float) b); }
++inline Fixed atan2(Fixed y, Fixed x)
++{
++	Fixed abs_y = y.abs() + FIXED_EPSILON;	// avoid 0/0
++	Fixed r, angle;
++
++	if(x >= 0.0f) {
++		r = (x - abs_y) / (x + abs_y);
++		angle = 3.1415926/4.0;
++	} else {
++		r = (x + abs_y) / (abs_y - x);
++		angle = 3.0*3.1415926/4.0;
++	}
++	angle += Fixed(0.1963) * (r * r * r) - Fixed(0.9817) * r;
++	return (y < 0) ? -angle : angle;
++}
++
++#if TARGET_IS_NDS
++
++static inline long nds_sqrt64(long long a)
++{
++	SQRT_CR = SQRT_64;
++	while(SQRT_CR & SQRT_BUSY);
++	SQRT_PARAM64 = a;
++	while(SQRT_CR & SQRT_BUSY);
++
++	return SQRT_RESULT32;
++}
++
++static inline int32 div6464(int64 num, int64 den)
++{
++	DIV_CR = DIV_64_64;
++	while(DIV_CR & DIV_BUSY);
++	DIV_NUMERATOR64 = num;
++	DIV_DENOMINATOR64 = den;
++	while(DIV_CR & DIV_BUSY);
++
++	return (DIV_RESULT32);
++}
++
++inline Fixed Fixed::sqrt()
++{
++	return Fixed(RAW, nds_sqrt64(((long long)(g))<<BP));
++}
++#else
++inline Fixed Fixed::sqrt()
++{
++	long long m, root = 0, left = (long long)g<<FIXED_BP;
++	for ( m = (long long)1<<( (sizeof(long long)<<3) - 2); m; m >>= 2 )
++	{
++		if ( ( left & -m ) > root ) 
++			left -= ( root += m ), root += m;
++		root >>= 1;
++	}
++	return Fixed(RAW, root);
++}
++#endif
++
++inline Fixed sqrt(Fixed a) { return a.sqrt(); }
++inline Fixed sqrtf(Fixed a) { return a.sqrt(); }
++
++#endif
++
++#ifdef TARGET_IS_NDS
++// Use the libnds lookup tables for trigonometry functions
++inline Fixed Fixed::cosf() {
++	int idx = (((long long)g*(long long)G_1_DIV_PI)>>24)%512;
++	if(idx < 0)
++		idx += 512;
++	return Fixed(RAW, COS_bin[idx] << 4);
++}
++inline Fixed cosf(Fixed x) { return x.cosf(); }
++inline Fixed Fixed::sinf() {
++	int idx = (((long long)g*(long long)G_1_DIV_PI)>>24)%512;
++	if(idx < 0)
++			idx += 512;
++	return Fixed(RAW, SIN_bin[idx] << 4);
++}
++inline Fixed sinf(Fixed x) { return x.sinf(); }
++inline Fixed Fixed::tanf() {
++	int idx = (((long long)g*(long long)G_1_DIV_PI)>>24)%512;
++	if(idx < 0)
++				idx += 512;
++	return Fixed(RAW, TAN_bin[idx] << 4);
++}
++inline Fixed tanf(Fixed x) { return x.tanf(); }
++
++
++#endif
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Common/jtypes.h	2008-03-07 20:18:07.000000000 -0800
+@@ -0,0 +1,140 @@
++/*---------------------------------------------------------------------------------
++	$Id: jtypes.h,v 1.17 2007/07/18 05:20:45 wntrmute Exp $
++
++	jtypes.h -- Common types (and a few useful macros)
++
++	Copyright (C) 2005
++		Michael Noland (joat)
++		Jason Rogers (dovoto)
++		Dave Murphy (WinterMute)
++		Chris Double (doublec)
++
++	This software is provided 'as-is', without any express or implied
++	warranty.  In no event will the authors be held liable for any
++	damages arising from the use of this software.
++
++	Permission is granted to anyone to use this software for any
++	purpose, including commercial applications, and to alter it and
++	redistribute it freely, subject to the following restrictions:
++
++	1.	The origin of this software must not be misrepresented; you
++		must not claim that you wrote the original software. If you use
++		this software in a product, an acknowledgment in the product
++		documentation would be appreciated but is not required.
++	2.	Altered source versions must be plainly marked as such, and
++		must not be misrepresented as being the original software.
++	3.	This notice may not be removed or altered from any source
++		distribution.
++
++---------------------------------------------------------------------------------*/
++#ifndef NDS_JTYPES_INCLUDE
++#define NDS_JTYPES_INCLUDE
++//---------------------------------------------------------------------------------
++
++
++#define PACKED __attribute__ ((packed))
++#define packed_struct struct PACKED
++
++//---------------------------------------------------------------------------------
++// libgba compatible section macros
++//---------------------------------------------------------------------------------
++#define ITCM_CODE	__attribute__((section(".itcm"), long_call))
++
++#define DTCM_DATA	__attribute__((section(".dtcm")))
++#define DTCM_BSS	__attribute__((section(".sbss")))
++#define ALIGN(m)	__attribute__((aligned (m)))
++
++#define PACKED __attribute__ ((packed))
++#define packed_struct struct PACKED
++
++//---------------------------------------------------------------------------------
++// These are linked to the bin2o macro in the Makefile
++//---------------------------------------------------------------------------------
++#define GETRAW(name)      (name)
++#define GETRAWSIZE(name)  ((int)name##_size)
++#define GETRAWEND(name)  ((int)name##_end)
++
++#ifndef TRUE
++#define TRUE 1
++#define FALSE 0
++#endif
++
++#define BIT(n) (1 << (n))
++
++// define libnds types in terms of stdint
++#include <stdint.h>
++
++typedef uint8_t		uint8;
++typedef uint16_t	uint16;
++typedef uint32_t	uint32;
++typedef uint64_t	uint64;
++
++typedef int8_t		int8;
++typedef int16_t		int16;
++typedef int32_t		int32;
++typedef int64_t		int64;
++
++//typedef float		float32;
++typedef double		float64;
++
++typedef volatile uint8_t	vuint8;
++typedef volatile uint16_t	vuint16;
++typedef volatile uint32_t	vuint32;
++typedef volatile uint64_t	vuint64;
++
++typedef volatile int8_t		vint8;
++typedef volatile int16_t	vint16;
++typedef volatile int32_t	vint32;
++typedef volatile int64_t	vint64;
++
++typedef volatile float          vfloat32;
++typedef volatile float64        vfloat64;
++
++typedef uint8_t		byte;
++
++typedef uint8_t		u8;
++typedef uint16_t	u16;
++typedef uint32_t	u32;
++typedef uint64_t	u64;
++
++typedef int8_t		s8;
++typedef int16_t		s16;
++typedef int32_t		s32;
++typedef int64_t		s64;
++
++typedef volatile u8          vu8;
++typedef volatile u16         vu16;
++typedef volatile u32         vu32;
++typedef volatile u64         vu64;
++
++typedef volatile s8           vs8;
++typedef volatile s16          vs16;
++typedef volatile s32          vs32;
++typedef volatile s64          vs64;
++
++typedef struct touchPosition {
++	int16	x;
++	int16	y;
++	int16	px;
++	int16	py;
++	int16	z1;
++	int16	z2;
++} touchPosition;
++
++
++#ifndef __cplusplus
++/** C++ compatible bool for C
++
++*/
++typedef enum { false, true } bool;
++#endif
++
++// Handy function pointer typedefs
++typedef void ( * IntFn)(void);
++typedef void (* VoidFunctionPointer)(void);
++typedef void (* fp)(void);
++
++//---------------------------------------------------------------------------------
++#endif
++//---------------------------------------------------------------------------------
++
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Contrib/b2Polygon.cpp	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,1603 @@
++/*
++ * Copyright (c) 2007 Eric Jordan
++ *
++ * This software is provided 'as-is', without any express or implied
++ * warranty.  In no event will the authors be held liable for any damages
++ * arising from the use of this software.
++ * Permission is granted to anyone to use this software for any purpose,
++ * including commercial applications, and to alter it and redistribute it
++ * freely, subject to the following restrictions:
++ * 1. The origin of this software must not be misrepresented; you must not
++ * claim that you wrote the original software. If you use this software
++ * in a product, an acknowledgment in the product documentation would be
++ * appreciated but is not required.
++ * 2. Altered source versions must be plainly marked as such, and must not be
++ * misrepresented as being the original software.
++ * 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#include "../Common/b2Math.h"
++#include "../Common/b2Settings.h"
++#include "../Collision/Shapes/b2Shape.h"
++#include "../Dynamics/b2Body.h"
++#include "b2Triangle.h"
++#include "b2Polygon.h"
++
++#include <cmath>
++#include <climits>
++
++static bool B2_POLYGON_REPORT_ERRORS = false;
++
++//If you're using 1.4.3, b2_toiSlop won't exist, so set this equal to 0
++static const float32 toiSlop = b2_toiSlop;//0.0f;
++
++/*
++ * Check if the lines a0->a1 and b0->b1 cross.
++ * If they do, intersectionPoint will be filled
++ * with the point of crossing.
++ *
++ * Grazing lines should not return true.
++ */
++bool intersect(const b2Vec2& a0, const b2Vec2& a1,
++			   const b2Vec2& b0, const b2Vec2& b1, 
++			   b2Vec2& intersectionPoint) {
++
++	float32 x1 = a0.x; float32 y1 = a0.y;
++	float32 x2 = a1.x; float32 y2 = a1.y;
++	float32 x3 = b0.x; float32 y3 = b0.y;
++	float32 x4 = b1.x; float32 y4 = b1.y;
++	
++	float32 ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
++	float32 ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
++	float32 denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
++	if (b2Abs(denom) < FLOAT32_EPSILON) {
++		//Lines are too close to parallel to call
++		return false;
++	}
++	ua /= denom;
++	ub /= denom;
++	
++	if ((0 < ua) && (ua < 1) && (0 < ub) && (ub < 1)) {
++		//if (intersectionPoint){
++			intersectionPoint.x = (x1 + ua * (x2 - x1));
++			intersectionPoint.y = (y1 + ua * (y2 - y1));
++		//}
++		//printf("%f, %f -> %f, %f crosses %f, %f -> %f, %f\n",x1,y1,x2,y2,x3,y3,x4,y4);
++		return true;
++	}
++	
++	return false;
++}
++
++/*
++ * True if line from a0->a1 intersects b0->b1
++ */
++bool intersect(const b2Vec2& a0, const b2Vec2& a1,
++			   const b2Vec2& b0, const b2Vec2& b1) {
++	b2Vec2 myVec(0.0f,0.0f);
++	return intersect(a0, a1, b0, b1, myVec);
++}
++
++b2Polygon::b2Polygon(float32* _x, float32* _y, int32 nVert) {
++        nVertices = nVert;
++        x = new float32[nVertices];
++        y = new float32[nVertices];
++        for (int32 i = 0; i < nVertices; ++i) {
++            x[i] = _x[i];
++            y[i] = _y[i];
++        }
++		areaIsSet = false;
++}
++	
++b2Polygon::b2Polygon(b2Vec2* v, int32 nVert) {
++        nVertices = nVert;
++        x = new float32[nVertices];
++        y = new float32[nVertices];
++        for (int32 i = 0; i < nVertices; ++i) {
++            x[i] = v[i].x;
++            y[i] = v[i].y;
++
++        }
++		areaIsSet = false;
++}
++
++b2Polygon::b2Polygon() {
++	x = NULL;
++	y = NULL;
++	nVertices = 0;
++	areaIsSet = false;
++}
++	
++b2Polygon::~b2Polygon() {
++	delete[] x;
++	delete[] y;
++}
++
++float32 b2Polygon::GetArea() {
++	if (areaIsSet) return area;
++	area = 0.0f;
++	
++	//First do wraparound
++	area += x[nVertices-1]*y[0]-x[0]*y[nVertices-1];
++	for (int i=0; i<nVertices-1; ++i){
++		area += x[i]*y[i+1]-x[i+1]*y[i];
++	}
++	area *= .5f;
++	areaIsSet = true;
++	return area;
++}
++
++bool b2Polygon::IsCCW() {
++	return (GetArea() > 0.0f);
++}
++	
++void b2Polygon::MergeParallelEdges(float32 tolerance) {
++	if (nVertices <= 3) return; //Can't do anything useful here to a triangle
++	bool* mergeMe = new bool[nVertices];
++	int32 newNVertices = nVertices;
++	for (int32 i = 0; i < nVertices; ++i) {
++		int32 lower = (i == 0) ? (nVertices - 1) : (i - 1);
++		int32 middle = i;
++		int32 upper = (i == nVertices - 1) ? (0) : (i + 1);
++		float32 dx0 = x[middle] - x[lower];
++		float32 dy0 = y[middle] - y[lower];
++		float32 dx1 = x[upper] - x[middle];
++		float32 dy1 = y[upper] - y[middle];
++		float32 norm0 = b2Sqrt(dx0*dx0+dy0*dy0);
++		float32 norm1 = b2Sqrt(dx1*dx1+dy1*dy1);
++		if ( !(norm0 > 0.0f && norm1 > 0.0f) && newNVertices > 3 ) {
++			//Merge identical points
++			mergeMe[i] = true;
++			--newNVertices;
++		}
++		dx0 /= norm0; dy0 /= norm0;
++		dx1 /= norm1; dy1 /= norm1;
++		float32 cross = dx0 * dy1 - dx1 * dy0;
++		float32 dot = dx0 * dx1 + dy0 * dy1;
++		if (b2Abs(cross) < tolerance && dot > 0 && newNVertices > 3) {
++			mergeMe[i] = true;
++			--newNVertices;
++		} else {
++			mergeMe[i] = false;
++		}
++	}
++	if(newNVertices == nVertices || newNVertices == 0) {
++		delete[] mergeMe;
++		return;
++	}
++	float32* newx = new float32[newNVertices];
++	float32* newy = new float32[newNVertices];
++	int32 currIndex = 0;
++	for (int32 i=0; i < nVertices; ++i) {
++		if (mergeMe[i] || newNVertices == 0 || currIndex == newNVertices) continue;
++		b2Assert(currIndex < newNVertices);
++		newx[currIndex] = x[i];
++		newy[currIndex] = y[i];
++		++currIndex;
++	}
++	delete[] x;
++	delete[] y;
++	delete[] mergeMe;
++	x = newx;
++	y = newy;
++	nVertices = newNVertices;
++}
++	
++    /* 
++	 *	Allocates and returns pointer to vector vertex array.
++     *  Length of array is nVertices.
++	 */
++b2Vec2* b2Polygon::GetVertexVecs() {
++        b2Vec2* out = new b2Vec2[nVertices];
++        for (int32 i = 0; i < nVertices; ++i) {
++            out[i].Set(x[i], y[i]);
++        }
++        return out;
++}
++	
++b2Polygon::b2Polygon(b2Triangle& t) {
++	nVertices = 3;
++	x = new float32[nVertices];
++	y = new float32[nVertices];
++	for (int32 i = 0; i < nVertices; ++i) {
++		x[i] = t.x[i];
++		y[i] = t.y[i];
++	}
++}
++	
++void b2Polygon::Set(const b2Polygon& p) {
++        if (nVertices != p.nVertices){
++			nVertices = p.nVertices;
++			if (x) delete[] x;
++			if (y) delete[] y;
++			x = new float32[nVertices];
++			y = new float32[nVertices];
++        }
++		
++        for (int32 i = 0; i < nVertices; ++i) {
++            x[i] = p.x[i];
++            y[i] = p.y[i];
++        }
++	areaIsSet = false;
++}
++	
++    /*
++     * Assuming the polygon is simple, checks if it is convex.
++     */
++bool b2Polygon::IsConvex() {
++        bool isPositive = false;
++        for (int32 i = 0; i < nVertices; ++i) {
++            int32 lower = (i == 0) ? (nVertices - 1) : (i - 1);
++            int32 middle = i;
++            int32 upper = (i == nVertices - 1) ? (0) : (i + 1);
++            float32 dx0 = x[middle] - x[lower];
++            float32 dy0 = y[middle] - y[lower];
++            float32 dx1 = x[upper] - x[middle];
++            float32 dy1 = y[upper] - y[middle];
++            float32 cross = dx0 * dy1 - dx1 * dy0;
++            // Cross product should have same sign
++            // for each vertex if poly is convex.
++            bool newIsP = (cross >= 0) ? true : false;
++            if (i == 0) {
++                isPositive = newIsP;
++            }
++            else if (isPositive != newIsP) {
++                return false;
++            }
++        }
++        return true;
++}
++
++/*
++ * Pulled from b2Shape.cpp, assertions removed
++ */
++static b2Vec2 PolyCentroid(const b2Vec2* vs, int32 count)
++{
++	b2Vec2 c; c.Set(0.0f, 0.0f);
++	float32 area = 0.0f;
++
++	const float32 inv3 = 1.0f / 3.0f;
++	b2Vec2 pRef(0.0f, 0.0f);
++	for (int32 i = 0; i < count; ++i)
++	{
++		// Triangle vertices.
++		b2Vec2 p1 = pRef;
++		b2Vec2 p2 = vs[i];
++		b2Vec2 p3 = i + 1 < count ? vs[i+1] : vs[0];
++
++		b2Vec2 e1 = p2 - p1;
++		b2Vec2 e2 = p3 - p1;
++
++		float32 D = b2Cross(e1, e2);
++
++		float32 triangleArea = 0.5f * D;
++		area += triangleArea;
++
++		// Area weighted centroid
++		c += triangleArea * inv3 * (p1 + p2 + p3);
++	}
++
++	// Centroid
++	c *= 1.0f / area;
++	return c;
++}
++
++
++/*
++ * Checks if polygon is valid for use in Box2d engine.
++ * Last ditch effort to ensure no invalid polygons are
++ * added to world geometry.
++ *
++ * Performs a full check, for simplicity, convexity,
++ * orientation, minimum angle, and volume.  This won't
++ * be very efficient, and a lot of it is redundant when
++ * other tools in this section are used.
++ */
++bool b2Polygon::IsUsable(bool printErrors){
++	int32 error = -1;
++	bool noError = true;
++	if (nVertices < 3 || nVertices > b2_maxPolygonVertices) {noError = false; error = 0;}
++	if (!IsConvex()) {noError = false; error = 1;}
++	if (!IsSimple()) {noError = false; error = 2;}
++	if (GetArea() < FLOAT32_EPSILON) {noError = false; error = 3;}
++
++	//Compute normals
++	b2Vec2* normals = new b2Vec2[nVertices];
++	b2Vec2* vertices = new b2Vec2[nVertices];
++	for (int32 i = 0; i < nVertices; ++i){
++		vertices[i].Set(x[i],y[i]);
++		int32 i1 = i;
++		int32 i2 = i + 1 < nVertices ? i + 1 : 0;
++		b2Vec2 edge(x[i2]-x[i1],y[i2]-y[i1]);
++		normals[i] = b2Cross(edge, 1.0f);
++		normals[i].Normalize();
++	}
++
++	//Required side checks
++	for (int32 i=0; i<nVertices; ++i){
++		int32 iminus = (i==0)?nVertices-1:i-1;
++		//int32 iplus = (i==nVertices-1)?0:i+1;
++
++		//Parallel sides check
++		float32 cross = b2Cross(normals[iminus], normals[i]);
++		cross = b2Clamp(cross, -1.0f, 1.0f);
++		float32 angle = asinf(cross);
++		if(angle <= b2_angularSlop){
++			noError = false;
++			error = 4;
++			break;
++		}
++
++		//Too skinny check
++		for (int32 j=0; j<nVertices; ++j){
++			if (j == i || j == (i + 1) % nVertices){
++				continue;
++			}
++			float32 s = b2Dot(normals[i], vertices[j] - vertices[i]);
++			if (s >= -b2_linearSlop){
++				noError = false;
++				error = 5;
++			}
++		}
++
++
++		b2Vec2 centroid = PolyCentroid(vertices,nVertices);
++		b2Vec2 n1 = normals[iminus];
++		b2Vec2 n2 = normals[i];
++		b2Vec2 v = vertices[i] - centroid;;
++
++		b2Vec2 d;
++		d.x = b2Dot(n1, v) - toiSlop;
++		d.y = b2Dot(n2, v) - toiSlop;
++
++		// Shifting the edge inward by b2_toiSlop should
++		// not cause the plane to pass the centroid.
++		if ((d.x < 0.0f)||(d.y < 0.0f)){
++			noError = false;
++			error = 6;
++		}
++
++	}
++	delete[] vertices;
++	delete[] normals;
++
++	if (!noError && printErrors){
++		printf("Found invalid polygon, ");
++		switch(error){
++			case 0:
++				printf("must have between 3 and %d vertices.\n",(int)b2_maxPolygonVertices);
++				break;
++			case 1:
++				printf("must be convex.\n");
++				break;
++			case 2:
++				printf("must be simple (cannot intersect itself).\n");
++				break;
++			case 3:
++				printf("area is too small.\n");
++				break;
++			case 4:
++				printf("sides are too close to parallel.\n");
++				break;
++			case 5:
++				printf("polygon is too thin.\n");
++				break;
++			case 6:
++				printf("core shape generation would move edge past centroid (too thin).\n");
++				break;
++			default:
++				printf("don't know why.\n");
++		}
++	}
++	return noError;
++}
++
++
++bool b2Polygon::IsUsable(){
++	return IsUsable(B2_POLYGON_REPORT_ERRORS);
++}
++
++//Check for edge crossings
++bool b2Polygon::IsSimple() {
++	for (int32 i=0; i<nVertices; ++i){
++		int32 iplus = (i+1 > nVertices-1)?0:i+1;
++		b2Vec2 a1(x[i],y[i]);
++		b2Vec2 a2(x[iplus],y[iplus]);
++		for (int32 j=i+1; j<nVertices; ++j){
++			int32 jplus = (j+1 > nVertices-1)?0:j+1;
++			b2Vec2 b1(x[j],y[j]);
++			b2Vec2 b2(x[jplus],y[jplus]);
++			if (intersect(a1,a2,b1,b2)){
++				return false;
++			}
++		}
++	}
++	return true;
++}
++    
++    /*
++     * Tries to add a triangle to the polygon. Returns null if it can't connect
++     * properly, otherwise returns a pointer to the new Polygon. Assumes bitwise
++     * equality of joined vertex positions.
++	 *
++	 * Remember to delete the pointer afterwards.
++	 * Todo: Make this return a b2Polygon instead
++	 * of a pointer to a heap-allocated one.
++	 *
++	 * For internal use.
++     */
++b2Polygon* b2Polygon::Add(b2Triangle& t) {
++        // First, find vertices that connect
++        int32 firstP = -1;
++        int32 firstT = -1;
++        int32 secondP = -1;
++        int32 secondT = -1;
++        for (int32 i = 0; i < nVertices; i++) {
++            if (t.x[0] == x[i] && t.y[0] == y[i]) {
++                if (firstP == -1) {
++                    firstP = i;
++                    firstT = 0;
++                }
++                else {
++                    secondP = i;
++                    secondT = 0;
++                }
++            }
++            else if (t.x[1] == x[i] && t.y[1] == y[i]) {
++                if (firstP == -1) {
++                    firstP = i;
++                    firstT = 1;
++                }
++                else {
++                    secondP = i;
++                    secondT = 1;
++                }
++            }
++            else if (t.x[2] == x[i] && t.y[2] == y[i]) {
++                if (firstP == -1) {
++                    firstP = i;
++                    firstT = 2;
++                }
++                else {
++                    secondP = i;
++                    secondT = 2;
++                }
++            }
++            else {
++            }
++        }
++        // Fix ordering if first should be last vertex of poly
++        if (firstP == 0 && secondP == nVertices - 1) {
++            firstP = nVertices - 1;
++            secondP = 0;
++        }
++		
++        // Didn't find it
++        if (secondP == -1)
++            return NULL;
++		
++        // Find tip index on triangle
++        int32 tipT = 0;
++        if (tipT == firstT || tipT == secondT)
++            tipT = 1;
++        if (tipT == firstT || tipT == secondT)
++            tipT = 2;
++		
++        float32* newx = new float32[nVertices + 1];
++        float32* newy = new float32[nVertices + 1];
++        int32 currOut = 0;
++        for (int32 i = 0; i < nVertices; i++) {
++            newx[currOut] = x[i];
++            newy[currOut] = y[i];
++            if (i == firstP) {
++                ++currOut;
++                newx[currOut] = t.x[tipT];
++                newy[currOut] = t.y[tipT];
++            }
++            ++currOut;
++        }
++        b2Polygon* result = new b2Polygon(newx, newy, nVertices+1);
++        delete[] newx;
++        delete[] newy;
++        return result;
++}
++	
++    /**
++     * Adds this polygon to a PolygonDef.
++     */
++void b2Polygon::AddTo(b2PolygonDef& pd) {
++	if (nVertices < 3) return;
++	
++    b2Vec2* vecs = GetVertexVecs();
++	b2Assert(nVertices <= b2_maxPolygonVertices);
++//	printf("Adding...\n");
++	int32 offset = 0;
++    for (int32 i = 0; i < nVertices; ++i) {
++		//Omit identical neighbors (including wraparound)
++		int32 ind = i - offset;
++		if (vecs[i].x==vecs[remainder(i+1,nVertices)].x &&
++			vecs[i].y==vecs[remainder(i+1,nVertices)].y){
++				offset++;
++				continue;
++		}
++		pd.vertices[ind] = vecs[i];
++//		printf("%f, %f\n",vecs[i].x,vecs[i].y);
++    }
++//	print();
++	pd.vertexCount = nVertices-offset;
++    delete[] vecs;
++}
++
++	/**
++	 * Finds and fixes "pinch points," points where two polygon
++	 * vertices are at the same point.
++	 *
++	 * If a pinch point is found, pin is broken up into poutA and poutB
++	 * and true is returned; otherwise, returns false.
++	 *
++	 * Mostly for internal use.
++	 */
++bool ResolvePinchPoint(const b2Polygon& pin, b2Polygon& poutA, b2Polygon& poutB){
++	if (pin.nVertices < 3) return false;
++	float32 tol = .001f;
++	bool hasPinchPoint = false;
++	int32 pinchIndexA = -1;
++	int32 pinchIndexB = -1;
++	for (int i=0; i<pin.nVertices; ++i){
++		for (int j=i+1; j<pin.nVertices; ++j){
++			//Don't worry about pinch points where the points
++			//are actually just dupe neighbors
++			if (b2Abs(pin.x[i]-pin.x[j])<tol&&b2Abs(pin.y[i]-pin.y[j])<tol&&j!=i+1){
++				pinchIndexA = i;
++				pinchIndexB = j;
++				//printf("pinch: %f, %f == %f, %f\n",pin.x[i],pin.y[i],pin.x[j],pin.y[j]);
++				//printf("at indexes %d, %d\n",i,j);
++				hasPinchPoint = true;
++				break;
++			}
++		}
++		if (hasPinchPoint) break;
++	}
++	if (hasPinchPoint){
++		//printf("Found pinch point\n");
++		int32 sizeA = pinchIndexB - pinchIndexA;
++		if (sizeA == pin.nVertices) return false;//has dupe points at wraparound, not a problem here
++		float32* xA = new float32[sizeA];
++		float32* yA = new float32[sizeA];
++		for (int32 i=0; i < sizeA; ++i){
++			int32 ind = remainder(pinchIndexA+i,pin.nVertices);
++			xA[i] = pin.x[ind];
++			yA[i] = pin.y[ind];
++		}
++		b2Polygon tempA(xA,yA,sizeA);
++		poutA.Set(tempA);
++		delete[] xA;
++		delete[] yA;
++		
++		int32 sizeB = pin.nVertices - sizeA;
++		float32* xB = new float32[sizeB];
++		float32* yB = new float32[sizeB];
++		for (int32 i=0; i<sizeB; ++i){
++			int32 ind = remainder(pinchIndexB+i,pin.nVertices);
++			xB[i] = pin.x[ind];
++			yB[i] = pin.y[ind];
++		}
++		b2Polygon tempB(xB,yB,sizeB);
++		poutB.Set(tempB);
++		//printf("Size of a: %d, size of b: %d\n",sizeA,sizeB);
++		delete[] xB;
++		delete[] yB;
++	}
++	return hasPinchPoint;
++}
++
++    /**
++     * Triangulates a polygon using simple ear-clipping algorithm. Returns
++     * size of Triangle array unless the polygon can't be triangulated.
++     * This should only happen if the polygon self-intersects,
++     * though it will not _always_ return null for a bad polygon - it is the
++     * caller's responsibility to check for self-intersection, and if it
++     * doesn't, it should at least check that the return value is non-null
++     * before using. You're warned!
++	 *
++	 * Triangles may be degenerate, especially if you have identical points
++	 * in the input to the algorithm.  Check this before you use them.
++     *
++     * This is totally unoptimized, so for large polygons it should not be part
++     * of the simulation loop.
++     *
++     * Returns:
++     * -1 if algorithm fails (self-intersection most likely)
++     * 0 if there are not enough vertices to triangulate anything.
++     * Number of triangles if triangulation was successful.
++     *
++     * results will be filled with results - ear clipping always creates vNum - 2
++     * or fewer (due to pinch point polygon snipping), so allocate an array of
++	 * this size.
++     */
++	
++int32 TriangulatePolygon(float32* xv, float32* yv, int32 vNum, b2Triangle* results) {
++        if (vNum < 3)
++            return 0;
++
++		//Recurse and split on pinch points
++		b2Polygon pA,pB;
++		b2Polygon pin(xv,yv,vNum);
++		if (ResolvePinchPoint(pin,pA,pB)){
++			b2Triangle* mergeA = new b2Triangle[pA.nVertices];
++			b2Triangle* mergeB = new b2Triangle[pB.nVertices];
++			int32 nA = TriangulatePolygon(pA.x,pA.y,pA.nVertices,mergeA);
++			int32 nB = TriangulatePolygon(pB.x,pB.y,pB.nVertices,mergeB);
++			if (nA==-1 || nB==-1){
++				delete[] mergeA;
++				delete[] mergeB;
++				return -1;
++			}
++			for (int32 i=0; i<nA; ++i){
++				results[i].Set(mergeA[i]);
++			}
++			for (int32 i=0; i<nB; ++i){
++				results[nA+i].Set(mergeB[i]);
++			}
++			delete[] mergeA;
++			delete[] mergeB;
++			return (nA+nB);
++		}
++
++        b2Triangle* buffer = new b2Triangle[vNum-2];
++        int32 bufferSize = 0;
++        float32* xrem = new float32[vNum];
++        float32* yrem = new float32[vNum];
++        for (int32 i = 0; i < vNum; ++i) {
++            xrem[i] = xv[i];
++            yrem[i] = yv[i];
++        }
++		
++		int xremLength = vNum;
++		
++        while (vNum > 3) {
++            // Find an ear
++            int32 earIndex = -1;
++			//float32 earVolume = -1.0f;
++			float32 earMaxMinCross = -10.0f;
++            for (int32 i = 0; i < vNum; ++i) {
++                if (IsEar(i, xrem, yrem, vNum)) {
++					int32 lower = remainder(i-1,vNum);
++					int32 upper = remainder(i+1,vNum);
++					b2Vec2 d1(xrem[upper]-xrem[i],yrem[upper]-yrem[i]);
++					b2Vec2 d2(xrem[i]-xrem[lower],yrem[i]-yrem[lower]);
++					b2Vec2 d3(xrem[lower]-xrem[upper],yrem[lower]-yrem[upper]);
++
++					d1.Normalize();
++					d2.Normalize();
++					d3.Normalize();
++					float32 cross12 = b2Abs( b2Cross(d1,d2) );
++					float32 cross23 = b2Abs( b2Cross(d2,d3) );
++					float32 cross31 = b2Abs( b2Cross(d3,d1) );
++					//Find the minimum angle
++					float32 minCross = b2Min(cross12, b2Min(cross23,cross31));
++					if (minCross > earMaxMinCross){
++						earIndex = i;
++						earMaxMinCross = minCross;
++					}
++
++					/*//This bit chooses the ear with greatest volume first
++					float32 testVol = b2Abs( d1.x*d2.y-d2.x*d1.y );
++					if (testVol > earVolume){
++						earIndex = i;
++						earVolume = testVol;
++					}*/
++                }
++            }
++			
++            // If we still haven't found an ear, we're screwed.
++            // Note: sometimes this is happening because the
++			// remaining points are collinear.  Really these
++			// should just be thrown out without halting triangulation.
++			if (earIndex == -1){
++				if (B2_POLYGON_REPORT_ERRORS){
++					b2Polygon dump(xrem,yrem,vNum);
++					printf("Couldn't find an ear, dumping remaining poly:\n");
++					dump.printFormatted();
++					printf("Please submit this dump to ewjordan at Box2d forums\n");
++				}
++                return -1;
++			}
++			
++            // Clip off the ear:
++            // - remove the ear tip from the list
++
++            --vNum;
++            float32* newx = new float32[vNum];
++            float32* newy = new float32[vNum];
++            int32 currDest = 0;
++            for (int32 i = 0; i < vNum; ++i) {
++                if (currDest == earIndex) ++currDest;
++                newx[i] = xrem[currDest];
++                newy[i] = yrem[currDest];
++                ++currDest;
++            }
++			
++            // - add the clipped triangle to the triangle list
++            int32 under = (earIndex == 0) ? (vNum) : (earIndex - 1);
++            int32 over = (earIndex == vNum) ? 0 : (earIndex + 1);
++            b2Triangle toAdd = b2Triangle(xrem[earIndex], yrem[earIndex], xrem[over], yrem[over], xrem[under], yrem[under]);
++            buffer[bufferSize].Set(toAdd);
++            ++bufferSize;
++			
++            // - replace the old list with the new one
++            delete[] xrem;
++            delete[] yrem;
++            xrem = newx;
++            yrem = newy;
++        }
++		
++        b2Triangle toAdd = b2Triangle(xrem[1], yrem[1], xrem[2], yrem[2],
++								  xrem[0], yrem[0]);
++        buffer[bufferSize].Set(toAdd);
++        ++bufferSize;
++		
++        delete[] xrem;
++        delete[] yrem;
++		
++        b2Assert(bufferSize == xremLength-2);
++		
++        for (int32 i = 0; i < bufferSize; i++) {
++            results[i].Set(buffer[i]);
++        }
++		
++        delete[] buffer;
++		
++        return bufferSize;
++}
++
++    /**
++	 * Turns a list of triangles into a list of convex polygons. Very simple
++     * method - start with a seed triangle, keep adding triangles to it until
++     * you can't add any more without making the polygon non-convex.
++     *
++     * Returns an integer telling how many polygons were created.  Will fill
++     * polys array up to polysLength entries, which may be smaller or larger
++     * than the return value.
++     * 
++     * Takes O(N*P) where P is the number of resultant polygons, N is triangle
++     * count.
++     * 
++     * The final polygon list will not necessarily be minimal, though in
++     * practice it works fairly well.
++     */
++int32 PolygonizeTriangles(b2Triangle* triangulated, int32 triangulatedLength, b2Polygon* polys, int32 polysLength) {
++        int32 polyIndex = 0;
++		
++        if (triangulatedLength <= 0) {
++            return 0;
++        }
++        else {
++            int* covered = new int[triangulatedLength];
++            for (int32 i = 0; i < triangulatedLength; ++i) {
++				covered[i] = 0;
++				//Check here for degenerate triangles
++				if ( ( (triangulated[i].x[0] == triangulated[i].x[1]) && (triangulated[i].y[0] == triangulated[i].y[1]) )
++					 || ( (triangulated[i].x[1] == triangulated[i].x[2]) && (triangulated[i].y[1] == triangulated[i].y[2]) )
++					 || ( (triangulated[i].x[0] == triangulated[i].x[2]) && (triangulated[i].y[0] == triangulated[i].y[2]) ) ) {
++					covered[i] = 1;
++				}
++            }
++			
++            bool notDone = true;
++            while (notDone) {
++                int32 currTri = -1;
++                for (int32 i = 0; i < triangulatedLength; ++i) {
++                    if (covered[i])
++                        continue;
++                    currTri = i;
++                    break;
++                }
++                if (currTri == -1) {
++                    notDone = false;
++                }
++                else {
++                    b2Polygon poly(triangulated[currTri]);
++					covered[currTri] = 1;
++                    for (int32 i = 0; i < triangulatedLength; i++) {
++                        if (covered[i]) {
++                            continue;
++						}
++                        b2Polygon* newP = poly.Add(triangulated[i]);
++                        if (!newP) {
++                            continue;
++						}
++						if (newP->nVertices > b2Polygon::maxVerticesPerPolygon) {
++							delete newP;
++							newP = NULL;
++                            continue;
++						}
++                        if (newP->IsConvex()) {
++                            poly.Set(*newP);
++							delete newP;
++							newP = NULL;
++                            covered[i] = 1;
++                        } else {
++							delete newP;
++							newP = NULL;
++						}
++                    }
++                    if (polyIndex < polysLength){
++						poly.MergeParallelEdges(b2_angularSlop);
++						//If identical points are present, a triangle gets
++						//borked by the MergeParallelEdges function, hence
++						//the vertex number check
++						if (poly.nVertices >= 3) polys[polyIndex].Set(poly);
++						//else printf("Skipping corrupt poly\n");
++					}
++                    if (poly.nVertices >= 3) polyIndex++; //Must be outside (polyIndex < polysLength) test
++                }
++					//printf("MEMCHECK: %d\n",_CrtCheckMemory());
++            }
++            delete[] covered;
++        }
++        return polyIndex;
++}
++	
++    /**
++	 * Checks if vertex i is the tip of an ear in polygon defined by xv[] and
++     * yv[].
++	 *
++	 * Assumes clockwise orientation of polygon...ick
++     */
++bool IsEar(int32 i, float32* xv, float32* yv, int32 xvLength) {
++        float32 dx0, dy0, dx1, dy1;
++        dx0 = dy0 = dx1 = dy1 = 0;
++        if (i >= xvLength || i < 0 || xvLength < 3) {
++            return false;
++        }
++        int32 upper = i + 1;
++        int32 lower = i - 1;
++        if (i == 0) {
++            dx0 = xv[0] - xv[xvLength - 1];
++            dy0 = yv[0] - yv[xvLength - 1];
++            dx1 = xv[1] - xv[0];
++            dy1 = yv[1] - yv[0];
++            lower = xvLength - 1;
++        }
++        else if (i == xvLength - 1) {
++            dx0 = xv[i] - xv[i - 1];
++            dy0 = yv[i] - yv[i - 1];
++            dx1 = xv[0] - xv[i];
++            dy1 = yv[0] - yv[i];
++            upper = 0;
++        }
++        else {
++            dx0 = xv[i] - xv[i - 1];
++            dy0 = yv[i] - yv[i - 1];
++            dx1 = xv[i + 1] - xv[i];
++            dy1 = yv[i + 1] - yv[i];
++        }
++        float32 cross = dx0 * dy1 - dx1 * dy0;
++        if (cross > 0)
++            return false;
++        b2Triangle myTri(xv[i], yv[i], xv[upper], yv[upper],
++								  xv[lower], yv[lower]);
++        for (int32 j = 0; j < xvLength; ++j) {
++            if (j == i || j == lower || j == upper)
++                continue;
++            if (myTri.IsInside(xv[j], yv[j]))
++                return false;
++        }
++        return true;
++}
++
++void ReversePolygon(b2Polygon& p){
++	ReversePolygon(p.x,p.y,p.nVertices);
++}
++	
++void ReversePolygon(float32* x, float32* y, int n) {
++        if (n == 1)
++            return;
++        int32 low = 0;
++        int32 high = n - 1;
++        while (low < high) {
++            float32 buffer = x[low];
++            x[low] = x[high];
++            x[high] = buffer;
++            buffer = y[low];
++            y[low] = y[high];
++            y[high] = buffer;
++            ++low;
++            --high;
++        }
++}
++
++    /**
++	 * Decomposes a non-convex polygon into a number of convex polygons, up
++     * to maxPolys (remaining pieces are thrown out, but the total number
++	 * is returned, so the return value can be greater than maxPolys).
++     *
++     * Each resulting polygon will have no more than maxVerticesPerPolygon
++     * vertices (set to b2MaxPolyVertices by default, though you can change
++	 * this).
++     * 
++     * Returns -1 if operation fails (usually due to self-intersection of
++	 * polygon).
++     */
++int32 DecomposeConvex(b2Polygon* p, b2Polygon* results, int32 maxPolys) {
++        if (p->nVertices < 3) return 0;
++
++        b2Triangle* triangulated = new b2Triangle[p->nVertices - 2];
++		int32 nTri;
++        if (p->IsCCW()) {
++			//printf("It is ccw \n");
++			b2Polygon tempP;
++			tempP.Set(*p);
++			ReversePolygon(tempP.x, tempP.y, tempP.nVertices);
++			nTri = TriangulatePolygon(tempP.x, tempP.y, tempP.nVertices, triangulated);
++//			ReversePolygon(p->x, p->y, p->nVertices); //reset orientation
++		} else {
++			//printf("It is not ccw \n");
++			nTri = TriangulatePolygon(p->x, p->y, p->nVertices, triangulated);
++		}
++		if (nTri < 1) {
++            //Still no luck?  Oh well...
++            return -1;
++        }
++        int32 nPolys = PolygonizeTriangles(triangulated, nTri, results, maxPolys);
++        delete[] triangulated;
++        return nPolys;
++}
++
++    /**
++	 * Decomposes a polygon into convex polygons and adds all pieces to a b2BodyDef
++     * using a prototype b2PolygonDef. All fields of the prototype are used for every
++     * shape except the vertices (friction, restitution, density, etc).
++     * 
++     * If you want finer control, you'll have to add everything by hand.
++     * 
++     * This is the simplest method to add a complicated polygon to a body.
++	 *
++	 * Until Box2D's b2BodyDef behavior changes, this method returns a pointer to
++	 * a heap-allocated array of b2PolygonDefs, which must be deleted by the user
++	 * after the b2BodyDef is added to the world.
++     */
++b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body,
++								   b2PolygonDef* prototype) {
++
++        if (p->nVertices < 3) return NULL;
++        b2Polygon* decomposed = new b2Polygon[p->nVertices - 2]; //maximum number of polys
++        int32 nPolys = DecomposeConvex(p, decomposed, p->nVertices - 2);
++        if(nPolys == -1)
++        	return 0;
++//		printf("npolys: %d",nPolys);
++		b2PolygonDef* pdarray = new b2PolygonDef[2*p->nVertices];//extra space in case of splits
++		int32 extra = 0;
++        for (int32 i = 0; i < nPolys; ++i) {
++            b2PolygonDef* toAdd = &pdarray[i+extra];
++			 //Hmm, shouldn't have to do all this...
++			 toAdd->type = prototype->type;
++			 toAdd->friction = prototype->friction;
++			 toAdd->restitution = prototype->restitution;
++			 toAdd->density = prototype->density;
++			 toAdd->userData = prototype->userData;
++			 toAdd->categoryBits = prototype->categoryBits;
++			 toAdd->maskBits = prototype->maskBits;
++			 toAdd->groupIndex = prototype->groupIndex;
++			 //decomposed[i].print();
++			b2Polygon curr = decomposed[i];
++			//TODO ewjordan: move this triangle handling to a better place so that
++			//it happens even if this convenience function is not called.
++			if (curr.nVertices == 3){
++					//Check here for near-parallel edges, since we can't
++					//handle this in merge routine
++					for (int j=0; j<3; ++j){
++						int32 lower = (j == 0) ? (curr.nVertices - 1) : (j - 1);
++						int32 middle = j;
++						int32 upper = (j == curr.nVertices - 1) ? (0) : (j + 1);
++						float32 dx0 = curr.x[middle] - curr.x[lower]; float32 dy0 = curr.y[middle] - curr.y[lower];
++						float32 dx1 = curr.x[upper] - curr.x[middle];	float32 dy1 = curr.y[upper] - curr.y[middle];
++						float32 norm0 = b2Sqrt(dx0*dx0+dy0*dy0);	float32 norm1 = b2Sqrt(dx1*dx1+dy1*dy1);
++						if ( !(norm0 > 0.0f && norm1 > 0.0f) ) {
++							//Identical points, don't do anything!
++							goto Skip;
++						}
++						dx0 /= norm0; dy0 /= norm0;
++						dx1 /= norm1; dy1 /= norm1;
++						float32 cross = dx0 * dy1 - dx1 * dy0;
++						float32 dot = dx0*dx1 + dy0*dy1;
++						if (b2Abs(cross) < b2_angularSlop && dot > 0) {
++							//Angle too close, split the triangle across from this point.
++							//This is guaranteed to result in two triangles that satify
++							//the tolerance (one of the angles is 90 degrees)
++							float32 dx2 = curr.x[lower] - curr.x[upper]; float32 dy2 = curr.y[lower] - curr.y[upper];
++							float32 norm2 = b2Sqrt(dx2*dx2+dy2*dy2);
++							if (norm2 == 0.0f) {
++								goto Skip;
++							}
++							dx2 /= norm2; dy2 /= norm2;
++							float32 thisArea = curr.GetArea();
++							float32 thisHeight = 2.0f * thisArea / norm2;
++							float32 buffer2 = dx2;
++							dx2 = dy2; dy2 = -buffer2;
++							//Make two new polygons
++							//printf("dx2: %f, dy2: %f, thisHeight: %f, middle: %d\n",dx2,dy2,thisHeight,middle);
++							float32 newX1[3] = { curr.x[middle]+dx2*thisHeight, curr.x[lower], curr.x[middle] };
++							float32 newY1[3] = { curr.y[middle]+dy2*thisHeight, curr.y[lower], curr.y[middle] };
++							float32 newX2[3] = { newX1[0], curr.x[middle], curr.x[upper] };
++							float32 newY2[3] = { newY1[0], curr.y[middle], curr.y[upper] };
++							b2Polygon p1(newX1,newY1,3);
++							b2Polygon p2(newX2,newY2,3);
++							if (p1.IsUsable()){
++								p1.AddTo(*toAdd);
++								body->CreateShape(toAdd);
++								body->SetMassFromShapes();
++								//bd->AddShape(world->Create(toAdd));
++								++extra;
++							} else if (B2_POLYGON_REPORT_ERRORS){
++								printf("Didn't add unusable polygon.  Dumping vertices:\n");
++								p1.print();
++							}
++							if (p2.IsUsable()){
++								p2.AddTo(pdarray[i+extra]);
++								body->CreateShape(&pdarray[i+extra]);
++								body->SetMassFromShapes();
++								//bd->AddShape(world->Create(&pdarray[i+extra]));
++							} else if (B2_POLYGON_REPORT_ERRORS){
++								printf("Didn't add unusable polygon.  Dumping vertices:\n");
++								p2.print();
++							}
++							goto Skip;
++						}
++					}
++
++			}
++			if (decomposed[i].IsUsable()){
++				decomposed[i].AddTo(*toAdd);
++				body->CreateShape(toAdd);
++				body->SetMassFromShapes();
++				//bd->AddShape(world->Create(toAdd));
++			} else if (B2_POLYGON_REPORT_ERRORS){
++				printf("Didn't add unusable polygon.  Dumping vertices:\n");
++				decomposed[i].print();
++			}
++Skip:
++			;
++        }
++        delete[] decomposed;
++		return pdarray; //needs to be deleted after body is created
++}
++
++	
++    /**
++	 * Find the convex hull of a point cloud using "Gift-wrap" algorithm - start
++     * with an extremal point, and walk around the outside edge by testing
++     * angles.
++     * 
++     * Runs in O(N*S) time where S is number of sides of resulting polygon.
++     * Worst case: point cloud is all vertices of convex polygon -> O(N^2).
++     * 
++     * There may be faster algorithms to do this, should you need one -
++     * this is just the simplest. You can get O(N log N) expected time if you
++     * try, I think, and O(N) if you restrict inputs to simple polygons.
++     * 
++     * Returns null if number of vertices passed is less than 3.
++     * 
++	 * Results should be passed through convex decomposition afterwards
++	 * to ensure that each shape has few enough points to be used in Box2d.
++	 *
++     * FIXME?: May be buggy with colinear points on hull. Couldn't find a test
++     * case that resulted in wrong behavior. If one turns up, the solution is to
++     * supplement angle check with an equality resolver that always picks the
++     * longer edge. I think the current solution is working, though it sometimes
++     * creates an extra edge along a line.
++     */
++	
++b2Polygon ConvexHull(b2Vec2* v, int nVert) {
++        float32* cloudX = new float32[nVert];
++        float32* cloudY = new float32[nVert];
++        for (int32 i = 0; i < nVert; ++i) {
++            cloudX[i] = v[i].x;
++            cloudY[i] = v[i].y;
++        }
++        b2Polygon result = ConvexHull(cloudX, cloudY, nVert);
++		delete[] cloudX;
++		delete[] cloudY;
++		return result;
++}
++	
++b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert) {
++		b2Assert(nVert > 2);
++        int32* edgeList = new int32[nVert];
++        int32 numEdges = 0;
++		
++        float32 minY = FLOAT32_MAX;
++        int32 minYIndex = nVert;
++        for (int32 i = 0; i < nVert; ++i) {
++            if (cloudY[i] < minY) {
++                minY = cloudY[i];
++                minYIndex = i;
++            }
++        }
++		
++        int32 startIndex = minYIndex;
++        int32 winIndex = -1;
++        float32 dx = -1.0f;
++        float32 dy = 0.0f;
++        while (winIndex != minYIndex) {
++            float32 newdx = 0.0f;
++            float32 newdy = 0.0f;
++            float32 maxDot = -2.0f;
++            for (int32 i = 0; i < nVert; ++i) {
++                if (i == startIndex)
++                    continue;
++                newdx = cloudX[i] - cloudX[startIndex];
++                newdy = cloudY[i] - cloudY[startIndex];
++                float32 nrm = b2Sqrt(newdx * newdx + newdy * newdy);
++                nrm = (nrm == float32(0)) ? float32(1) : nrm;
++                newdx /= nrm;
++                newdy /= nrm;
++                
++                //Cross and dot products act as proxy for angle
++                //without requiring inverse trig.
++                //FIXED: don't need cross test
++                //float32 newCross = newdx * dy - newdy * dx;
++                float32 newDot = newdx * dx + newdy * dy;
++                if (newDot > maxDot) {//newCross >= 0.0f && newDot > maxDot) {
++                    maxDot = newDot;
++                    winIndex = i;
++                }
++            }
++            edgeList[numEdges++] = winIndex;
++            dx = cloudX[winIndex] - cloudX[startIndex];
++            dy = cloudY[winIndex] - cloudY[startIndex];
++            float32 nrm = b2Sqrt(dx * dx + dy * dy);
++            nrm = (nrm == float32(0)) ? float32(1) : nrm;
++            dx /= nrm;
++            dy /= nrm;
++            startIndex = winIndex;
++        }
++		
++        float32* xres = new float32[numEdges];
++        float32* yres = new float32[numEdges];
++        for (int32 i = 0; i < numEdges; i++) {
++            xres[i] = cloudX[edgeList[i]];
++            yres[i] = cloudY[edgeList[i]];
++			//("%f, %f\n",xres[i],yres[i]);
++        }
++		
++        b2Polygon returnVal(xres, yres, numEdges);
++
++        delete[] xres;
++		delete[] yres;
++        delete[] edgeList;
++		returnVal.MergeParallelEdges(b2_angularSlop);
++		return returnVal;
++}
++
++
++/*
++ * Given sines and cosines, tells if A's angle is less than B's on -Pi, Pi
++ * (in other words, is A "righter" than B)
++ */
++bool IsRighter(float32 sinA, float32 cosA, float32 sinB, float32 cosB){
++	if (sinA < 0){
++		if (sinB > 0 || cosA <= cosB) return true;
++		else return false;
++	} else {
++		if (sinB < 0 || cosA <= cosB) return false;
++		else return true;
++	}
++}
++
++//Fix for C++'s obnoxious behavior for the % operator for negative numbers...
++int32 remainder(int32 x, int32 modulus){
++	int32 rem = x % modulus;
++	while (rem < 0){
++		rem += modulus;
++	}
++	return rem;
++}
++
++/*
++Method:
++Start at vertex with minimum y (pick maximum x one if there are two).  
++We aim our "lastDir" vector at (1.0, 0)
++We look at the two rays going off from our start vertex, and follow whichever
++has the smallest angle (in -Pi -> Pi) wrt lastDir ("rightest" turn)
++
++Loop until we hit starting vertex:
++
++We add our current vertex to the list.
++We check the seg from current vertex to next vertex for intersections
++  - if no intersections, follow to next vertex and continue
++  - if intersections, pick one with minimum distance
++    - if more than one, pick one with "rightest" next point (two possibilities for each)
++
++*/
++
++/*b2Polygon TraceEdge(b2Polygon* p, bool debug) {
++	//Intersections closer than this will be considered the same point
++	const float32 EPS_TOL = .001f;//FLOAT32_EPSILON;//.0001f;
++
++	//Find vertex with minimum y value
++	float32 minY = FLOAT32_MAX;
++	float32 maxX = -FLOAT32_MAX;
++	int32 minYIndex = p->nVertices;
++	for (int32 i = 0; i < p->nVertices; ++i) {
++		if (p->y[i] < minY) {
++			minY = p->y[i];
++			minYIndex = i;
++			maxX = p->x[i];
++		} else if (p->y[i] == minY && p->x[i] > maxX) {
++			minYIndex = i;
++			maxX = p->x[i];
++		}
++	}
++
++	//Initialize growable array
++	//4*p->nVertices should mean it almost never
++	//has to actually grow.
++	//TODO ewjordan: what is the actual upper bound?
++	//Would be great to get rid of this growable array nonsense.
++	b2Vec2* results = new b2Vec2[4*p->nVertices];
++	int32 rCapacity = 4*p->nVertices;
++	int32 rSize = 0;
++	
++	int32 currentIndex = minYIndex;
++	int32 nextIndex;
++	b2Vec2 currentLoc(p->x[currentIndex],p->y[currentIndex]);
++	b2Vec2 lastDir(1.0f,0.0f);
++
++	//Get the initial direction
++	nextIndex = remainder(currentIndex+1,p->nVertices);//(currentIndex+1)%p->nVertices;
++	b2Vec2 testPoint(p->x[nextIndex],p->y[nextIndex]);
++	b2Vec2 testDir = testPoint - currentLoc;
++	testDir.Normalize();
++	float32 plusSin = b2Cross(lastDir,testDir);
++	float32 plusCos = b2Dot(lastDir,testDir);
++	nextIndex = remainder(currentIndex-1,p->nVertices);//(currentIndex-1)%p->nVertices;
++	b2Vec2 testPoint2(p->x[nextIndex],p->y[nextIndex]);
++	testDir = testPoint2 - currentLoc;
++	testDir.Normalize();
++	float32 minusSin = b2Cross(lastDir,testDir);
++	float32 minusCos = b2Dot(lastDir,testDir);
++	if (IsRighter(plusSin,plusCos,minusSin,minusCos)) nextIndex = remainder(currentIndex+1,p->nVertices);//(currentIndex+1)%p->nVertices;
++	bool notDone = true;
++	int32 counter = 0;
++	while (notDone){
++		counter++;
++		if (counter == 20){
++			printf("*****\n*****\n*****\nJumping out of loop because of counter, dumping problem polygon:\n");
++			p->printFormatted();
++		}
++		if (rSize > 1 && (currentLoc.x == results[0].x && currentLoc.y == results[0].y)){
++			//We're done, don't even bother adding this point to the list
++			notDone = false;
++			continue;
++		}
++		if (rSize >= rCapacity-1){
++			//Grow results array [yuk, by hand]
++			b2Vec2* old = results;
++			results = new b2Vec2[rCapacity + p->nVertices];
++			memcpy(results, old, rCapacity * sizeof(b2Vec2));
++			//for (int32 i=0; i<rSize; ++i){
++			//	results[i] = old[i];
++			//}
++			delete[] old;
++			rCapacity += p->nVertices;
++		}
++		//Add current loc to the list
++		results[rSize] = currentLoc;
++		++rSize;
++
++		//Find the next loc to shoot a test seg to
++		b2Vec2 testLoc(p->x[nextIndex],p->y[nextIndex]);
++		b2Vec2 testDir = testLoc - currentLoc;
++		testDir.Normalize();
++		b2Vec2 crossingPoint;
++		b2Vec2 savedCrossing;
++		bool haveCrossing = false;
++		int32 crossIndexA = 0;
++		int32 crossIndexB = 0;
++
++		//Check crossings
++		for (int32 i=0; i < p->nVertices; ++i){
++			int32 iplus = remainder(i+1,p->nVertices);//(i+1)%p->nVertices;
++			if (i == currentIndex || i == nextIndex || iplus == currentIndex || i == nextIndex) continue;
++			
++			bool crosses = intersect(currentLoc,testLoc,b2Vec2(p->x[i],p->y[i]),b2Vec2(p->x[iplus],p->y[iplus]),crossingPoint);
++			if (debug && crosses){
++				printf("\ncurrentLoc: %f,%f\n",currentLoc.x,currentLoc.y);
++				printf("testLoc: %f,%f\n",testLoc.x,testLoc.y);
++				printf("cross1: %f,%f\n",p->x[i],p->y[i]);
++				printf("cross2: %f,%f\n",p->x[iplus],p->y[iplus]);
++				if (crosses) printf("crossingPoint: %f,%f\n",crossingPoint.x,crossingPoint.y);
++			}
++			if ( b2Abs(currentLoc.x-crossingPoint.x) < EPS_TOL && b2Abs(currentLoc.y-crossingPoint.y) < EPS_TOL) continue;
++			if (crosses){
++				b2Vec2 delta = crossingPoint - currentLoc;
++				float32 deltaNorm = delta.Length();
++				if (deltaNorm < EPS_TOL) continue;
++			}
++			if (haveCrossing && crosses){
++				//Need to see if this new crossing point is "better" than current one
++				b2Vec2 newDisp = (crossingPoint - currentLoc);
++				b2Vec2 oldDisp = (savedCrossing - currentLoc);
++				float32 newDist = newDisp.Normalize();
++				float32 oldDist = oldDisp.Normalize();
++				if (newDist < oldDist - EPS_TOL){
++					//It's closer, so we hit it first
++					crossIndexA = i;
++					crossIndexB = iplus;
++					savedCrossing = crossingPoint;
++				} else if (oldDist < newDist - EPS_TOL){
++					//do nothing, keep old value
++				} else {
++					//We consider the two points to be identical, and must resolve by angle tests
++					float32 oldCos = b2Dot(oldDisp,testDir);
++					float32 newCos = b2Dot(newDisp,testDir);
++					if (newCos < oldCos){
++						crossIndexA = i;
++						crossIndexB = iplus;
++						savedCrossing = crossingPoint;
++					}
++				}
++			} else if (crosses){
++				crossIndexA = i;
++				crossIndexB = iplus;
++				haveCrossing = true;
++				savedCrossing = crossingPoint;
++			}
++		}
++		b2Vec2 nextLoc = haveCrossing?savedCrossing:testLoc;
++		if (!haveCrossing){
++			int32 diff = nextIndex - currentIndex;
++			nextIndex = remainder(nextIndex+diff,p->nVertices);//(nextIndex+diff)%p->nVertices;
++			currentIndex = remainder(currentIndex+diff,p->nVertices);//(currentIndex+diff)%p->nVertices;
++		} else{
++			//figure out whether to go next to crossIndexA or crossIndexB
++			b2Vec2 toA(p->x[crossIndexA]-nextLoc.x,p->y[crossIndexA]-nextLoc.y);
++			b2Vec2 toB(p->x[crossIndexB]-nextLoc.x,p->y[crossIndexB]-nextLoc.y);
++			toA.Normalize();
++			toB.Normalize();
++			float32 sinA1 = b2Cross(testDir,toA);
++			float32 sinB1 = b2Cross(testDir,toB);
++			float32 cosA1 = b2Dot(testDir, toA);
++			float32 cosB1 = b2Dot(testDir, toB);
++			if (IsRighter(sinA1,cosA1,sinB1,cosB1)){
++				nextIndex = crossIndexA;
++				currentIndex = crossIndexB;
++			} else {
++				nextIndex = crossIndexB;
++				currentIndex = crossIndexA;
++			}
++		}
++		lastDir = nextLoc - currentLoc;
++		float32 norm = lastDir.Normalize();
++		b2Assert(norm > 0.0f);
++		currentLoc = nextLoc;
++	}
++
++	b2Polygon retVal(results,rSize);
++	delete[] results;
++	return retVal;
++}
++
++b2Polygon TraceEdge(b2Polygon* p){
++	return TraceEdge(p, false);
++}*/
++
++
++b2Polygon *TraceEdge(b2Polygon* p){
++	b2PolyNode* nodes = new b2PolyNode[p->nVertices*p->nVertices];//overkill, but sufficient (order of mag. is right)
++	int32 nNodes = 0;
++
++	//Add base nodes (raw outline)
++	for (int32 i=0; i < p->nVertices; ++i){
++		b2Vec2 pos(p->x[i],p->y[i]);
++		nodes[i].position = pos;
++		++nNodes;
++		int32 iplus = (i==p->nVertices-1)?0:i+1;
++		int32 iminus = (i==0)?p->nVertices-1:i-1;
++		nodes[i].AddConnection(nodes[iplus]);
++		nodes[i].AddConnection(nodes[iminus]);
++	}
++
++	//Process intersection nodes
++	bool dirty = true;
++	while (dirty){
++		dirty = false;
++		for (int32 i=0; i < nNodes; ++i){
++			for (int32 j=0; j < nodes[i].nConnected; ++j){
++				for (int32 k=0; k < nNodes; ++k){
++					
++					if (k==i || &nodes[k] == nodes[i].connected[j]) continue;
++					for (int32 l=0; l < nodes[k].nConnected; ++l){
++				
++						if ( nodes[k].connected[l] == nodes[i].connected[j] ||
++							 nodes[k].connected[l] == &nodes[i]) continue;
++						//Check intersection
++						b2Vec2 intersectPt;
++						//printf("checking intersection: %d, %d, %d, %d\n",i,j,k,l);
++						bool crosses = intersect(nodes[i].position,nodes[i].connected[j]->position,
++												 nodes[k].position,nodes[k].connected[l]->position,
++												 intersectPt);
++						if (crosses){
++							//printf("Found crossing\n");
++							dirty = true;
++							//Destroy and re-hook connections at crossing point
++							b2PolyNode* connj = nodes[i].connected[j];
++							b2PolyNode* connl = nodes[k].connected[l];
++							nodes[i].connected[j]->RemoveConnection(nodes[i]);
++							nodes[i].RemoveConnection(*connj);
++							nodes[k].connected[l]->RemoveConnection(nodes[k]);
++							nodes[k].RemoveConnection(*connl);
++							nodes[nNodes] = b2PolyNode(intersectPt);
++							nodes[nNodes].AddConnection(nodes[i]);
++							nodes[i].AddConnection(nodes[nNodes]);
++							nodes[nNodes].AddConnection(nodes[k]);
++							nodes[k].AddConnection(nodes[nNodes]);
++							nodes[nNodes].AddConnection(*connj);
++							connj->AddConnection(nodes[nNodes]);
++							nodes[nNodes].AddConnection(*connl);
++							connl->AddConnection(nodes[nNodes]);
++							++nNodes;
++						}
++					}
++				}
++			}
++		}
++	}
++
++	//Collapse duplicate points
++	const float32 COLLAPSE_DIST = FLOAT32_EPSILON;
++	for (int32 i=0; i < nNodes; ++i){
++		for (int32 j=i+1; j < nNodes; ++j){
++			b2Vec2 diff = nodes[i].position - nodes[j].position;
++			if (diff.Length() < COLLAPSE_DIST){
++				b2PolyNode* inode = &nodes[i];
++				b2PolyNode* jnode = &nodes[j];
++				//Move all of j's connections to i, and orphan j
++				int32 njConn = jnode->nConnected;
++				for (int32 k=0; k < njConn; ++k){
++					inode->AddConnection(*(jnode->connected[k]));
++					jnode->connected[k]->AddConnection(*inode);
++					jnode->connected[k]->RemoveConnection(*jnode);
++					jnode->RemoveConnectionByIndex(k);
++				}
++				b2Assert(jnode->nConnected == 0);
++			}
++		}
++	}
++
++	//Now walk the edge of the list
++
++	//Find node with minimum y value
++	float32 minY = FLOAT32_MAX;
++	float32 maxX = -FLOAT32_MAX;
++	int32 minYIndex = -1;
++	for (int32 i = 0; i < nNodes; ++i) {
++		if (nodes[i].position.y < minY && nodes[i].nConnected > 0) {
++			minY = nodes[i].position.y;
++			minYIndex = i;
++			maxX = nodes[i].position.x;
++		} else if (nodes[i].position.y == minY && nodes[i].position.x > maxX && nodes[i].nConnected > 0) {
++			minYIndex = i;
++			maxX = nodes[i].position.x;
++		}
++	}
++
++	b2Vec2 origDir(1.0f,0.0f);
++	b2Vec2* resultVecs = new b2Vec2[nNodes*nNodes];
++	int32 nResultVecs = 0;
++	b2PolyNode* currentNode = &nodes[minYIndex];
++	b2PolyNode* startNode = currentNode;
++	b2PolyNode* nextNode = currentNode->GetRightestConnection(origDir);
++	resultVecs[0] = startNode->position;
++	++nResultVecs;
++	while (nextNode != startNode){
++		if (nResultVecs > nNodes*nNodes){
++			assert(false);//something messed up
++		}
++		resultVecs[nResultVecs++] = nextNode->position;
++		b2PolyNode* oldNode = currentNode;
++		currentNode = nextNode;
++		nextNode = currentNode->GetRightestConnection(*oldNode);
++	}
++
++	float32* xres = new float32[nResultVecs];
++	float32* yres = new float32[nResultVecs];
++	for (int32 i=0; i<nResultVecs; ++i){
++		xres[i] = resultVecs[i].x;
++		yres[i] = resultVecs[i].y;
++	}
++	b2Polygon *retval = new b2Polygon(xres,yres,nResultVecs);
++	delete[] resultVecs;
++	delete[] yres;
++	delete[] xres;
++	delete[] nodes;
++	return retval;
++}
++
++b2PolyNode::b2PolyNode(){
++	nConnected = 0;
++}
++b2PolyNode::b2PolyNode(b2Vec2& pos){
++	position = pos;
++	nConnected = 0;
++}
++
++void b2PolyNode::AddConnection(b2PolyNode& toMe){
++	b2Assert(nConnected < MAX_CONNECTED);
++	connected[nConnected] = &toMe;
++	++nConnected;
++}
++
++void b2PolyNode::RemoveConnection(b2PolyNode& fromMe){
++	bool isFound = false;
++	int32 foundIndex = -1;
++	for (int i=0; i<nConnected; ++i){
++		if (fromMe.position == connected[i]->position){
++			isFound = true;
++			foundIndex = i;
++			break;
++		}
++	}
++	b2Assert(isFound);
++	--nConnected;
++	for (int32 i=foundIndex; i < nConnected; ++i){
++		connected[i] = connected[i+1];
++	}
++}
++void b2PolyNode::RemoveConnectionByIndex(int32 index){
++	--nConnected;
++	//printf("New nConnected = %d\n",nConnected);
++	for (int32 i=index; i < nConnected; ++i){
++		connected[i] = connected[i+1];
++	}
++}
++bool b2PolyNode::IsConnectedTo(b2PolyNode& me){
++	bool isFound = false;
++	for (int i=0; i<nConnected; ++i){
++		if (me.position == connected[i]->position){
++			isFound = true;
++			break;
++		}
++	}
++	return isFound;
++}
++b2PolyNode* b2PolyNode::GetRightestConnection(b2PolyNode& incoming){
++	if (nConnected == 0) return NULL;
++	b2Vec2 inDir = position - incoming.position;
++	float32 inLength = inDir.Normalize();
++	b2Assert(inLength > FLOAT32_EPSILON);
++	
++	b2PolyNode* result = NULL;
++	for (int i=0; i<nConnected; ++i){
++		if (connected[i] == &incoming) continue;
++		b2Vec2 testDir = connected[i]->position - position;
++		float32 testLength = testDir.Normalize();
++		b2Assert (testLength > FLOAT32_EPSILON);
++		float32 myCos = b2Dot(inDir,testDir);
++		float32 mySin = b2Cross(inDir,testDir);
++		if (result){
++			b2Vec2 resultDir = result->position - position;
++			resultDir.Normalize();
++			float32 resCos = b2Dot(inDir,resultDir);
++			float32 resSin = b2Cross(inDir,resultDir);
++			if (IsRighter(mySin,myCos,resSin,resCos)){
++				result = connected[i];
++			}
++		} else{
++			result = connected[i];
++		}
++	}
++	b2Assert(result);
++
++	return result;
++}
++
++b2PolyNode* b2PolyNode::GetRightestConnection(b2Vec2& incomingDir){
++	b2Vec2 diff = position-incomingDir;
++	b2PolyNode temp(diff);
++	b2PolyNode* res = GetRightestConnection(temp);
++	b2Assert(res);
++	return res;
++}
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Contrib/b2Polygon.h	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,123 @@
++/*
++ * Copyright (c) 2007 Eric Jordan
++ *
++ * This software is provided 'as-is', without any express or implied
++ * warranty.  In no event will the authors be held liable for any damages
++ * arising from the use of this software.
++ * Permission is granted to anyone to use this software for any purpose,
++ * including commercial applications, and to alter it and redistribute it
++ * freely, subject to the following restrictions:
++ * 1. The origin of this software must not be misrepresented; you must not
++ * claim that you wrote the original software. If you use this software
++ * in a product, an acknowledgment in the product documentation would be
++ * appreciated but is not required.
++ * 2. Altered source versions must be plainly marked as such, and must not be
++ * misrepresented as being the original software.
++ * 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef B2_POLYGON_H
++#define B2_POLYGON_H
++
++#include "../Common/b2Math.h"
++#include "b2Triangle.h"
++#include "../Dynamics/b2World.h" 
++
++class b2Polygon;
++
++int32 remainder(int32 x, int32 modulus);
++int32 TriangulatePolygon(float32* xv, float32* yv, int32 vNum, b2Triangle* results);
++bool IsEar(int32 i, float32* xv, float32* yv, int32 xvLength); //Not for external use
++int32 PolygonizeTriangles(b2Triangle* triangulated, int32 triangulatedLength, b2Polygon* polys, int32 polysLength);
++int32 DecomposeConvex(b2Polygon* p, b2Polygon* results, int32 maxPolys);
++b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body, b2PolygonDef* prototype);
++b2Polygon ConvexHull(b2Vec2* v, int nVert);
++b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert);
++void ReversePolygon(float32* x, float32* y, int n);
++
++b2Polygon *TraceEdge(b2Polygon* p); //For use with self-intersecting polygons, finds outline
++
++class b2Polygon {
++	
++public:
++    const static int32 maxVerticesPerPolygon = b2_maxPolygonVertices;
++
++    float32* x; //vertex arrays
++    float32* y;
++    int32 nVertices;
++	
++	float32 area;
++	bool areaIsSet;
++	
++    b2Polygon(float32* _x, float32* _y, int32 nVert);
++    b2Polygon(b2Vec2* v, int32 nVert);
++	b2Polygon();
++    ~b2Polygon();
++	
++	float32 GetArea();
++	
++	void MergeParallelEdges(float32 tolerance);
++    b2Vec2* GetVertexVecs();
++    b2Polygon(b2Triangle& t);
++    void Set(const b2Polygon& p);
++    bool IsConvex();
++	bool IsCCW();
++	bool IsUsable(bool printError);
++	bool IsUsable();
++    bool IsSimple();
++    void AddTo(b2PolygonDef& pd);
++	
++    b2Polygon* Add(b2Triangle& t);
++
++	void print(){
++		printFormatted();
++//		for (int32 i=0; i<nVertices; ++i){
++//			printf("i: %d, x:%f, y:%f\n",i,x[i],y[i]);
++//		}
++	}
++
++	void printFormatted(){
++		/*
++		printf("float32 xv[] = {");
++		for (int32 i=0; i<nVertices; ++i){
++			printf("%ff,",x[i]);
++		}
++		printf("};\nfloat32 yv[] = {");
++		for (int32 i=0; i<nVertices; ++i){
++			printf("%ff,",y[i]);
++		}
++		printf("};\n");
++		*/
++	}
++    
++	b2Polygon(const b2Polygon& p){
++		nVertices = p.nVertices;
++		area = p.area;
++		areaIsSet = p.areaIsSet;
++		x = new float32[nVertices];
++		y = new float32[nVertices];
++		memcpy(x, p.x, nVertices * sizeof(float32));
++		memcpy(y, p.y, nVertices * sizeof(float32));
++	}
++
++	
++};
++
++const int32 MAX_CONNECTED = 32;
++class b2PolyNode{
++public:
++	b2Vec2 position;
++	b2PolyNode* connected[MAX_CONNECTED];
++	int32 nConnected;
++
++	b2PolyNode(b2Vec2& pos);
++	b2PolyNode();
++	void AddConnection(b2PolyNode& toMe);
++	void RemoveConnection(b2PolyNode& fromMe);
++	void RemoveConnectionByIndex(int32 index);
++	bool IsConnectedTo(b2PolyNode& me);
++	b2PolyNode* GetRightestConnection(b2PolyNode& incoming);
++	b2PolyNode* GetRightestConnection(b2Vec2& incomingDir);
++};
++
++#endif
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Contrib/b2Triangle.cpp	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,77 @@
++/*
++ * Copyright (c) 2007 Eric Jordan
++ *
++ * This software is provided 'as-is', without any express or implied
++ * warranty.  In no event will the authors be held liable for any damages
++ * arising from the use of this software.
++ * Permission is granted to anyone to use this software for any purpose,
++ * including commercial applications, and to alter it and redistribute it
++ * freely, subject to the following restrictions:
++ * 1. The origin of this software must not be misrepresented; you must not
++ * claim that you wrote the original software. If you use this software
++ * in a product, an acknowledgment in the product documentation would be
++ * appreciated but is not required.
++ * 2. Altered source versions must be plainly marked as such, and must not be
++ * misrepresented as being the original software.
++ * 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#include "b2Triangle.h"
++
++//Constructor automatically fixes orientation to ccw
++b2Triangle::b2Triangle(float32 x1, float32 y1, float32 x2, float32 y2, float32 x3, float32 y3){
++	x = new float32[3];
++	y = new float32[3];
++	float32 dx1 = x2-x1;
++	float32 dx2 = x3-x1;
++	float32 dy1 = y2-y1;
++	float32 dy2 = y3-y1;
++	float32 cross = dx1*dy2-dx2*dy1;
++	bool ccw = (cross>0);
++	if (ccw){
++		x[0] = x1; x[1] = x2; x[2] = x3;
++		y[0] = y1; y[1] = y2; y[2] = y3;
++	} else{
++		x[0] = x1; x[1] = x3; x[2] = x2;
++		y[0] = y1; y[1] = y3; y[2] = y2;
++	}
++}
++    
++b2Triangle::b2Triangle(){
++	x = new float32[3];
++	y = new float32[3];
++}
++
++b2Triangle::~b2Triangle(){
++	delete[] x;
++	delete[] y;
++}
++
++void b2Triangle::Set(const b2Triangle& toMe) {
++	for (int32 i=0; i<3; ++i) {
++		x[i] = toMe.x[i];
++		y[i] = toMe.y[i];
++	}
++}
++
++bool b2Triangle::IsInside(float32 _x, float32 _y){
++	if (_x < x[0] && _x < x[1] && _x < x[2]) return false;
++	if (_x > x[0] && _x > x[1] && _x > x[2]) return false;
++	if (_y < y[0] && _y < y[1] && _y < y[2]) return false;
++	if (_y > y[0] && _y > y[1] && _y > y[2]) return false;
++		
++		float32 vx2 = _x-x[0]; float32 vy2 = _y-y[0];
++		float32 vx1 = x[1]-x[0]; float32 vy1 = y[1]-y[0];
++		float32 vx0 = x[2]-x[0]; float32 vy0 = y[2]-y[0];
++		
++		float32 dot00 = vx0*vx0+vy0*vy0;
++		float32 dot01 = vx0*vx1+vy0*vy1;
++		float32 dot02 = vx0*vx2+vy0*vy2;
++		float32 dot11 = vx1*vx1+vy1*vy1;
++		float32 dot12 = vx1*vx2+vy1*vy2;
++		float32 invDenom = 1.0f / (dot00*dot11 - dot01*dot01);
++		float32 u = (dot11*dot02 - dot01*dot12)*invDenom;
++		float32 v = (dot00*dot12 - dot01*dot02)*invDenom;
++		
++		return ((u>0)&&(v>0)&&(u+v<1));    
++}
+--- /dev/null	2008-03-01 22:15:37.463224342 -0800
++++ Source/Contrib/b2Triangle.h	2008-03-06 20:00:19.000000000 -0800
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (c) 2007 Eric Jordan
++ *
++ * This software is provided 'as-is', without any express or implied
++ * warranty.  In no event will the authors be held liable for any damages
++ * arising from the use of this software.
++ * Permission is granted to anyone to use this software for any purpose,
++ * including commercial applications, and to alter it and redistribute it
++ * freely, subject to the following restrictions:
++ * 1. The origin of this software must not be misrepresented; you must not
++ * claim that you wrote the original software. If you use this software
++ * in a product, an acknowledgment in the product documentation would be
++ * appreciated but is not required.
++ * 2. Altered source versions must be plainly marked as such, and must not be
++ * misrepresented as being the original software.
++ * 3. This notice may not be removed or altered from any source distribution.
++ */
++
++#ifndef B2_TRIANGLE_H
++#define B2_TRIANGLE_H
++
++#include "../Common/b2Math.h"
++#include "../Collision/Shapes/b2PolygonShape.h"
++
++class b2Triangle{
++public:
++	float32* x;
++    float32* y;
++	b2Triangle();
++	b2Triangle(float32 x1, float32 y1, float32 x2, float32 y2, float32 x3, float32 y3);
++    ~b2Triangle();
++	bool IsInside(float32 _x, float32 _y);
++	void Set(const b2Triangle& toMe);
++
++};
++
++#endif

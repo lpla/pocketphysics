@@ -1,0 +1,3 @@
+research/reference/** -text -whitespace
+research/reconstruction/v06/dependencies/box2d/Contrib/b2Polygon.* -whitespace
+research/reconstruction/v06/dependencies/box2d/Contrib/b2Triangle.* -whitespace

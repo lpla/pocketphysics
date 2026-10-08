@@ -17,7 +17,6 @@ import re
 
 from verify_recovered_objects import HEADER, SECTION
 from apply_reconstructed_sections import read_sections
-from prepare_polygon_object import load_layout
 
 
 INPUT_ROW = re.compile(r"^\s+(\.\S+)\s+(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+(.+)$")
@@ -28,11 +27,6 @@ RESIDUAL_MEMBERS = {
     "arm7": {},
     "arm9": {"libul.a": {"ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"},
              "libz.a": {"deflate.o"}},
-}
-POLYGON_SECTIONS = {
-    row["section"]: "source_dependency" if row["source"] else "residual_reconstruction"
-    for row in load_layout(Path(__file__).resolve().parents[2] /
-                           "research/reconstruction/v06/dependencies/box2d/reconstructed/polygon-method-layout.json")
 }
 SOURCE_ARCHIVES = {"libnds7.a", "libnds9.a", "libtinyxml.a", "libul.a", "libbox2d2.a", "libz.a", "libpng.a", "libfat.a"}
 RUNTIME_ARCHIVES = {"libc.a", "libg.a", "libm.a", "libsysbase.a", "libgcc.a", "libgcov.a", "libstdc++.a", "libsupc++.a"}
@@ -93,11 +87,7 @@ def classify(cpu: str, owner: str, application_members: set[str], input_section:
     if member:
         archive, name = member.groups()
         if cpu == "arm9" and (archive, name) == ("libbox2d2.a", "b2Polygon.o"):
-            if input_section in POLYGON_SECTIONS:
-                return POLYGON_SECTIONS[input_section]
-            # The compiler also emits unchanged weak inline functions. These
-            # are not among the residual method sections and may survive ld-r.
-            if input_section in (".text._ZN10b2ShapeDefD0Ev", ".text._ZN10b2ShapeDefD1Ev",
+            if input_section in (".text", ".text._ZN10b2ShapeDefD0Ev", ".text._ZN10b2ShapeDefD1Ev",
                                  ".text._ZN12b2PolygonDefD0Ev", ".text._ZN12b2PolygonDefD1Ev",
                                  ".text._ZNK6b2Vec26LengthEv"):
                 return "source_dependency"

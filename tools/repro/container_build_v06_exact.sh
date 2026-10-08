@@ -249,41 +249,20 @@ box_flags=(
     -DARM9 -fno-rtti -fno-exceptions
     -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS
     -I"$DEVKITPRO/libnds/include" -I"$BOX_ROOT/Include"
-    -I"$BOX/Common" -I"$BOX/Contrib" -ffunction-sections
+    -I"$BOX/Common" -I"$BOX/Contrib"
 )
-# Select complete release-verified C++ methods, never patched instructions.
+# Compile the preserved March 2008 polygon unit without method selection.
 (
     cd "$BOX"
     "$TOOL-g++" "${box_flags[@]}" -c Contrib/b2Polygon.cpp \
-        -o "$BUILD/polygon-sections.o"
-)
-python3 "$ROOT/tools/repro/prepare_polygon_object.py" \
-    "$BOX/reconstructed/polygon-method-layout.json" \
-    "$BUILD/polygon-sections.o" "$BUILD/polygon-source.o" --objcopy "$TOOL-objcopy"
-for variant in membership constructor; do
-    control=-fno-tree-fre
-    if [ "$variant" = constructor ]; then control=-fno-tree-dominator-opts; fi
-    (
-        cd "$BOX"
-        "$TOOL-g++" "${box_flags[@]}" "$control" -c Contrib/b2Polygon.cpp \
-            -o "$BUILD/polygon-$variant-sections.o"
-    )
-    python3 "$ROOT/tools/repro/prepare_polygon_object.py" \
-        "$BOX/reconstructed/polygon-method-layout.json" \
-        "$BUILD/polygon-$variant-sections.o" "$BUILD/polygon-$variant.o" \
-        --objcopy "$TOOL-objcopy" --variant "$variant"
-done
-"$TOOL-gcc" -w -c -march=armv5te -mthumb-interwork \
-    "$BOX/reconstructed/polygon-methods-residual.S" -o "$BUILD/polygon-residual.o"
-(
-    cd "$BUILD"
-    "$TOOL-ld" -r -T "$BOX/reconstructed/polygon-object-layout.ld" \
-        polygon-source.o polygon-membership.o polygon-constructor.o \
-        polygon-residual.o -o b2Polygon.o
+        -o "$BUILD/b2Polygon.o"
 )
 python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$BOX/reconstructed/polygon-object-identity.json" "$BUILD"
+python3 "$ROOT/tools/repro/verify_polygon_object.py" \
+    "$BOX/reconstructed/polygon-method-layout.json" "$BUILD/b2Polygon.o"
 BOX_ARCHIVE="$BOX/Gen/nds-fixed/lib/libbox2d.a"
+box_flags+=(-ffunction-sections)
 "$TOOL-g++" "${box_flags[@]}" -c "$BOX/Contrib/b2Triangle.cpp" \
     -o "$BUILD/b2Triangle-sections.o"
 "$TOOL-ld" -r -T "$BOX/reconstructed/triangle-object-layout.ld" \

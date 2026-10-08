@@ -19,9 +19,9 @@
 #ifndef B2_POLYGON_H
 #define B2_POLYGON_H
 
-#include "../Common/b2Math.h"
+#include "../../Source/Common/b2Math.h"
+#include "../../Source/Collision/Shapes/b2PolygonShape.h"
 #include "b2Triangle.h"
-#include "../Dynamics/b2World.h" 
 
 class b2Polygon;
 
@@ -30,12 +30,12 @@ int32 TriangulatePolygon(float32* xv, float32* yv, int32 vNum, b2Triangle* resul
 bool IsEar(int32 i, float32* xv, float32* yv, int32 xvLength); //Not for external use
 int32 PolygonizeTriangles(b2Triangle* triangulated, int32 triangulatedLength, b2Polygon* polys, int32 polysLength);
 int32 DecomposeConvex(b2Polygon* p, b2Polygon* results, int32 maxPolys);
-b2PolygonDef* DecomposeConvexAndAddTo(b2World *world, b2Polygon* p, b2Body* body, b2PolygonDef* prototype);
+void DecomposeConvexAndAddTo(b2Polygon* p, b2Body* bd, b2PolygonDef* prototype);
 b2Polygon ConvexHull(b2Vec2* v, int nVert);
 b2Polygon ConvexHull(float32* cloudX, float32* cloudY, int32 nVert);
 void ReversePolygon(float32* x, float32* y, int n);
 
-b2Polygon *TraceEdge(b2Polygon* p); //For use with self-intersecting polygons, finds outline
+b2Polygon TraceEdge(b2Polygon* p); //For use with self-intersecting polygons, finds outline
 
 class b2Polygon {
 	
@@ -77,17 +77,15 @@ public:
 	}
 
 	void printFormatted(){
-		/*
-		printf("float32 xv[] = {");
+		printf("float xv[] = {");
 		for (int32 i=0; i<nVertices; ++i){
 			printf("%ff,",x[i]);
 		}
-		printf("};\nfloat32 yv[] = {");
+		printf("};\nfloat yv[] = {");
 		for (int32 i=0; i<nVertices; ++i){
 			printf("%ff,",y[i]);
 		}
 		printf("};\n");
-		*/
 	}
     
 	b2Polygon(const b2Polygon& p){
@@ -104,11 +102,14 @@ public:
 };
 
 const int32 MAX_CONNECTED = 32;
+const float32 COLLAPSE_DIST_SQR = FLT_EPSILON*FLT_EPSILON;//0.1f;//1000*FLT_EPSILON*1000*FLT_EPSILON;
+	
 class b2PolyNode{
 public:
 	b2Vec2 position;
 	b2PolyNode* connected[MAX_CONNECTED];
 	int32 nConnected;
+	bool visited;
 
 	b2PolyNode(b2Vec2& pos);
 	b2PolyNode();
@@ -116,7 +117,7 @@ public:
 	void RemoveConnection(b2PolyNode& fromMe);
 	void RemoveConnectionByIndex(int32 index);
 	bool IsConnectedTo(b2PolyNode& me);
-	b2PolyNode* GetRightestConnection(b2PolyNode* incoming); // Altered to reconstruct the released pointer-argument ABI.
+	b2PolyNode* GetRightestConnection(b2PolyNode* incoming);
 	b2PolyNode* GetRightestConnection(b2Vec2& incomingDir);
 };
 

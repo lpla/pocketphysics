@@ -41,7 +41,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
-| Box2D r132/r134 hybrid | C++ compilation units with a residual contact velocity method; the polygon member selects 42 compiler-emitted methods and six residual assembly methods |
+| Box2D r132/r134 hybrid | C++ compilation units with a residual contact velocity method; the complete polygon unit compiles from March 2008 forum-archived C++ with a documented ABI adjustment |
 | ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
@@ -51,9 +51,9 @@ section replacement. `b2Shape::ResetProxy` also compiles from C++ without
 replacement, preserving the release's missing-proxy handling. The GUI-setup
 and thumbnail-rendering replacements are also removed. The contact solver is
 linked from 14,940 C++ bytes and a separately attributed 5,160-byte residual
-velocity method, without its former whole-unit replacement. The polygon unit's
-12,676 C++ bytes and 18,092 residual assembly bytes also link through separately
-attributed method sections without a whole-unit replacement. Residual regions
+velocity method, without its former whole-unit replacement. The complete
+30,768-byte polygon executable unit compiles from archived C++ without method
+selection, instruction rewriting, or residual assembly. Residual regions
 are applied only after the ordinary application link has produced the guarded
 pre-reconstruction ARM9 hash above. This makes a
 change in any normal source object, dependency, archive order, or link layout
@@ -62,7 +62,7 @@ identity; it does not recover the corresponding high-level source.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Seven uppercase `.S` files remain in this corpus, including
+remaining work. Six uppercase `.S` files remain in this corpus, including
 the residual-region file and a data-only libfat table.
 
 ## Assembly Policy
