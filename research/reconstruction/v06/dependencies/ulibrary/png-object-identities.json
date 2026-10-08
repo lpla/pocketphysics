@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "reference": "Release-constrained complete PNG C and combined image objects. Allocated layout, relocations, exports, and ELF flags match the preceding assembly-containing objects; the complete ordinary ARM9 and final ROM are independent gates. This is not an independently preserved producer object archive.",
+  "objects": {
+    "libLoadPng.o": {
+      "identity_sha256": "1202a41211ef4d48bfb23d3e0c98821dffc27d8e2b8aefd4e032d2a608fa7dc5",
+      "allocated_bytes": 2296,
+      "text_bytes": 2272,
+      "residual_text_bytes": 0
+    },
+    "ulib-historical-layout.o": {
+      "identity_sha256": "b495d04b80c6e3842ed85dadf502b60b5801b3f8665a25f88a9676b457d13ebc",
+      "allocated_bytes": 4004,
+      "text_bytes": 3980,
+      "residual_text_bytes": 0
+    }
+  }
+}

@@ -17,10 +17,10 @@ UL_IMAGE *ulConvertImageToPalettedAlpha(UL_IMAGE *imgOriginal, u8 *source, int n
 
 		for (j=0;j<height;j++)		{
 			for (i=0;i<width;i++)			{
-				r = source[(j * width + i) * 4];
-				g = source[(j * width + i) * 4 + 1];
-				b = source[(j * width + i) * 4 + 2];
-				a = source[(j * width + i) * 4 + 3];
+				r = source[(j * img->sizeX + i) * 4];
+				g = source[(j * img->sizeX + i) * 4 + 1];
+				b = source[(j * img->sizeX + i) * 4 + 2];
+				a = source[(j * img->sizeX + i) * 4 + 3];
 				u16 pixel = RGB15(r >> 3, g >> 3, b >> 3);
 				int colorNb = ulFindColorInPalette(img->palette, palCount, pixel);
 
@@ -35,9 +35,9 @@ UL_IMAGE *ulConvertImageToPalettedAlpha(UL_IMAGE *imgOriginal, u8 *source, int n
 
 				u8 *pxDest = (u8*)ulGetImagePixelAddr(img, i, j);
 				if (newFormat == UL_PF_PAL5_A3)
-					*pxDest = (colorNb & 31) | (a & ~31);
+					*pxDest = colorNb | ((a >> 5) << 5);
 				else if (newFormat == UL_PF_PAL3_A5)
-					*pxDest = (colorNb & 7) | (a & ~7);
+					*pxDest = colorNb | ((a >> 3) << 3);
 			}
 		}
 		ulDeleteImage(imgOriginal);

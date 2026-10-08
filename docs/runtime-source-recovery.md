@@ -28,9 +28,9 @@ objects are also verified: `ds_arm7_crt0`, `ds_arm9_crt0`, `crti`, `crtn`,
 files are copied from the producer source and checked by SHA-256.
 
 This is not a claim to have rebuilt every unused library in the SDK, nor to have
-recovered the entire Pocket Physics program to high-level source. Residual
-uLibrary dependency assembly remains; ARM9 post-link replacements have been
-removed. Genuine upstream
+recovered every archive member to high-level source. The unlinked zlib
+`deflate` member remains reconstructed assembly; all linked executable
+transcriptions and ARM9 post-link replacements have been removed. Genuine upstream
 boot, interworking, and arithmetic assembly is source code for low-level CPU
 operations, distinct from transcriptions replacing an unresolved C/C++ unit.
 

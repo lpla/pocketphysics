@@ -22,13 +22,14 @@ testable claims.
 | Modern source port | v0.6 C++ source on checksum-locked BlocksDS dependencies | `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06` |
 | Improved source port | Modern port with measured correctness and performance changes | `cbfc4984533a427c1e724096750fb132be9f9f6ff2e30e8dc2fa1eae1c7a7c45` |
 
-The historical reconstruction is the canonical exact build. It compiles C/C++
-and recovered ARM/Thumb assembly with checksum-locked historical tools, without
-reading the release ROM or extracted payloads. Binary identity is complete;
-high-level source recovery is not. Residual dependency assembly
-remain. Startup, newlib, libgcc, and libstdc++ are now rebuilt from locked
-upstream and historical producer sources; SDK executables remain bootstrap
-tools. The archival repack is an independent packaging control.
+The historical reconstruction is the canonical exact build. Every linked
+implementation compiles from C/C++ or original low-level source assembly with
+checksum-locked historical tools, without reading the release ROM or extracted
+payloads. No linked executable transcription or post-link replacement remains.
+One archive-only zlib member, `deflate`, still uses reconstructed assembly but
+contributes no code to this ROM. Startup, newlib, libgcc, and libstdc++ are rebuilt
+from locked upstream and historical producer sources; SDK executables remain
+bootstrap tools. The archival repack is an independent packaging control.
 
 [Library C-source recovery](docs/c-source-recovery.md) now replaces 26 historical
 assembly objects with upstream C and small documented patches, while preserving
@@ -55,10 +56,15 @@ The [font report](docs/font-source-recovery.md) removes another replacement
 by reconstructing compiler units without changing any historical C body.
 The [ordinary ARM9 link report](docs/ordinary-arm9-source-recovery.md) removes
 the final keyboard/FAT replacements: the unmodified link now matches the release.
+The [PNG loader report](docs/png-loader-source-recovery.md) recovers the complete
+three-function C unit and its combined image object.
+The [alpha-conversion report](docs/alpha-source-recovery.md) recovers the last
+linked reconstructed executable unit as C.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-99.34% of both processors' executable-section bytes to source-compiled
-implementations. Another 4,412 bytes still contain unresolved reconstruction;
-byte coverage is not a claim of completed high-level source recovery.
+99.99% of both processors' executable-section bytes to source-compiled
+implementations; the remaining 80 bytes are linker-generated. Binary-constrained
+reconstruction does not prove that every recovered expression is the author's
+original source, and byte coverage is not a semantic-validation percentage.
 
 ## Reproduce
 
@@ -104,6 +110,8 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical polygon source recovery](docs/polygon-source-recovery.md)
 - [Historical font source recovery](docs/font-source-recovery.md)
 - [Ordinary ARM9 link source recovery](docs/ordinary-arm9-source-recovery.md)
+- [Historical PNG loader source recovery](docs/png-loader-source-recovery.md)
+- [Historical alpha conversion source recovery](docs/alpha-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

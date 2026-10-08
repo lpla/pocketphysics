@@ -64,8 +64,9 @@ tools/repro/test_v06_exact.sh
 REPEATS=3 tools/repro/test_v06_inrom.sh
 ```
 
-Removal of post-link replacement is not completion of high-level source
-recovery. The [remaining inventory](executable-source-coverage.md) still
-attributes two uLibrary archive members to residual reconstruction; the
-archive-only zlib `deflate` member is a separate unlinked target. Emulator
+Later [PNG](png-loader-source-recovery.md) and [alpha](alpha-source-recovery.md)
+recoveries clear the remaining linked executable transcriptions. The
+[inventory](executable-source-coverage.md) distinguishes the archive-only zlib
+`deflate` member, a separate unlinked recovery target. Binary-constrained source
+identity does not establish the author's original expression choices. Emulator
 measurements do not establish physical Nintendo DS timing.

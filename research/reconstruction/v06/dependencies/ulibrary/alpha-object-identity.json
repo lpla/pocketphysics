@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "reference": "Release-constrained complete alpha-conversion C object, matching allocated layout, relocations, exports, and ELF flags of the preceding assembly object. The complete ordinary ARM9 and final ROM are independent gates; this is not an independently preserved producer archive.",
+  "objects": {
+    "ulConvertImageToPalettedAlpha.o": {
+      "identity_sha256": "163f15f146330b21434d71871d77f3abacf17e8fda83616472002b41e6af9e8b",
+      "allocated_bytes": 432,
+      "text_bytes": 432,
+      "residual_text_bytes": 0
+    }
+  }
+}

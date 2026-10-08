@@ -22,8 +22,9 @@ files are altered research versions of that source, not an original release.
 
 Neither libnds archive now contains a reconstructed implementation. The ARM7
 link no longer contains reconstructed dependency implementations at all.
-Two uLibrary dependency implementations remain reconstructed assembly. No
-generated instruction bytes are edited to complete a near match.
+The later [uLibrary alpha recovery](alpha-source-recovery.md) clears the final
+linked dependency transcription. No generated instruction bytes are edited to
+complete a near match.
 
 ## Source and Producer Configuration
 

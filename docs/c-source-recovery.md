@@ -224,19 +224,27 @@ The [ordinary ARM9 link recovery](ordinary-arm9-source-recovery.md) adds the
 last 1,680 post-link replacement bytes through declaration-only keyboard/FAT
 changes. No post-link code replacement remains.
 
-Four uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, two uLibrary units, and a data-only libfat table. Original
+The [PNG loader recovery](png-loader-source-recovery.md) removes the complete
+PNG assembly unit and clears the 3,980-byte combined image object's residual
+classification. Complete normalized objects and the ordinary ARM9 are exact.
+The [alpha-conversion recovery](alpha-source-recovery.md) removes the final
+linked reconstructed executable unit, compiling its complete 432-byte object
+from C with recovered stride expressions and quantization/compiler controls.
+
+Two uppercase `.S` files remain in the reconstruction corpus: one archive-only
+zlib member and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
-The next source-recovery targets are `deflate` and the uLibrary
-substitutions. No instruction-byte edits are accepted as substitutes for
+The remaining archive-member source-recovery target is `deflate`.
+No instruction-byte edits are accepted as substitutes for
 recovering a compiler-reproducible source/configuration. No ARM9 section
 replacement remains. The [runtime source rebuild](runtime-source-recovery.md)
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and the ordinary ARM9 link. It attributes 99.34%
+processors, runtime/startup, and the ordinary ARM9 link. It attributes 99.99%
 of executable-section bytes to source-compiled implementations, including
-original low-level assembly. That byte coverage is not a C-only percentage or
+original low-level assembly; 80 bytes are linker-generated and none remain
+residual executable reconstruction. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above
 must not be presented as completion of the entire reconstruction.

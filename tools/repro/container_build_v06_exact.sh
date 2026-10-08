@@ -198,14 +198,21 @@ python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
     "$UL_VRAM/texVramManager.c" -o "$UL/texVramManager.o"
 "$TOOL-gcc" "${ul_o2_flags[@]}" -c \
     "$RECON/dependencies/ulibrary/ulDrawImageQuad.c" -o "$UL/ulDrawImageQuad.o"
-"$TOOL-gcc" -c -mcpu=arm946e-s -mtune=arm946e-s -mthumb-interwork \
-    "$RECON/dependencies/ulibrary/ulConvertImageToPalettedAlpha.S" \
-    -o "$UL/ulConvertImageToPalettedAlpha.o"
-"$TOOL-gcc" -c -mcpu=arm946e-s -mtune=arm946e-s -mthumb-interwork \
-    "$RECON/dependencies/ulibrary/libLoadPng.S" -o "$UL/libLoadPng-asm.o"
+UL_ALPHA="$BUILD/ulibrary-alpha"
+mkdir -p "$UL_ALPHA"
+"$TOOL-gcc" "${ul_o2_flags[@]}" -fno-tree-ccp -c \
+    "$UL/image/ulConvertImageToPalettedAlpha.c" -o "$UL_ALPHA/ulConvertImageToPalettedAlpha.o"
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/ulibrary/alpha-object-identity.json" "$UL_ALPHA"
+UL_PNG="$BUILD/ulibrary-png"
+python3 "$ROOT/tools/repro/prepare_ulibrary_png.py" "$UL/libLoadPng.c" "$UL_PNG/libLoadPng.c"
+"$TOOL-gcc" "${ul_o2_flags[@]}" -Os -fno-unit-at-a-time -fdata-sections -c \
+    "$UL_PNG/libLoadPng.c" -o "$UL_PNG/png-source.o"
+"$TOOL-ld" -r -T "$RECON/dependencies/ulibrary/png-object-layout.ld" \
+    "$UL_PNG/png-source.o" -o "$UL_PNG/libLoadPng.o"
 "$TOOL-ar" r "$UL/libul.a" \
     "$UL/drawing.o" "$UL/texPalManager.o" "$UL/texVramManager.o" \
-    "$UL/ulConvertImageToPalettedAlpha.o"
+    "$UL_ALPHA/ulConvertImageToPalettedAlpha.o"
 
 UL_LAYOUT="$BUILD/ulibrary-layout"
 mkdir -p "$UL_LAYOUT"
@@ -213,11 +220,14 @@ mkdir -p "$UL_LAYOUT"
     cd "$UL_LAYOUT"
     "$TOOL-ar" x "$UL/libul.a"
     cp "$UL/ulDrawImageQuad.o" .
-    cp "$UL/libLoadPng-asm.o" .
+    cp "$UL_PNG/libLoadPng.o" .
     "$TOOL-ld" -r -o ulib-historical-layout.o \
         ulDrawImageQuad.o ulDrawImage.o ulCreateImagePalette.o ulDrawFillRect.o \
-        ulLoadImageFilePNG.o glWrapper.o libLoadPng-asm.o
+        ulLoadImageFilePNG.o glWrapper.o libLoadPng.o
 )
+cp "$UL_LAYOUT/ulib-historical-layout.o" "$UL_PNG/"
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$RECON/dependencies/ulibrary/png-object-identities.json" "$UL_PNG"
 "$TOOL-ar" d "$UL/libul.a" \
     glWrapper.o libLoadPng.o ulDrawImage.o ulCreateImagePalette.o \
     ulDrawFillRect.o ulLoadImageFilePNG.o ulDrawImageQuad.o

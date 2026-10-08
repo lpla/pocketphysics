@@ -77,5 +77,5 @@ executable-provenance reports. The final ROM remains subject to SHA-256
 
 This is source recovery, not an optimization or modernization of the parser.
 It does not change the historical error handling or establish security for
-untrusted XML. Remaining uLibrary dependency reconstructions
-are recorded separately in the [source-coverage report](executable-source-coverage.md).
+untrusted XML. The archive-only zlib recovery boundary is recorded separately
+in the [source-coverage report](executable-source-coverage.md).

@@ -40,7 +40,7 @@ each build, and byte-compares the generated binaries and ELF files.
 | libpng 1.2.8 | Upstream C for all 15 archive members with recovered configuration and source patches |
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
-| uLibrary | Historical C source, source variants, and two residual assembly files |
+| uLibrary | Historical C source and reconstructed compiler contexts, complete PNG/text/alpha C recovery; no residual reconstructed executable members |
 | Box2D historical fixed-point variant | All compilation units source-built; complete contact/island units use r131 plus the archived March 15 patch; complete polygon unit uses March 10 forum-archived C++ with a documented ABI adjustment |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
@@ -58,15 +58,18 @@ in reconstructed compiler units, without a font replacement. Declaration-order
 recovery in keyboard label rendering and FAT directory insertion removes the
 last two ARM9 replacements. The ordinary application link now produces the
 canonical release payload directly; no instruction or section is overwritten
-after linking. Whole-object and unmasked payload gates reject any change in
-source objects, dependencies, archive order, or link layout. Residual uLibrary
-dependency assembly is still disclosed separately: binary identity does not
-establish complete high-level source recovery.
+after linking. The complete PNG C unit and its combined image object also match
+their release-constrained identities. The separate alpha-conversion C object
+also matches completely. Whole-object and unmasked payload gates reject any
+change in source objects, dependencies, archive order, or link layout. No linked
+executable transcription remains. Binary-constrained source recovery does not
+prove that every recovered expression or compiler boundary is the author's
+original choice.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Four uppercase `.S` files remain in this corpus: two uLibrary
-reconstructions, one archive-only zlib reconstruction, and a data-only libfat
+remaining work. Two uppercase `.S` files remain in this corpus: one
+archive-only zlib reconstruction and a data-only libfat
 table. The [ordinary ARM9 recovery report](../../../docs/ordinary-arm9-source-recovery.md)
 records the declaration changes, complete object identities, and link guards.
 

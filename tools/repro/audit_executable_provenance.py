@@ -24,8 +24,7 @@ FILL_ROW = re.compile(r"^\s+\*fill\*\s+(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)")
 ARCHIVE_MEMBER = re.compile(r"([^/]+\.a)\(([^)]+)\)$")
 RESIDUAL_MEMBERS = {
     "arm7": {},
-    "arm9": {"libul.a": {"ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"},
-             "libz.a": {"deflate.o"}},
+    "arm9": {"libz.a": {"deflate.o"}},
 }
 SOURCE_ARCHIVES = {"libnds7.a", "libnds9.a", "libtinyxml.a", "libul.a", "libbox2d2.a", "libz.a", "libpng.a", "libfat.a"}
 RUNTIME_ARCHIVES = {"libc.a", "libg.a", "libm.a", "libsysbase.a", "libgcc.a", "libgcov.a", "libstdc++.a", "libsupc++.a"}
@@ -85,6 +84,10 @@ def classify(cpu: str, owner: str, application_members: set[str], input_section:
     member = ARCHIVE_MEMBER.search(owner)
     if member:
         archive, name = member.groups()
+        if cpu == "arm9" and archive == "libul.a" and name in ("ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"):
+            if input_section == ".text":
+                return "source_dependency"
+            raise ValueError(f"unclassified uLibrary image section: {input_section}")
         if cpu == "arm9" and (archive, name) == ("libbox2d2.a", "b2Polygon.o"):
             if input_section in (".text", ".text._ZN10b2ShapeDefD0Ev", ".text._ZN10b2ShapeDefD1Ev",
                                  ".text._ZN12b2PolygonDefD0Ev", ".text._ZN12b2PolygonDefD1Ev",

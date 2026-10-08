@@ -48,7 +48,7 @@ Linker script and memory map
             map_rows("no linker map")
 
     def test_residual_boundaries_and_runtime_are_distinct(self):
-        self.assertEqual(classify("arm9", "/sdk/libul.a(ulib-historical-layout.o)", set()), "residual_reconstruction")
+        self.assertEqual(classify("arm9", "/sdk/libz.a(deflate.o)", set()), "residual_reconstruction")
         self.assertEqual(classify("arm9", "/sdk/libnds9.a(console.o)", set()), "source_dependency")
         self.assertEqual(classify("arm9", "/sdk/libnds9.a(card.o)", set()), "source_dependency")
         self.assertEqual(classify("arm9", "/sdk/libbox2d2.a(b2Triangle.o)", set()), "source_dependency")
@@ -76,6 +76,14 @@ Linker script and memory map
             for name in (None, ".text.contact.velocity", ".text.unrecorded"):
                 with self.assertRaisesRegex(ValueError, "unclassified solver section"):
                     classify("arm9", owner, set(), name)
+
+    def test_complete_ulibrary_image_object_and_unknown_sections(self):
+        for member in ("ulib-historical-layout.o", "ulConvertImageToPalettedAlpha.o"):
+            owner = "/sdk/libul.a(" + member + ")"
+            self.assertEqual(classify("arm9", owner, set(), ".text"), "source_dependency")
+            for section in (None, ".text.unrecorded", ".text.residual"):
+                with self.assertRaisesRegex(ValueError, "unclassified uLibrary image section"):
+                    classify("arm9", owner, set(), section)
 
     def test_overlaps_fail_and_outside_replacements_are_not_counted(self):
         sections = [{"name": ".text", "address": 100, "size": 20}]
