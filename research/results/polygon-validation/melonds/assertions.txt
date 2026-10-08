@@ -1,0 +1,5 @@
+melonds polygon-guard: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds polygon-guard: zero heap growth and all ROM correctness flags pass
+melonds selected: complete touch/physics/render workload; timing spread <= 0.000000%
+melonds selected: zero heap growth and all ROM correctness flags pass
+melonds polygon-guard: recorded scene, hit-test, final-state, and render-work evidence matches selected

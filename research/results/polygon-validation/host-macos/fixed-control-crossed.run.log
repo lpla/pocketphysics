@@ -1,0 +1,15 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==5172==ERROR: AddressSanitizer: FPE on unknown address 0x00010159123f (pc 0x00010159123f bp 0x7ff7be970250 sp 0x7ff7be970100 T0)
+    #0 0x00010159123f in b2Polygon::IsUsable(bool) b2Polygon.cpp:350
+    #1 0x00010158f2a8 in main polygon_validation_host.cpp:18
+    #2 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+==5172==Register values:
+rax = 0x0001000000000000  rbx = 0x00007ff7be970140  rcx = 0x0000000000000000  rdx = 0x0000000000000000  
+rdi = 0x0000603000001ba0  rsi = 0x0000000000000000  rbp = 0x00007ff7be970250  rsp = 0x00007ff7be970100  
+ r8 = 0x0000000000000000   r9 = 0x00000000fffeaaac  r10 = 0x0000000000000004  r11 = 0x0000000000000000  
+r12 = 0x0000000000000000  r13 = 0x0000603000001ba0  r14 = 0x0000000000000004  r15 = 0x0000100000000000  
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: FPE b2Polygon.cpp:350 in b2Polygon::IsUsable(bool)
+==5172==ABORTING

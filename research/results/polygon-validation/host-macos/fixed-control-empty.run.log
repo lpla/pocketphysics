@@ -1,0 +1,17 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==5170==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x0001039c37b9 bp 0x7ff7bc53d250 sp 0x7ff7bc53d100 T0)
+==5170==The signal is caused by a READ memory access.
+==5170==Hint: address points to the zero page.
+    #0 0x0001039c37b9 in b2Polygon::IsUsable(bool) b2Polygon.cpp:308
+    #1 0x0001039c222d in main polygon_validation_host.cpp:11
+    #2 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+==5170==Register values:
+rax = 0x0000000000000000  rbx = 0x00007ff7bc53d140  rcx = 0x0000000000000000  rdx = 0xfffffffffffffffc  
+rdi = 0x00001ffef78a7af8  rsi = 0x0000000000000001  rbp = 0x00007ff7bc53d250  rsp = 0x00007ff7bc53d100  
+ r8 = 0x00007ff7bc53cf60   r9 = 0x0000000000000001  r10 = 0x00001ffef78a79ec  r11 = 0x0000000000000000  
+r12 = 0x00007ff7bc53d700  r13 = 0x00007ff7bc53d7b0  r14 = 0x0000000000000000  r15 = 0x0000100000000000  
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV b2Polygon.cpp:308 in b2Polygon::IsUsable(bool)
+==5170==ABORTING

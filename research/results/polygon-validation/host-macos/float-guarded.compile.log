@@ -1,0 +1,107 @@
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/polygon_validation_host.cpp:1:
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_polygon_validation.h:4:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:36:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Collision/Shapes/b2CircleShape.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Collision/Shapes/b2Shape.h:22:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Collision/Shapes/../../Common/b2Math.h:63:9: warning: 'finite' is deprecated: first deprecated in macOS 10.9 - Use `isfinite((double)x)` instead. [-Wdeprecated-declarations]
+   63 |         return finite(x) != 0;
+      |                ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/math.h:799:12: note: 'finite' has been explicitly marked deprecated here
+  799 | extern int finite(double)
+      |            ^
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/polygon_validation_host.cpp:1:
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_polygon_validation.h:4:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:95:62: warning: expression result unused [-Wunused-value]
+   95 |         virtual void Add(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                     ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/polygon_validation_host.cpp:1:
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_polygon_validation.h:4:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:99:66: warning: expression result unused [-Wunused-value]
+   99 |         virtual void Persist(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                         ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/polygon_validation_host.cpp:1:
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_polygon_validation.h:4:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:103:65: warning: expression result unused [-Wunused-value]
+  103 |         virtual void Remove(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                        ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/polygon_validation_host.cpp:1:
+In file included from /Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_polygon_validation.h:4:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:106:66: warning: expression result unused [-Wunused-value]
+  106 |         virtual void Result(const b2ContactResult* point) { B2_NOT_USED(point); }
+      |                                                                         ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+5 warnings generated.
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:21:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Triangle.h:22:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Math.h:63:9: warning: 'finite' is deprecated: first deprecated in macOS 10.9 - Use `isfinite((double)x)` instead. [-Wdeprecated-declarations]
+   63 |         return finite(x) != 0;
+      |                ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/math.h:799:12: note: 'finite' has been explicitly marked deprecated here
+  799 | extern int finite(double)
+      |            ^
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:95:62: warning: expression result unused [-Wunused-value]
+   95 |         virtual void Add(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                     ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:99:66: warning: expression result unused [-Wunused-value]
+   99 |         virtual void Persist(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                         ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:103:65: warning: expression result unused [-Wunused-value]
+  103 |         virtual void Remove(const b2ContactPoint* point) { B2_NOT_USED(point); }
+      |                                                                        ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.h:22:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/Box2D.h:39:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Include/../Source/Dynamics/b2WorldCallbacks.h:106:66: warning: expression result unused [-Wunused-value]
+  106 |         virtual void Result(const b2ContactResult* point) { B2_NOT_USED(point); }
+      |                                                                         ^~~~~
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Settings.h:25:24: note: expanded from macro 'B2_NOT_USED'
+   25 | #define B2_NOT_USED(x) x
+      |                        ^
+5 warnings generated.
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Triangle.cpp:19:
+In file included from /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Triangle.h:22:
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/b2Math.h:63:9: warning: 'finite' is deprecated: first deprecated in macOS 10.9 - Use `isfinite((double)x)` instead. [-Wdeprecated-declarations]
+   63 |         return finite(x) != 0;
+      |                ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/math.h:799:12: note: 'finite' has been explicitly marked deprecated here
+  799 | extern int finite(double)
+      |            ^
+1 warning generated.

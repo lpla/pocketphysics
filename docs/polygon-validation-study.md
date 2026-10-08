@@ -68,3 +68,18 @@ ARM9 API validation. The archive's two-build identity gates remain mandatory.
 Before promotion, selection additionally requires no material touch, physics,
 or cadence regression in the primary comparison. Physical-console validation
 and broader malformed-sketch reachability remain separate open work.
+
+## Empirical Result
+
+The [published experiment](../research/results/polygon-validation/) preserves
+two identical guarded ROM/ELF builds, macOS and Linux sanitizer controls, and
+twelve melonDS runs split between primary timing and separate API validation.
+All sixteen shared ARM9 cases pass with checksum `722c5bcb`; recorded scene and
+render-work evidence match the byte-identified legacy control.
+
+The primary guarded specimen measures 6,223 touch ticks, 1,629 hit-test ticks,
+110,987 physics ticks, and 556,655 complete-frame ticks, versus 6,239, 1,594,
+111,032, and 556,860 for the control. The hit-test cost increases by 35 ticks
+(2.20%, approximately 1.04 microseconds). Other differences are tiny and are
+not credited as a general speedup. Correctness-driven promotion must retain
+this tradeoff in its record and revalidate the resulting release-role builds.

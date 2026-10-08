@@ -1,0 +1,8 @@
+/workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:126:23: runtime error: applying non-zero offset 18446744073709551612 to null pointer
+    #0 0x563995ac8980 in b2Polygon::GetArea() /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:126
+    #1 0x563995aca6df in b2Polygon::IsUsable(bool) /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:308
+    #2 0x563995ac597c in main /workspace/tools/repro/polygon_validation_host.cpp:11
+    #3 0x7fc9ffa07249  (/lib/x86_64-linux-gnu/libc.so.6+0x27249)
+    #4 0x7fc9ffa07304 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x27304)
+    #5 0x563995ac5260 in _start (/workspace/research-artifacts/test/polygon-guard/host-linux/float-control+0x33260)
+

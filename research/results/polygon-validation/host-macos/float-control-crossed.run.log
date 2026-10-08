@@ -1,0 +1,6 @@
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:287:12: runtime error: division by zero
+    #0 0x00010de4b15a in b2Polygon::IsUsable(bool) b2Polygon.cpp:350
+    #1 0x00010de46338 in main polygon_validation_host.cpp:18
+    #2 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:287:12 

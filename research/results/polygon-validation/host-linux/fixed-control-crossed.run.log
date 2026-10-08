@@ -1,0 +1,15 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==40==ERROR: AddressSanitizer: FPE on unknown address 0x5611a02b18dd (pc 0x5611a02b18dd bp 0x7ffe61ff35d0 sp 0x7ffe61ff2990 T0)
+    #0 0x5611a02b18dd in Fixed::operator/(Fixed) const /workspace/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/Fixed.h:251
+    #1 0x5611a02b18dd in operator/(float, Fixed) /workspace/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/Fixed.h:312
+    #2 0x5611a02b18dd in PolyCentroid /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:287
+    #3 0x5611a02b18dd in b2Polygon::IsUsable(bool) /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:350
+    #4 0x5611a02a5881 in main /workspace/tools/repro/polygon_validation_host.cpp:18
+    #5 0x7fd02b129249  (/lib/x86_64-linux-gnu/libc.so.6+0x27249)
+    #6 0x7fd02b129304 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x27304)
+    #7 0x5611a02a5200 in b2Triangle::IsInside(Fixed, Fixed) /workspace/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/Fixed.h:183
+
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: FPE /workspace/research-artifacts/test/polygon-guard/first/deps/box2d-2.0.1/Source/Common/Fixed.h:251 in Fixed::operator/(Fixed) const
+==40==ABORTING

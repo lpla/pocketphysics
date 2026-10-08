@@ -1,0 +1,7 @@
+/Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:126:10: runtime error: applying non-zero offset 18446744073709551612 to null pointer
+    #0 0x000108ede404 in b2Polygon::GetArea() b2Polygon.cpp:126
+    #1 0x000108edf389 in b2Polygon::IsUsable(bool) b2Polygon.cpp:308
+    #2 0x000108edc296 in main polygon_validation_host.cpp:11
+    #3 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior /Users/leopoldo.pla/pocketphysics/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:126:10 

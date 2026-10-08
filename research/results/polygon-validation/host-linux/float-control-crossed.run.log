@@ -1,0 +1,8 @@
+/workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:287:12: runtime error: division by zero
+    #0 0x556ca158d15e in PolyCentroid /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:287
+    #1 0x556ca158d15e in b2Polygon::IsUsable(bool) /workspace/research-artifacts/test/polygon-guard/first/deps/convex-decomposition/b2Polygon.cpp:350
+    #2 0x556ca1585b5d in main /workspace/tools/repro/polygon_validation_host.cpp:18
+    #3 0x7f9d2bfb4249  (/lib/x86_64-linux-gnu/libc.so.6+0x27249)
+    #4 0x7f9d2bfb4304 in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x27304)
+    #5 0x556ca1585260 in _start (/workspace/research-artifacts/test/polygon-guard/host-linux/float-control+0x33260)
+
