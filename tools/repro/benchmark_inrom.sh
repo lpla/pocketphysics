@@ -41,6 +41,7 @@ else
     rom_specs+=("bench-improved=$default_improved")
 fi
 
+OUT="$(python3 -c 'from pathlib import Path; import sys; print((Path(sys.argv[1]) / sys.argv[2]).resolve())' "$ROOT" "$OUT")"
 case "$OUT" in
     "$ROOT"/*) container_out="/workspace/${OUT#$ROOT/}" ;;
     *)
