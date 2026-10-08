@@ -1,0 +1,7 @@
+--- a/arm9/source/tobkit/keyboard.cpp
++++ b/arm9/source/tobkit/keyboard.cpp
+@@ -172,3 +172,3 @@
+ void Keyboard::drawKeyLabel(u8 key, bool visible)
+ {
+-	u8 xpos, ypos, offset;
++	u8 ypos, offset, xpos;

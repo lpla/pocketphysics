@@ -3,25 +3,25 @@
 ## Measurement
 
 The inventory traces linked input sections to the exact-build recipe using the
-ARM7 and ARM9 ELF section tables and GNU linker maps. It then applies the ARM9
-residual replacement ranges, overriding their original input classifications.
+ARM7 and ARM9 ELF section tables and GNU linker maps. The ARM9 payload is the
+unmodified ordinary link: changed payloads or reconstruction artifacts fail
+the audit. No post-link replacement attribution is necessary.
 Every executable-section byte is counted once. Overlapping attribution fails
 the audit, and gaps remain unattributed rather than being credited as recovered
 source. The current outputs have no unattributed executable-section bytes.
 
 | Category | ARM7 bytes | ARM9 bytes | Combined bytes |
 | --- | ---: | ---: | ---: |
-| Source-compiled application | 23,416 | 88,796 | 112,212 |
-| Source-compiled dependencies | 4,340 | 424,324 | 428,664 |
+| Source-compiled application | 23,416 | 89,028 | 112,444 |
+| Source-compiled dependencies | 4,340 | 425,772 | 430,112 |
 | Source-compiled runtime | 25,288 | 100,776 | 126,064 |
 | Original source-built startup/CRT | 588 | 1,880 | 2,468 |
 | Residual dependency reconstruction | 0 | 4,412 | 4,412 |
-| Residual ARM9 section replacement | 0 | 1,680 | 1,680 |
 | Linker padding/stubs | 0 | 80 | 80 |
 | Total executable-section bytes | 53,632 | 621,948 | 675,580 |
 
-Source-compiled implementations account for **669,408 bytes (99.09%)**.
-Residual reconstruction accounts for **6,092 bytes (0.90%)**. The remaining
+Source-compiled implementations account for **671,088 bytes (99.34%)**.
+Residual reconstruction accounts for **4,412 bytes (0.65%)**. The remaining
 80 bytes are linker-generated. These values describe the build's source
 boundary, not reverse-engineering effort, lines of code, instruction counts,
 semantic correctness, or the fraction of all ROM bytes recovered.
@@ -55,10 +55,8 @@ replacement remains.
 | Linked residual implementation | Executable-section bytes |
 | --- | ---: |
 | uLibrary historical mixed unit | 3,980 |
-| FAT directory entry creation | 1,448 |
 | Paletted-alpha image conversion | 432 |
-| Keyboard label rendering | 232 |
-| Total | 6,092 |
+| Total | 4,412 |
 
 The archive-only zlib `deflate` reconstruction is an additional source-recovery
 task, but contributes no code to this release ROM and is excluded from the
@@ -92,6 +90,7 @@ The [unit tests](../tools/repro/test_executable_provenance.py) cover discarded
 input exclusion, multiline section names, padding, unknown owners, residual
 classification, replacement precedence, gaps, overlaps, and replacements
 outside executable sections, including complete solver/polygon attribution
-and unknown-section rejection. This is a reproducible build-provenance audit,
+and unknown-section rejection. They also reject changed ARM9 payloads and
+stale post-link artifacts. This is a reproducible build-provenance audit,
 not independent proof that each source algorithm has been semantically
 validated. The object identity gates and final ROM hash tests remain separate.

@@ -16,7 +16,6 @@ from pathlib import Path
 import re
 
 from verify_recovered_objects import HEADER, SECTION
-from apply_reconstructed_sections import read_sections
 
 
 INPUT_ROW = re.compile(r"^\s+(\.\S+)\s+(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)\s+(.+)$")
@@ -132,7 +131,16 @@ def partition(sections: list[dict], inputs: list[dict], replacements: list[dict]
     return result
 
 
+def verify_ordinary_arm9(build: Path) -> None:
+    if (build / "build/reconstructed-regions.elf").exists():
+        raise ValueError("unexpected post-link reconstruction artifact")
+    if (build / "pocketphysics.base.arm9").read_bytes() != (build / "pocketphysics.arm9").read_bytes():
+        raise ValueError("ARM9 payload was modified after the ordinary link")
+
+
 def inventory(build: Path, cpu: str) -> dict:
+    if cpu == "arm9":
+        verify_ordinary_arm9(build)
     elf = build / ("pocketphysics.base.arm9.elf" if cpu == "arm9" else "pocketphysics.arm7.elf")
     map_path = build / "src" / cpu / "build/.map"
     sections = executable_sections(elf)
@@ -145,12 +153,7 @@ def inventory(build: Path, cpu: str) -> dict:
             continue
         inputs.append({"address": address, "size": size, "owner": owner,
                        "category": classify(cpu, owner, application_members, name)})
-    replacements = []
-    if cpu == "arm9":
-        for section in read_sections(build / "build/reconstructed-regions.elf", ".reconstructed."):
-            replacements.append({"address": section.address, "size": len(section.data), "owner": section.name,
-                                 "category": "residual_section_replacement"})
-    rows = partition(sections, inputs, replacements)
+    rows = partition(sections, inputs, [])
     counts = Counter()
     for row in rows:
         counts[row["category"]] += row["size"]

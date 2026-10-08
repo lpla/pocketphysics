@@ -53,8 +53,8 @@ class ArchivedSolverTests(unittest.TestCase):
 
     def test_no_solver_assembly_or_linker_substitution(self):
         region = ROOT / "research/reconstruction/v06/arm9"
-        self.assertNotIn(".reconstructed.fn06", (region / "reconstructed-regions.S").read_text())
-        self.assertNotIn(".reconstructed.fn06", (region / "reconstructed-regions.ld").read_text())
+        self.assertFalse((region / "reconstructed-regions.S").exists())
+        self.assertFalse((region / "reconstructed-regions.ld").exists())
         self.assertFalse((region / "mixed-sections.patch").exists())
         self.assertFalse(list((RECOVERED / "reconstructed").glob("*.S")))
 

@@ -51,10 +51,10 @@ survived.
 
 The unmodified producer `ds_arm9.ld` has SHA-256
 `e0b7f28bd015da38851d0699f9344df02b8a6b0426093815ecba576b5b1a8260`.
-Before applying the remaining unrelated replacements, the entire unmasked
-827,636-byte linked ARM9 payload must have SHA-256
-`b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c`
-in the current build, which also incorporates the subsequent font recovery.
+The entire unmasked 827,636-byte ordinary source-linked ARM9 payload must have SHA-256
+`0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89`
+in the current build, which also incorporates subsequent font/keyboard/FAT
+recovery and no longer performs post-link replacement.
 The final ARM9, ARM7, and complete 894,016-byte release ROM must independently
 match their canonical identities. A near-matching method cannot pass these
 gates by hiding differences behind a solver replacement.

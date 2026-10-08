@@ -25,7 +25,7 @@ testable claims.
 The historical reconstruction is the canonical exact build. It compiles C/C++
 and recovered ARM/Thumb assembly with checksum-locked historical tools, without
 reading the release ROM or extracted payloads. Binary identity is complete;
-high-level source recovery is not. Residual assembly and section replacements
+high-level source recovery is not. Residual dependency assembly
 remain. Startup, newlib, libgcc, and libstdc++ are now rebuilt from locked
 upstream and historical producer sources; SDK executables remain bootstrap
 tools. The archival repack is an independent packaging control.
@@ -53,9 +53,11 @@ The [polygon report](docs/polygon-source-recovery.md) recovers the complete
 30,768-byte C++ unit from preserved March 2008 forum source.
 The [font report](docs/font-source-recovery.md) removes another replacement
 by reconstructing compiler units without changing any historical C body.
+The [ordinary ARM9 link report](docs/ordinary-arm9-source-recovery.md) removes
+the final keyboard/FAT replacements: the unmodified link now matches the release.
 An [executable-byte inventory](docs/executable-source-coverage.md) attributes
-99.09% of both processors' executable-section bytes to source-compiled
-implementations. Another 6,092 bytes still contain unresolved reconstruction;
+99.34% of both processors' executable-section bytes to source-compiled
+implementations. Another 4,412 bytes still contain unresolved reconstruction;
 byte coverage is not a claim of completed high-level source recovery.
 
 ## Reproduce
@@ -101,6 +103,7 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Historical triangle source recovery](docs/triangle-source-recovery.md)
 - [Historical polygon source recovery](docs/polygon-source-recovery.md)
 - [Historical font source recovery](docs/font-source-recovery.md)
+- [Ordinary ARM9 link source recovery](docs/ordinary-arm9-source-recovery.md)
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)

@@ -12,7 +12,7 @@ DEVKITPRO=/opt/pocketphysics-r21/devkitPro
 DEVKITARM="$DEVKITPRO/devkitARM"
 TOOL="$DEVKITARM/bin/arm-eabi"
 
-EXPECTED_BASE_ARM9=b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c
+EXPECTED_BASE_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM9=0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89
 EXPECTED_ARM7=b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec
 EXPECTED_ROM=9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64
@@ -230,6 +230,8 @@ FAT="$BUILD/libfat"
 cp -a "$RECON/dependencies/libfat" "$FAT"
 cp "$FAT/directory.c" "$FAT/source/directory.c"
 make -C "$FAT/nds" TOPDIR="$FAT" BUILD=release
+python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
+    "$FAT/directory-object-identity.json" "$FAT/nds/release"
 FAT_OBJECTS="$FAT/nds/release"
 "$TOOL-gcc" -c -mcpu=arm946e-s -mtune=arm946e-s -mthumb-interwork \
     "$FAT/illegal-characters.S" -o "$FAT_OBJECTS/libfat-illegal-characters.o"
@@ -294,6 +296,7 @@ cp "$BOX_ARCHIVE" "$DEVKITPRO/libnds/lib/libbox2d2.a"
 
 printf '%s\n' '[7/8] Clean-building both Nintendo DS processors from application source'
 patch --fuzz=0 -d "$SRC" -p1 < "$RECON/arm9/ui-source.patch"
+patch --fuzz=0 -d "$SRC" -p1 < "$RECON/arm9/keyboard-source.patch"
 check_hash "$DEVKITARM/arm-eabi/lib/ds_arm9.ld" \
     e0b7f28bd015da38851d0699f9344df02b8a6b0426093815ecba576b5b1a8260
 rm -rf "$SRC/box2d"
@@ -309,16 +312,8 @@ python3 "$ROOT/tools/repro/verify_recovered_objects.py" \
 check_hash "$SRC/src.arm7" "$EXPECTED_ARM7"
 check_hash "$SRC/src.arm9" "$EXPECTED_BASE_ARM9"
 
-printf '%s\n' '[8/8] Linking reconstructed sections and packaging the exact ROM'
-"$TOOL-gcc" -c -mcpu=arm9tdmi -mthumb-interwork \
-    "$RECON/arm9/reconstructed-regions.S" -o "$BUILD/reconstructed-regions.o"
-"$TOOL-ld" -T "$RECON/arm9/reconstructed-regions.ld" \
-    -o "$BUILD/reconstructed-regions.elf" "$BUILD/reconstructed-regions.o"
-python3 "$ROOT/tools/repro/apply_reconstructed_sections.py" \
-    "$SRC/src.arm9" "$BUILD/reconstructed-regions.elf" "$OUT/pocketphysics.arm9" \
-    --base-address 0x02000000 \
-    --expect-base-sha256 "$EXPECTED_BASE_ARM9" \
-    --expect-output-sha256 "$EXPECTED_ARM9"
+printf '%s\n' '[8/8] Packaging the unmodified source-linked processor payloads'
+cp "$SRC/src.arm9" "$OUT/pocketphysics.arm9"
 cp "$SRC/src.arm9" "$OUT/pocketphysics.base.arm9"
 cp "$SRC/src.arm7" "$OUT/pocketphysics.arm7"
 cp "$SRC/arm9/src.arm9.elf" "$OUT/pocketphysics.base.arm9.elf"

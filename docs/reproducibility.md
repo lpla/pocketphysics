@@ -85,7 +85,8 @@ Payload identities:
 | Final ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
 
 `test_v06_exact.sh` performs two clean source builds and byte-compares both
-payloads, the pre-reconstruction ARM9 links, ELF files, and final ROMs.
+payloads, the ordinary ARM9 links, ELF files, and final ROMs. The ordinary link
+is already canonical and is copied unchanged into the packaging stage.
 
 The source corpus and assembly policy are documented in
 [`research/reconstruction/v06`](../research/reconstruction/v06/README.md).

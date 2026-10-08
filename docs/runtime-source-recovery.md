@@ -29,7 +29,8 @@ files are copied from the producer source and checked by SHA-256.
 
 This is not a claim to have rebuilt every unused library in the SDK, nor to have
 recovered the entire Pocket Physics program to high-level source. Residual
-dependency assembly and ARM9 section replacement remain. Genuine upstream
+uLibrary dependency assembly remains; ARM9 post-link replacements have been
+removed. Genuine upstream
 boot, interworking, and arithmetic assembly is source code for low-level CPU
 operations, distinct from transcriptions replacing an unresolved C/C++ unit.
 
@@ -109,7 +110,7 @@ checked. Linker/specification text must match its reference hash.
 The test suite checks missing, extra, duplicated, and unsafe member names;
 object and size changes; archive-order restoration and failed restoration;
 changed linker scripts; and forward/reverse CRC recovery. The final ARM7,
-pre-reconstruction ARM9, reconstructed ARM9, and ROM hash guards remain
+ordinary source-linked ARM9, packaged ARM9, and ROM hash guards remain
 independent acceptance gates.
 
 Run the complete clean-build comparison:

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "reference": "Release-constrained complete C directory unit with declaration-order reconstruction only. Full unmodified linked ARM9 and final ROM identities are independent gates; this manifest is not a build input or an independently preserved producer object.",
+  "objects": {
+    "directory.o": {
+      "identity_sha256": "e39f41283b2f28a22e141f9c85b4c8b05f13f0f769a086d6b105093b93740e2c",
+      "allocated_bytes": 3844,
+      "text_bytes": 3784,
+      "residual_text_bytes": 0
+    }
+  }
+}

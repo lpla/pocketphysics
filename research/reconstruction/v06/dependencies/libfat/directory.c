@@ -671,8 +671,8 @@ static bool _FAT_directory_entryExists (PARTITION* partition, const char* name, 
 
 
 bool _FAT_directory_addEntry (PARTITION* partition, DIR_ENTRY* entry, u32 dirCluster) {
-	u32 entrySize;
 	u8 lfnEntry[DIR_ENTRY_DATA_SIZE];
+	u32 entrySize;
 	s32 i,j; // Must be signed for use when decrementing in for loop
 	char *tmpCharPtr;
 	DIR_ENTRY_POSITION curEntryPos;

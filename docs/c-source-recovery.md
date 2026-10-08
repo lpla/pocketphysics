@@ -220,19 +220,22 @@ pointer-argument ABI adjustment. No polygon residual assembly remains.
 The [font recovery](font-source-recovery.md) adds 808 further source-compiled
 bytes without changing any C body, reconstructing compiler units and their
 relocatable layout instead of using a post-link font replacement.
+The [ordinary ARM9 link recovery](ordinary-arm9-source-recovery.md) adds the
+last 1,680 post-link replacement bytes through declaration-only keyboard/FAT
+changes. No post-link code replacement remains.
 
-Five uppercase `.S` files remain in the reconstruction corpus: one zlib
-member, two uLibrary units, the ARM9 residual-region file, and a data-only libfat table. Original
+Four uppercase `.S` files remain in the reconstruction corpus: one zlib
+member, two uLibrary units, and a data-only libfat table. Original
 low-level assembly in upstream dependencies is a separate category.
 
 The next source-recovery targets are `deflate` and the uLibrary
 substitutions. No instruction-byte edits are accepted as substitutes for
-recovering a compiler-reproducible source/configuration. ARM9 section
-replacement also remains. The [runtime source rebuild](runtime-source-recovery.md)
+recovering a compiler-reproducible source/configuration. No ARM9 section
+replacement remains. The [runtime source rebuild](runtime-source-recovery.md)
 removes the precompiled startup/runtime boundary for both processor links.
 
 The [executable-byte inventory](executable-source-coverage.md) now covers both
-processors, runtime/startup, and post-link replacements. It attributes 99.09%
+processors, runtime/startup, and the ordinary ARM9 link. It attributes 99.34%
 of executable-section bytes to source-compiled implementations, including
 original low-level assembly. That byte coverage is not a C-only percentage or
 an estimate of remaining research effort. Library member percentages above

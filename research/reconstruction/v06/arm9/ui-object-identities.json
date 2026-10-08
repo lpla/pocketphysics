@@ -1,5 +1,10 @@
 {
   "objects": {
+    "keyboard.o": {
+      "allocated_bytes": 3362,
+      "identity_sha256": "7f455b607147d73f6ef71bbf2e07c6ac05e563752baaefa16a4ce35bfb03451c",
+      "text_bytes": 3276
+    },
     "main.o": {
       "allocated_bytes": 11140,
       "identity_sha256": "4716d247b588f82e68c62c4b265e7536869ef19fc159c8269abbf89a0f684842",
@@ -11,6 +16,6 @@
       "text_bytes": 3904
     }
   },
-  "reference": "Release-constrained application object identities, not independently preserved original distribution objects. The full ARM9 payload matches without GUI setup and thumbnail-rendering replacements; identities are comparison gates, not build inputs.",
+  "reference": "Release-constrained application object identities, not independently preserved original distribution objects. The full ARM9 payload matches without GUI setup, thumbnail-rendering, or keyboard label replacements; identities are comparison gates, not build inputs.",
   "schema": 1
 }

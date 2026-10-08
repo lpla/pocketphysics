@@ -77,5 +77,5 @@ executable-provenance reports. The final ROM remains subject to SHA-256
 
 This is source recovery, not an optimization or modernization of the parser.
 It does not change the historical error handling or establish security for
-untrusted XML. Remaining Box2D/uLibrary code and ARM9 post-link replacements
+untrusted XML. Remaining uLibrary dependency reconstructions
 are recorded separately in the [source-coverage report](executable-source-coverage.md).

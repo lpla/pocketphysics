@@ -2,11 +2,31 @@
 """Test provenance parsing and non-overlapping byte accounting."""
 
 import unittest
+from pathlib import Path
+import tempfile
 
-from audit_executable_provenance import classify, map_rows, partition
+from audit_executable_provenance import classify, map_rows, partition, verify_ordinary_arm9
 
 
 class ProvenanceTests(unittest.TestCase):
+    def test_unmodified_arm9_and_post_link_change_rejection(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            (out / "pocketphysics.base.arm9").write_bytes(b"linked")
+            (out / "pocketphysics.arm9").write_bytes(b"linked")
+            verify_ordinary_arm9(out)
+            (out / "pocketphysics.arm9").write_bytes(b"edited")
+            with self.assertRaisesRegex(ValueError, "modified after"):
+                verify_ordinary_arm9(out)
+
+    def test_stale_reconstruction_artifact_rejection(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            (out / "build").mkdir()
+            (out / "build/reconstructed-regions.elf").write_bytes(b"stale")
+            with self.assertRaisesRegex(ValueError, "unexpected post-link"):
+                verify_ordinary_arm9(out)
+
     def test_map_ignores_discarded_sections_and_parses_continuations(self):
         text = """Discarded input sections
  .text 0x00000000 0x10 wrong.o

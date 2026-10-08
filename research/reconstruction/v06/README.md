@@ -15,7 +15,7 @@ Two independent clean builds reproduce these identities:
 
 | Artifact | Size | SHA-256 |
 | --- | ---: | --- |
-| Pre-reconstruction ARM9 link | 827,636 B | `b889ac4a411285d7427309ea08999c82df7051f972bebdff76273e634476a17c` |
+| Ordinary source-linked ARM9 | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
 | Final ARM9 payload | 827,636 B | `0fd7bb49061be1d25dfa09dda2185c68ca61d149f76c67a93707971aab7ecb89` |
 | ARM7 payload | 62,828 B | `b8ddd521ce08eec45adfaf263828f21d950eeb03c87e664e0da71a3ba71c23ec` |
 | Packaged ROM | 894,016 B | `9e0f44b5bc817ea0c91ab889abcbc64c0f09f2439208679f67542a77bce4de64` |
@@ -34,18 +34,17 @@ each build, and byte-compares the generated binaries and ELF files.
 
 | Component | Reconstructed form |
 | --- | --- |
-| Pocket Physics ARM7 and ARM9 application | Git revision `e9b621e`, seven files restored from `3e538e0`, and the reviewed `application.patch` and `arm9/ui-source.patch` |
+| Pocket Physics ARM7 and ARM9 application | Git revision `e9b621e`, seven files restored from `3e538e0`, and the reviewed application, UI, and keyboard source patches |
 | libnds | Upstream revision `df7b1022`, recovered C declaration/compiler settings, and historical headers; no residual reconstructed members |
-| libfat | Historical C/assembly source with the recovered source and archive member order |
+| libfat | Historical C source with recovered declaration/archive order and a data-only assembly table; no residual executable reconstruction |
 | libpng 1.2.8 | Upstream C for all 15 archive members with recovered configuration and source patches |
 | zlib 1.2.3 | Upstream C for 11 of 12 archive members; documented source/compiler configuration and one residual assembly member |
 | TinyXML 2.5.3 | C++ source for all four members, compiled at the fixed historical path to preserve assertion strings |
 | uLibrary | Historical C source, source variants, and two residual assembly files |
 | Box2D historical fixed-point variant | All compilation units source-built; complete contact/island units use r131 plus the archived March 15 patch; complete polygon unit uses March 10 forum-archived C++ with a documented ABI adjustment |
-| ARM9 residual regions | Named ARM/Thumb mnemonic sections linked at the recovered release addresses |
 | Startup, libgcc, newlib, libstdc++ | Locked upstream C/C++ and original hardware assembly, historical producer patches, 1,774 archive-member identities and 12 startup/CRT identities |
 
-The residual regions cover compiler/runtime-sensitive code. The complete
+The complete
 `b2Triangle` unit and its initializer now compile from C++ and no longer use
 section replacement. `b2Shape::ResetProxy` also compiles from C++ without
 replacement, preserving the release's missing-proxy handling. The GUI-setup
@@ -55,17 +54,21 @@ or solver linker modifications. The complete
 30,768-byte polygon executable unit compiles from archived C++ without method
 selection, instruction rewriting, or residual assembly.
 The complete uLibrary text/font unit also compiles from unchanged C bodies
-in reconstructed compiler units, without a font replacement. Residual regions
-are applied only after the ordinary application link has produced the guarded
-pre-reconstruction ARM9 hash above. This makes a
-change in any normal source object, dependency, archive order, or link layout
-fail before section replacement can occur. This guard constrains binary
-identity; it does not recover the corresponding high-level source.
+in reconstructed compiler units, without a font replacement. Declaration-order
+recovery in keyboard label rendering and FAT directory insertion removes the
+last two ARM9 replacements. The ordinary application link now produces the
+canonical release payload directly; no instruction or section is overwritten
+after linking. Whole-object and unmasked payload gates reject any change in
+source objects, dependencies, archive order, or link layout. Residual uLibrary
+dependency assembly is still disclosed separately: binary identity does not
+establish complete high-level source recovery.
 
 The [C-source recovery report](../../../docs/c-source-recovery.md) records
 object-level identities, compiler configuration, linked-code coverage, and
-remaining work. Five uppercase `.S` files remain in this corpus, including
-the residual-region file and a data-only libfat table.
+remaining work. Four uppercase `.S` files remain in this corpus: two uLibrary
+reconstructions, one archive-only zlib reconstruction, and a data-only libfat
+table. The [ordinary ARM9 recovery report](../../../docs/ordinary-arm9-source-recovery.md)
+records the declaration changes, complete object identities, and link guards.
 
 ## Assembly Policy
 
