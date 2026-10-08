@@ -19,9 +19,48 @@ def replace_between(text: str, start: str, end: str, replacement: str, name: str
     return text[:a] + replacement + text[b:]
 
 
+def add_validation_guards(poly_cpp: str) -> str:
+    count_check = "\tif (nVertices < 3 || nVertices > b2_maxPolygonVertices) {noError = false; error = 0;}"
+    normals_start = "\t//Compute normals\n\tb2Vec2* normals = new b2Vec2[nVertices];"
+    # Preserve assertion locations independently of guard insertion.
+    count_next_line = poly_cpp[:poly_cpp.index(count_check)].count("\n") + 2
+    normals_next_line = poly_cpp[:poly_cpp.index(normals_start)].count("\n") + 3
+    poly_cpp = replace_exact(
+        poly_cpp, count_check,
+        """#ifdef PP_POLYGON_VALIDATION_GUARD
+\tif (nVertices < 3 || nVertices > b2_maxPolygonVertices) {
+\t\tif (printErrors) {
+\t\t\tprintf("Found invalid polygon, must have between 3 and %d vertices.\\n", b2_maxPolygonVertices);
+\t\t}
+\t\treturn false;
+\t}
+#else
+\tif (nVertices < 3 || nVertices > b2_maxPolygonVertices) {noError = false; error = 0;}
+#endif
+#line """ + str(count_next_line), "b2Polygon.cpp",
+    )
+    return replace_exact(
+        poly_cpp, normals_start,
+        """#ifdef PP_POLYGON_VALIDATION_GUARD
+\tif (!noError) {
+\t\tif (printErrors) {
+\t\t\tconst char* reason = error == 1 ? "must be convex." :
+\t\t\t\t(error == 2 ? "must be simple (cannot intersect itself)." : "area is too small.");
+\t\t\tprintf("Found invalid polygon, %s\\n", reason);
+\t\t}
+\t\treturn false;
+\t}
+#endif
+\t//Compute normals
+\tb2Vec2* normals = new b2Vec2[nVertices];
+#line """ + str(normals_next_line), "b2Polygon.cpp",
+    )
+
+
 def main() -> int:
-    if len(sys.argv) != 3:
-        raise SystemExit("usage: transform_convex_decomposition.py SRC_DIR DST_DIR")
+    if len(sys.argv) not in (3, 4) or (len(sys.argv) == 4 and sys.argv[3] != "--polygon-guard"):
+        raise SystemExit("usage: transform_convex_decomposition.py SRC_DIR DST_DIR [--polygon-guard]")
+    guarded = len(sys.argv) == 4
 
     src = Path(sys.argv[1])
     dst = Path(sys.argv[2])
@@ -43,6 +82,9 @@ def main() -> int:
     )
     poly_h = poly_h.replace("void AddTo(b2FixtureDef& pd);", "void AddTo(b2PolygonDef& pd);")
     poly_h = poly_h.replace("const float32 COLLAPSE_DIST_SQR = FLT_EPSILON*FLT_EPSILON;", "const float32 COLLAPSE_DIST_SQR = B2_FLT_EPSILON*B2_FLT_EPSILON;")
+    if guarded:
+        poly_h = poly_h.replace('printf("%ff,",x[i]);', 'printf("%ff,", (float)x[i]);')
+        poly_h = poly_h.replace('printf("%ff,",y[i]);', 'printf("%ff,", (float)y[i]);')
     (dst / "b2Polygon.h").write_text(poly_h)
 
     poly_cpp = (dst / "b2Polygon.cpp").read_text()
@@ -180,6 +222,8 @@ Skip:
         "b2Polygon.cpp",
     )
 
+    if guarded:
+        poly_cpp = add_validation_guards(poly_cpp)
     (dst / "b2Polygon.cpp").write_text(poly_cpp)
     return 0
 

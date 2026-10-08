@@ -48,6 +48,7 @@ jobs:
           name: inrom-smoke-${{ github.sha }}
           path: |
             research-artifacts/benchmarks/inrom-test/**
+            research-artifacts/benchmarks/polygon-api/**
             research-artifacts/test/**
           if-no-files-found: warn
           retention-days: 14

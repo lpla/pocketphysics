@@ -100,7 +100,7 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         BOX2D_MODE="fixed-point/arm/O3 benchmark"
         ;;
-    bench-improved)
+    bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
         AR=arm-none-eabi-gcc-ar
         BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
@@ -108,6 +108,12 @@ case "$BUILD_PROFILE" in
         PROFILE_OPT=(-O3 -flto -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables)
         PROFILE_LINK=(-flto)
         BOX2D_MODE="fixed-point DS hardware math/arm/O3/LTO with measured backports, physics ITCM, and Canvas::drawLine ITCM benchmark"
+        if [[ "$BUILD_PROFILE" != bench-improved ]]; then
+            PROFILE_DEFS+=(-DPP_POLYGON_VALIDATION_GUARD)
+        fi
+        if [[ "$BUILD_PROFILE" == bench-improved-polygon-validation ]]; then
+            PROFILE_DEFS+=(-DPP_BENCHMARK_POLYGON_VALIDATION)
+        fi
         ;;
     bench-runtime)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)

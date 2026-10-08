@@ -6,6 +6,9 @@
 #include "state.h"
 #include "thing.h"
 #include "world.h"
+#ifdef PP_BENCHMARK_POLYGON_VALIDATION
+#include "pp_polygon_validation.h"
+#endif
 
 #include <malloc.h>
 #include <nds.h>
@@ -550,6 +553,14 @@ void ppRunBenchmark(World *world, Canvas *canvas, bool fat_ok)
 	emitValue(file, "gate_half_eligible", ppGateHalfEligible, final_checksum, gate_pass);
 	emitValue(file, "gate_wide_only_eligible", ppGateWideOnlyEligible, final_checksum, gate_pass);
 	emitValue(file, "gate_length_required", ppGateLengthRequired, final_checksum, gate_pass);
+#endif
+
+#ifdef PP_BENCHMARK_POLYGON_VALIDATION
+    PpPolygonValidationResult validation = ppValidatePolygons();
+    emitValue(file, "polygon_validation_cases", validation.cases,
+            validation.checksum, validation.cases == 16 && validation.failures == 0);
+    emitValue(file, "polygon_validation_failures", validation.failures,
+            validation.checksum, validation.failures == 0);
 #endif
 
 	if(file)

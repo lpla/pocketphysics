@@ -39,6 +39,7 @@ case "$PROFILE" in
     bench-*)
         echo "Adding in-ROM benchmark source for profile: $PROFILE"
         cp "$ROOT/tools/repro/benchmark_source/pp_benchmark."* "$SRC/arm9/source/"
+        cp "$ROOT/tools/repro/benchmark_source/pp_polygon_validation.h" "$SRC/arm9/source/"
         ;;
 esac
 
@@ -78,9 +79,15 @@ while IFS='|' read -r filename expected url mirror; do
     fetch "$url" "$PACKAGE_CACHE/$filename" "$expected" "$mirror"
 done < "$PACKAGE_LOCK"
 
+CONVEX_TRANSFORM_FLAGS=()
+case "$PROFILE" in
+    bench-improved-polygon-guard|bench-improved-polygon-validation)
+        CONVEX_TRANSFORM_FLAGS+=(--polygon-guard)
+        ;;
+esac
 python3 "$ROOT/tools/repro/transform_convex_decomposition.py" \
     "$DEPS/convex-decomposition-original" \
-    "$DEPS/convex-decomposition"
+    "$DEPS/convex-decomposition" "${CONVEX_TRANSFORM_FLAGS[@]}"
 
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$DEPS/box2d-2.0.1"
 python3 "$ROOT/tools/repro/patch_v06_source.py" "$SRC"

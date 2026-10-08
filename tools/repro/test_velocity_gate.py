@@ -72,7 +72,7 @@ class VelocityGateTests(unittest.TestCase):
         self.assertIn("b2_maxLinearVelocity * (181.0f / 256.0f)", island)
         self.assertIn("#else\n\t\tconst float32 halfLinearVelocity = b2_maxLinearVelocity * 0.5f;", island)
         recipe = (ROOT / "tools/repro/container_build_v06.sh").read_text()
-        selected = recipe.split("    bench-improved)", 1)[1].split("        ;;", 1)[0]
+        selected = recipe.split("    bench-improved|", 1)[1].split("        ;;", 1)[0]
         self.assertNotIn("PP_BOX2D_WIDE_VELOCITY_GATE", selected)
 
     def test_count_conservation_and_missing_or_duplicate_rows(self):

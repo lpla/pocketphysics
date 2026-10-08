@@ -68,7 +68,8 @@ original source, and byte coverage is not a semantic-validation percentage.
 
 ## Reproduce
 
-Requirements are Git with full history, Docker, Python 3, `curl`, and `unzip`.
+Requirements are Git with full history, Docker, Python 3, `curl`, `unzip`, and
+a host C++ compiler with AddressSanitizer support (GCC or Clang).
 All downloaded files, container bases, package archives, and emulator releases
 are pinned in [the input lock](research/provenance/input-locks.csv).
 
@@ -83,6 +84,8 @@ byte-identical historical source builds, checks the independent repack control,
 performs two clean modern and improved builds, and runs three in-ROM workloads
 in melonDS. The emulator watchdog is host-side process control only; every
 reported performance value is read from the ROM's cascaded ARM9 timers.
+It also runs sanitized polygon API negative controls and shared ARM9 regression
+cases separately from the primary performance specimens.
 
 Individual entry points:
 
@@ -116,6 +119,9 @@ setting `EMULATORS=desmume`; it is not used to accept or reject optimizations.
 - [Executable-byte source coverage](docs/executable-source-coverage.md)
 - [In-ROM benchmark protocol](docs/benchmarking.md)
 - [Optimization and rejection study](docs/optimization-study.md)
+- [Wider velocity-gate timing and operation coverage](research/results/velocity-gate/)
+- [Polygon validation hardening and regression protocol](docs/polygon-validation-study.md)
+- [Open research and acceptance criteria](docs/research-frontier.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)
 - [Tracked binary and external-input provenance](docs/provenance.md)
 - [Published benchmark evidence](research/results/README.md)
