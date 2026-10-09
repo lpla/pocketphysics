@@ -1,0 +1,69 @@
+melonDS 1.1
+https://melonds.kuribo64.net
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x20 (effective mode "ab")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+MP comm init OK
+Audio output frequency: 48000 Hz
+Audio output buffer size: 512 samples
+Opened "/workspace/research-artifacts/test/polygon-api/validation/pocketphysics-v0.6-blocksds.nds" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/test/polygon-api/validation/pocketphysics-v0.6-blocksds.sav" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/test/polygon-api/validation/pocketphysics-v0.6-blocksds.sav" with FileMode 0x1 (effective mode "rb")
+Failed to open "/workspace/research-artifacts/test/polygon-api/validation/pocketphysics-v0.6-blocksds.sav" with FileMode 0x1 (effective mode "rb")
+ROM entry not found for gamecode 589505315
+!! bad ROM size 739328 (expected 1048576) rounded to 1048576
+Failed to open "/opt/melonds/usr/bin/portable/wfcsettings.bin" with FileMode 0x1 (effective mode "rb")
+Resetting JIT block cache...
+done resetting jit mem
+done resetting jit mem
+MAC: 00:09:BF:11:22:33
+FW: WIFI CRC16 = GOOD
+FW: AP1 CRC16 = GOOD
+FW: AP2 CRC16 = GOOD
+FW: AP3 CRC16 = GOOD
+FW: USER0 CRC16 = GOOD
+FW: USER1 CRC16 = GOOD
+Failed to open "/opt/melonds/usr/bin/portable/rtc.bin" with FileMode 0x1 (effective mode "rb")
+No need to re-encrypt cart secure area
+Inserted cart with game code: ####
+Inserted cart with ID: 400000C2
+ROM entry: 00100000 00000000
+Ejected GBA cart
+Failed to open "/workspace/research-artifacts/test/polygon-api/validation/pocketphysics-v0.6-blocksds.mch" with FileMode 0x11 (effective mode "r")
+Resetting JIT block cache...
+done resetting jit mem
+done resetting jit mem
+MAC: 00:09:BF:11:22:33
+FW: WIFI CRC16 = GOOD
+FW: AP1 CRC16 = GOOD
+FW: AP2 CRC16 = GOOD
+FW: AP3 CRC16 = GOOD
+FW: USER0 CRC16 = GOOD
+FW: USER1 CRC16 = GOOD
+remapping SWRAM
+NDSCart: Initialized Key1_KeyBuf to zero
+NDSCart: Initialized Key1_KeyBuf to zero
+Secure area decryption failed
+remapping DTCM 0 1000 ffffffff ffffffff
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19
+PU: region 1 = 0200002B : enabled, start: 02000000 size: 15
+PU: region 1 = 0200002B : enabled, start: 02000000 size: 15
+PU: region 2 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 2 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 3 = 08000035 : enabled, start: 08000000 size: 1A
+PU: region 3 = 08000035 : enabled, start: 08000000 size: 1A
+PU: region 4 = 0300001B : enabled, start: 03000000 size: 0D
+PU: region 4 = 0300001B : enabled, start: 03000000 size: 0D
+PU: region 5 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 5 = 00000000 : disabled, start: 00000000 size: 00
+PU: region 6 = FFFF001D : enabled, start: FFFF0000 size: 0E
+PU: region 6 = FFFF001D : enabled, start: FFFF0000 size: 0E
+PU: region 7 = 027FF017 : enabled, start: 027FF000 size: 0B
+PU: region 7 = 027FF017 : enabled, start: 027FF000 size: 0B
+remapping DTCM 3000000 3004000 0 fffff000
+Game is now booting
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x1 (effective mode "rb")
+Opened "/opt/melonds/usr/bin/portable/melonDS.toml" with FileMode 0x20 (effective mode "ab")
+remapping DTCM ffffffff ffffffff 3000000 2ffc000
+PU: region 0 = 04000033 : enabled, start: 04000000 size: 19

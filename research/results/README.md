@@ -20,6 +20,7 @@ limits cadence and responsiveness conclusions for every dataset below.
 
 ## Primary melonDS Comparison
 
+- [Current run-integrity revalidation: identical three-role records and API regressions](emulator-run-integrity/)
 - [Current guarded improved build and fresh three-role comparison](polygon-promotion/)
 - [Complete linked-source reconstruction validation](linked-source-complete/)
 - [melonDS 1.1 final dataset](melonds-final/)
@@ -32,6 +33,9 @@ limits cadence and responsiveness conclusions for every dataset below.
 Time columns use in-ROM ARM9 timer ticks. Each value is the deterministic
 per-run mean from three complete runs. Cadence
 columns count intervals out of 240 simulation/render frames.
+These are instrumented source specimens, not timings from unmodified release
+ROMs. Historical/improved roles use fixed-point DS math; the modern baseline
+uses floating point, so the table does not isolate dependency-update effects.
 
 | Role | Touch | Hit test | Physics | Frame | >1% | >2x | Leak bytes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -58,7 +62,7 @@ byte-identical source build, not from an extracted release payload.
 
 - [Wider velocity gate: timing and operation-domain coverage](velocity-gate/)
 - [Polygon validation: host negative controls and ARM9 API regression cases](polygon-validation/)
-- [Picking ITCM: query-phase gain with whole-application tradeoffs](picking-itcm/)
+- [Picking ITCM: query-phase gain with integration-harness tradeoffs](picking-itcm/)
 - [melonDS 1.1 optimization screening](optimization-screening/melonds/)
 - [Profile definitions, measurements, and reproduction command](optimization-screening/)
 

@@ -36,6 +36,7 @@ PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_velocity_gate
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_polygon_guard.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_benchmark_paths.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_emulator_runs.py"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_markdown_links.py"
 OUT="$OUT/melonds-config" "$ROOT/tools/repro/test_melonds_config.sh"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_query_itcm.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_instrument_exact.py"

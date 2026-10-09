@@ -15,6 +15,12 @@ insufficient. This target is separate from the accepted linked-ROM identity.
 
 ## Application Coverage
 
+- **Matching modernization control:** the current modern role compiles Box2D
+  in floating-point mode, while the historical and selected improved roles use
+  fixed-point DS hardware math. Their comparisons do not isolate dependency
+  updates. Add a minimally changed fixed-point/hardware-math modern port with
+  matched behavioral contracts, then attribute compiler, dependency, and
+  optimization changes separately without overwriting the existing specimens.
 - **Normal application scheduling:** the current integration harness enters
   before final initialization and directly sequences touch, physics, and canvas
   drawing. It does not execute the normal VBlank-driven full renderer with

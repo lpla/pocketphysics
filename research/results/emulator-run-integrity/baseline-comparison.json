@@ -1,0 +1,13 @@
+{
+  "all_fields_equal": true,
+  "current_dataset": "research/results/emulator-run-integrity/three-role/results.csv",
+  "current_sha256": "62677f55c8b9505dd6e85378f2f8d544093bf7d64d80123fd1317efa8780a98c",
+  "normalized_records": 207,
+  "ordering": [
+    "label",
+    "iteration",
+    "metric"
+  ],
+  "previous_dataset": "research/results/polygon-promotion/melonds/results.csv",
+  "previous_sha256": "62677f55c8b9505dd6e85378f2f8d544093bf7d64d80123fd1317efa8780a98c"
+}

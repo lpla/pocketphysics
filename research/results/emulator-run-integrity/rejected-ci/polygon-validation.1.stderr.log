@@ -1,0 +1,6 @@
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
+terminate called after throwing an instance of 'toml::serialization_error'
+  what():  [error] toml::serializer: toml::basic_value does not have any valid type.
+ --> unknown file
+
+Aborted (core dumped)

@@ -58,6 +58,12 @@ retry that removes a failed attempt from the record.
 
 ## Verification
 
+The [published validation](../research/results/emulator-run-integrity/) retains
+15 clean-source runs, their input/final snapshots, raw logs, the codec control,
+and the earlier rejected CI output. All 207 primary comparison records match
+the preceding guarded dataset field for field. Both repaired CI revisions
+completed the full workflow successfully.
+
 ```sh
 python3 tools/repro/test_emulator_runs.py
 tools/repro/test_melonds_config.sh

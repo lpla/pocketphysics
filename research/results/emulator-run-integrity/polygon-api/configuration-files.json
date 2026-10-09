@@ -1,0 +1,74 @@
+[
+  {
+    "path": "runs/polygon-validation.1/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/polygon-validation.1/melonDS.final.toml",
+    "sha256": "7b31bb7fab11335f054fee376aa19e78111ba05b153909c85c754d40bc6208df"
+  },
+  {
+    "path": "runs/polygon-validation.1/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/polygon-validation.2/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/polygon-validation.2/melonDS.final.toml",
+    "sha256": "7b31bb7fab11335f054fee376aa19e78111ba05b153909c85c754d40bc6208df"
+  },
+  {
+    "path": "runs/polygon-validation.2/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/polygon-validation.3/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/polygon-validation.3/melonDS.final.toml",
+    "sha256": "7b31bb7fab11335f054fee376aa19e78111ba05b153909c85c754d40bc6208df"
+  },
+  {
+    "path": "runs/polygon-validation.3/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/selected.1/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/selected.1/melonDS.final.toml",
+    "sha256": "0c20859680f37622770a1c86224d7cc1fde898d81baea325c67227181d8d2be8"
+  },
+  {
+    "path": "runs/selected.1/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/selected.2/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/selected.2/melonDS.final.toml",
+    "sha256": "0c20859680f37622770a1c86224d7cc1fde898d81baea325c67227181d8d2be8"
+  },
+  {
+    "path": "runs/selected.2/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/selected.3/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/selected.3/melonDS.final.toml",
+    "sha256": "0c20859680f37622770a1c86224d7cc1fde898d81baea325c67227181d8d2be8"
+  },
+  {
+    "path": "runs/selected.3/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  }
+]

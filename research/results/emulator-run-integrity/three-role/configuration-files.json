@@ -1,0 +1,110 @@
+[
+  {
+    "path": "runs/bench-historical.1/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-historical.1/melonDS.final.toml",
+    "sha256": "93fa3102c448e9511e26f1b8ccfca86367f4dfe6d68341442bd13f521b30b1c1"
+  },
+  {
+    "path": "runs/bench-historical.1/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-historical.2/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-historical.2/melonDS.final.toml",
+    "sha256": "93fa3102c448e9511e26f1b8ccfca86367f4dfe6d68341442bd13f521b30b1c1"
+  },
+  {
+    "path": "runs/bench-historical.2/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-historical.3/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-historical.3/melonDS.final.toml",
+    "sha256": "93fa3102c448e9511e26f1b8ccfca86367f4dfe6d68341442bd13f521b30b1c1"
+  },
+  {
+    "path": "runs/bench-historical.3/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-improved.1/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-improved.1/melonDS.final.toml",
+    "sha256": "30b7552c04112b527b87f821816c2a94e516b5e36bb54fe99bc0c9bd7402844f"
+  },
+  {
+    "path": "runs/bench-improved.1/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-improved.2/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-improved.2/melonDS.final.toml",
+    "sha256": "30b7552c04112b527b87f821816c2a94e516b5e36bb54fe99bc0c9bd7402844f"
+  },
+  {
+    "path": "runs/bench-improved.2/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-improved.3/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-improved.3/melonDS.final.toml",
+    "sha256": "30b7552c04112b527b87f821816c2a94e516b5e36bb54fe99bc0c9bd7402844f"
+  },
+  {
+    "path": "runs/bench-improved.3/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-modern.1/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-modern.1/melonDS.final.toml",
+    "sha256": "6fba65605b6193dfb3c279f73f157af223a64f7b53bd28ff03fe8a2f927138d9"
+  },
+  {
+    "path": "runs/bench-modern.1/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-modern.2/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-modern.2/melonDS.final.toml",
+    "sha256": "6fba65605b6193dfb3c279f73f157af223a64f7b53bd28ff03fe8a2f927138d9"
+  },
+  {
+    "path": "runs/bench-modern.2/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  },
+  {
+    "path": "runs/bench-modern.3/melonDS.input.toml",
+    "sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23"
+  },
+  {
+    "path": "runs/bench-modern.3/melonDS.final.toml",
+    "sha256": "6fba65605b6193dfb3c279f73f157af223a64f7b53bd28ff03fe8a2f927138d9"
+  },
+  {
+    "path": "runs/bench-modern.3/exit-status.txt",
+    "sha256": "ca2ebdf97d7469496b1f4b78958f9dc8447efdcb623953fee7b6996b762f6fff"
+  }
+]

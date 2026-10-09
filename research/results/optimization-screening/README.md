@@ -2,7 +2,7 @@
 
 This dataset was generated from source revision
 `01bbe06e2d8b9ae8a49d0385a704c273cf13e59d`. Seventeen ROM profiles execute the
-complete application workload twice. All profiles pass the behavioral gates,
+direct touch/physics/render integration workload twice. All profiles pass its behavioral gates,
 retain stable per-profile checksums, and have zero timing spread between
 repetitions.
 
@@ -31,7 +31,12 @@ hit testing, physics, frame totals, cadence, and correctness together.
 | Backports plus render ITCM | 6,241 | 1,641 | 118,122 | 555,948 | Rejected: hit-test and physics regression |
 | Backports plus broad ITCM | 6,225 | 1,614 | 111,223 | 556,235 | Rejected: hit-test, physics, and frame regression |
 | Physics plus `Canvas::draw` ITCM | 6,249 | 1,614 | 111,077 | 555,854 | Rejected: touch, hit-test, and physics regression |
-| Physics plus `Canvas::drawLine` ITCM | 6,233 | 1,593 | 111,038 | 555,947 | Current selected profile |
+| Physics plus `Canvas::drawLine` ITCM | 6,233 | 1,593 | 111,038 | 555,947 | Selected at this checkpoint |
+
+These classifications belong to the pinned experiment above. They are not a
+list of current release binaries; the [guarded role](../polygon-promotion/)
+and [build guide](../../../docs/build-guide.md) identify the selected specimens.
+Frame totals do not include the normal full-GUI VBlank/foreground/audio loop.
 
 `summary.csv` records every metric and embedded build label. `results.csv`
 contains all 782 normalized per-run metric rows. `roms.txt` binds each profile

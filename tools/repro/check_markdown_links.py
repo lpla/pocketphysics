@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail when a tracked Markdown file links to a missing local path."""
+"""Fail when a tracked Markdown file links outside the published Git tree."""
 
 from __future__ import annotations
 
@@ -25,36 +25,52 @@ def local_target(raw_target: str) -> str | None:
     return target
 
 
+def published_paths(tracked: set[Path]) -> set[Path]:
+    paths = set(tracked)
+    for path in tracked:
+        paths.update(path.parents)
+    return paths
+
+
+def check_target(root: Path, markdown: Path, target: str, published: set[Path]) -> str | None:
+    resolved = root / target.lstrip("/") if target.startswith("/") else markdown.parent / target
+    try:
+        relative = resolved.resolve().relative_to(root.resolve())
+    except ValueError:
+        return f"path escapes repository: {target}"
+    if not resolved.exists():
+        return f"missing local target: {target}"
+    if relative not in published:
+        return f"target is not published in Git: {target}"
+    return None
+
+
 def main() -> int:
     root = Path(
         subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
     )
-    tracked = subprocess.check_output(
-        ["git", "ls-files", "-z", "*.md"], cwd=root
-    ).split(b"\0")
+    tracked = {Path(encoded.decode()) for encoded in subprocess.check_output(
+        ["git", "ls-files", "-z"], cwd=root
+    ).split(b"\0") if encoded}
+    published = published_paths(tracked)
     failures: list[str] = []
     checked = 0
-    for encoded in tracked:
-        if not encoded:
+    for relative in sorted(tracked):
+        if relative.suffix != ".md":
             continue
-        markdown = root / encoded.decode()
+        markdown = root / relative
         for line_number, line in enumerate(markdown.read_text().splitlines(), start=1):
             for match in LINK.finditer(line):
                 target = local_target(match.group(1))
                 if target is None:
                     continue
                 checked += 1
-                resolved = root / target.lstrip("/") if target.startswith("/") else markdown.parent / target
-                try:
-                    resolved.resolve().relative_to(root.resolve())
-                except ValueError:
-                    failures.append(f"{markdown.relative_to(root)}:{line_number}: path escapes repository: {target}")
-                    continue
-                if not resolved.exists():
-                    failures.append(f"{markdown.relative_to(root)}:{line_number}: missing local target: {target}")
+                error = check_target(root, markdown, target, published)
+                if error:
+                    failures.append(f"{relative}:{line_number}: {error}")
     if failures:
         raise SystemExit("\n".join(failures))
-    print(f"Verified {checked} local links in tracked Markdown files.")
+    print(f"Verified {checked} local links against the published Git tree.")
     return 0
 
 

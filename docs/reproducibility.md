@@ -122,9 +122,14 @@ archive:
   [`patch_box2d_source.py`](../tools/repro/patch_box2d_source.py).
 
 Path-prefix maps remove checkout-specific paths. Source enumeration and asset
-conversion are sorted. The modern role uses Thumb/O3 and the original floating
-Box2D mode to isolate dependency/toolchain modernization from proposed runtime
-changes.
+conversion are sorted. The modern role uses Thumb/O3 and Box2D compiled in
+floating-point mode. The 2008 release instead uses
+fixed-point DS hardware math. This baseline separates the selected runtime
+fixes from the compatibility port, but it does **not** isolate the cost of
+dependency/toolchain modernization: numeric mode, libraries, and compiler
+settings differ. A matching-numeric-mode modernization control remains open.
+"Modern" names the locked research specimen, not the newest currently available
+version of every dependency.
 
 ```sh
 tools/repro/build_v06_blocksds.sh

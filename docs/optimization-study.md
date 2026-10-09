@@ -10,6 +10,12 @@ melonDS-positive result.
 
 All timings in this document are generated inside the ROM with the cascaded
 ARM9 timer. Host execution duration is not a performance metric.
+All frame metrics refer to the direct integration harness, not the normal
+application event loop; see the [measurement boundary](benchmarking.md#runtime-boundary).
+The initial attribution tables below describe their pinned pre-polygon-guard
+checkpoint. The [current build guide](build-guide.md) and
+[guarded comparison](../research/results/polygon-promotion/) identify today's
+selected binaries.
 
 ## Runtime Corrections
 
@@ -27,6 +33,12 @@ required before performance is considered:
   removing an incompatible LTO type contract without changing its lookup space.
 - One hardware division per line normal, one texture bind per canvas frame,
   cached polygon transforms, direct trig lookup, and corrected uLibrary calls.
+
+These entries describe implemented source changes, not uniform regression-test
+coverage. The touch harness empirically verifies the hit-test allocation fix;
+polygon guards have separate host/ARM9 API tests. Save/load, string-entry,
+allocation-failure, and normal IRQ/audio workflows still need behavioral tests
+listed in the [research frontier](research-frontier.md).
 
 The benchmark rejects a timing result unless topology, sample counts, workload
 checksums, initial scene position bounds, and allocation assertions pass. The
@@ -114,8 +126,10 @@ ITCM by 5.67%. The selected backport, physics-ITCM, and line-ITCM composition
 reduces physics by 14.71% and touch processing by 5.72%. Complete-frame time is
 synchronized near one 60 Hz period and improves by 0.10%.
 
-The uninstrumented ITCM section is 6,640 bytes and the instrumented specimen is
-12,344 bytes, both below the ARM9's 32 KiB ITCM capacity.
+At this attribution checkpoint, the uninstrumented ITCM section is 6,640 bytes
+and the instrumented specimen is 12,344 bytes, both below the ARM9's 32 KiB ITCM
+capacity. The current guarded instrumented control uses 12,184 bytes, as
+recorded in the [picking study](picking-itcm-study.md).
 
 ## MelonDS Reassessment
 
