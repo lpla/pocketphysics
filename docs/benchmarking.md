@@ -29,6 +29,11 @@ selection queries, simulation, and drawing.
 
 ### Runtime Boundary
 
+This section describes the original direct integration protocol. The separate
+[normal-loop study](runtime-loop-study.md) exercises full modern-port startup,
+GUI stylus acquisition replay, VBlank rendering, foreground physics/input/audio,
+and hardware arithmetic preemption. Its records must not be pooled with these.
+
 This is a component-integration harness, not a replay of the complete normal
 application event loop. The modern benchmark enters after GUI construction but
 before background/text initialization, motion setup, the final VBlank-handler

@@ -14,6 +14,10 @@ BUILD_PROFILE=bench-modern \
 OUT="$ROOT/research-artifacts/build/bench-modern" \
     "$ROOT/tools/repro/build_v06_blocksds.sh"
 
+BUILD_PROFILE=bench-modern-fixed-ds \
+OUT="$ROOT/research-artifacts/build/bench-modern-fixed-ds" \
+    "$ROOT/tools/repro/build_v06_blocksds.sh"
+
 BUILD_PROFILE=bench-improved \
 OUT="$ROOT/research-artifacts/build/bench-improved" \
     "$ROOT/tools/repro/build_v06_blocksds.sh"
@@ -35,5 +39,6 @@ for emulator in $EMULATORS; do
         "$ROOT/tools/repro/benchmark_inrom.sh" \
         "bench-historical=$ROOT/research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds" \
         "bench-modern=$ROOT/research-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds" \
+        "bench-modern-fixed-ds=$ROOT/research-artifacts/build/bench-modern-fixed-ds/pocketphysics-v0.6-blocksds.nds" \
         "bench-improved=$ROOT/research-artifacts/build/bench-improved/pocketphysics-v0.6-blocksds.nds"
 done

@@ -11,6 +11,13 @@ timings, not whole-application input latency or IRQ safety. The separate
 [runtime-loop acceptance work](research-frontier.md) and
 [measurement boundary](benchmarking.md#runtime-boundary) remain necessary.
 
+The additional [normal-loop protocol](runtime-loop-study.md) now provides
+GUI-driven replay ROMs and post-measurement FAT logs. It covers the modern ports,
+not yet the historical normal loop, and has not been run on a physical console.
+Preserve `pp-runtime-<profile>.log` separately from the direct-harness CSV files.
+The ingestion command below is for the direct protocol only; runtime logs need
+a distinct console ingestion and variable-timing policy before formal acceptance.
+
 ## Build Specimens
 
 ```sh

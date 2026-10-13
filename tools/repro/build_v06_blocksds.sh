@@ -41,6 +41,11 @@ case "$PROFILE" in
         cp "$ROOT/tools/repro/benchmark_source/pp_benchmark."* "$SRC/arm9/source/"
         cp "$ROOT/tools/repro/benchmark_source/pp_polygon_validation.h" "$SRC/arm9/source/"
         ;;
+    runtime-*)
+        cp "$ROOT/tools/repro/runtime_source/pp_runtime_replay."* "$SRC/arm9/source/"
+        cp "$ROOT/tools/repro/runtime_source/pp_runtime_script.h" "$SRC/arm9/source/"
+        cp "$ROOT/tools/repro/runtime_source/pp_runtime_math_cases.h" "$SRC/arm9/source/"
+        ;;
 esac
 
 echo "Fetching pinned third-party source archives"
@@ -81,7 +86,7 @@ done < "$PACKAGE_LOCK"
 
 CONVEX_TRANSFORM_FLAGS=()
 case "$PROFILE" in
-    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation|bench-improved-query-itcm)
+    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation|bench-improved-query-itcm|runtime-improved|runtime-improved-irq-control)
         CONVEX_TRANSFORM_FLAGS+=(--polygon-guard)
         ;;
 esac
@@ -91,6 +96,9 @@ python3 "$ROOT/tools/repro/transform_convex_decomposition.py" \
 
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$DEPS/box2d-2.0.1"
 python3 "$ROOT/tools/repro/patch_v06_source.py" "$SRC"
+case "$PROFILE" in
+    runtime-*) python3 "$ROOT/tools/repro/patch_runtime_source.py" "$SRC" ;;
+esac
 
 echo "Building in Docker image: $IMAGE"
 OUT_REL="${OUT#$ROOT/}"

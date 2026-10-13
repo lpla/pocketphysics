@@ -10,6 +10,11 @@ MAX_TIMING_SPREAD_PERCENT="${MAX_TIMING_SPREAD_PERCENT:-0}"
 REQUIRE_CORRECTNESS="${REQUIRE_CORRECTNESS:-0}"
 EQUIVALENT_TO="${EQUIVALENT_TO:-}"
 DIFFERENT_STATE_LABELS="${DIFFERENT_STATE_LABELS:-}"
+INROM_PROTOCOL="${INROM_PROTOCOL:-integration}"
+case "$INROM_PROTOCOL" in
+    integration|runtime) ;;
+    *) echo "Unknown INROM_PROTOCOL: $INROM_PROTOCOL" >&2; exit 1 ;;
+esac
 
 default_historical="$ROOT/research-artifacts/build/bench-historical/pocketphysics-bench-historical.nds"
 default_modern="$ROOT/research-artifacts/build/bench-modern/pocketphysics-v0.6-blocksds.nds"
@@ -122,14 +127,6 @@ fi
 for label in $DIFFERENT_STATE_LABELS; do
     analysis_args+=(--different-state-label "$label")
 done
-python3 "$ROOT/tools/repro/analyze_inrom.py" \
-    "$OUT/results.csv" \
-    "$OUT/summary.csv" \
-    "$OUT/assertions.txt" \
-    --expected-repeats "$REPEATS" \
-    --max-timing-spread-percent "$MAX_TIMING_SPREAD_PERCENT" \
-    "${analysis_args[@]}"
-
 python3 - "$OUT/metadata.json" <<EOF
 import json
 import hashlib
@@ -139,6 +136,7 @@ import subprocess
 root = pathlib.Path(${ROOT@Q})
 metadata = {
     "schema": 1,
+    "protocol": ${INROM_PROTOCOL@Q},
     "emulator": ${EMULATOR@Q},
     "emulator_version": ${EMULATOR_VERSION@Q},
     "docker_image": ${IMAGE@Q},
@@ -173,6 +171,18 @@ pathlib.Path(${OUT@Q}, "metadata.json").write_text(
     json.dumps(metadata, indent=2, sort_keys=True) + "\n"
 )
 EOF
+
+if [[ "$INROM_PROTOCOL" == runtime ]]; then
+    python3 "$ROOT/tools/repro/analyze_runtime.py" "$OUT" --expected-repeats "$REPEATS"
+else
+    python3 "$ROOT/tools/repro/analyze_inrom.py" \
+        "$OUT/results.csv" \
+        "$OUT/summary.csv" \
+        "$OUT/assertions.txt" \
+        --expected-repeats "$REPEATS" \
+        --max-timing-spread-percent "$MAX_TIMING_SPREAD_PERCENT" \
+        "${analysis_args[@]}"
+fi
 
 echo "In-ROM $EMULATOR results: $OUT/results.csv"
 echo "Summary: $OUT/summary.csv"

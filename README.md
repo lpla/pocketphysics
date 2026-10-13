@@ -56,15 +56,18 @@ reproduced hit-test leak and reduces measured physics time relative to both
 controls in the tested sketch. These are in-ROM timer measurements, not host
 wall-clock benchmarks.
 
-The benchmark directly sequences real touch dispatch, physics, and canvas
-operations. It does not execute the complete normal VBlank/foreground/audio
-loop. Numerical modes also differ across roles, so the comparison does not
-isolate dependency updates. Full-app responsiveness, broader workflow coverage,
-and physical DS validation remain [open research](docs/research-frontier.md).
+The original benchmark directly sequences touch, physics, and canvas operations.
+A separate [normal-loop study](docs/runtime-loop-study.md) adds actual GUI
+stylus workflows, VBlank/foreground/audio scheduling, body-state traces, display
+captures, and a minimal fixed-point modernization control. These layers have
+different measurement boundaries. Broader workflows, historical normal-loop
+instrumentation, and physical DS validation remain
+[open research](docs/research-frontier.md).
 
 - [Build and reproducibility protocol](docs/reproducibility.md)
 - [Historical reconstruction and recovery reports](docs/reverse-engineering.md)
 - [In-ROM workload and measurement boundary](docs/benchmarking.md)
+- [Normal-loop replay and arithmetic ownership](docs/runtime-loop-study.md)
 - [melonDS configuration and run integrity](docs/emulator-run-integrity.md)
 - [Optimization attribution and candidate decisions](docs/optimization-study.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)

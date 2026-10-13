@@ -65,8 +65,17 @@ mean every dependency is the latest available version.
 This port is neither hash-identical to 2008 nor behavior-identical to its
 fixed-point numerical path. Known bugs retained by this role serve as controls.
 Its performance difference from the historical role cannot be attributed to
-dependency updates alone. A matching-numeric-mode modernization control is
-listed in the [research frontier](research-frontier.md).
+dependency updates alone. The auxiliary `repro-fixed-ds` profile retains
+Thumb/O3 and compatibility behavior but selects fixed-point DS hardware math:
+
+```sh
+BUILD_PROFILE=repro-fixed-ds tools/repro/build_v06_blocksds.sh
+tools/repro/test_modern_fixed_ds.sh
+```
+
+Output is `research-artifacts/build/repro-fixed-ds`. This experimental control
+does not replace the frozen floating-point specimen. Its instrumented partner
+is `bench-modern-fixed-ds`; see the [normal-loop study](runtime-loop-study.md).
 
 ## Selected Improved Port
 
@@ -93,6 +102,7 @@ measured costs. Implemented fixes do not imply exhaustive workflow validation.
 ```sh
 REPEATS=3 tools/repro/test_v06_inrom.sh
 REPEATS=3 tools/repro/test_polygon_api_inrom.sh
+REPEATS=3 tools/repro/test_runtime_loop.sh
 tools/repro/test_all.sh
 ```
 
@@ -108,6 +118,8 @@ The [result index](../research/results/README.md) distinguishes selected,
 checkpoint, candidate, and supplemental datasets. Frame timing is specific to
 the [direct integration harness](benchmarking.md#runtime-boundary), not the
 normal full-GUI VBlank/foreground/audio loop or physical stylus latency.
+The separate runtime workflow exercises the normal modern-port loop and GUI
+with repeated state, input-consumption, display-capture, and arithmetic gates.
 Physical DS validation, broader sketches, lifecycle/storage tests, and complete
 trajectory comparisons remain open.
 

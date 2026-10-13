@@ -42,7 +42,13 @@ ULIB="$BLOCKSDSEXT/ulibrary"
 SYSROOT="$WONDERFUL_TOOLCHAIN/toolchain/gcc-arm-none-eabi/arm-none-eabi"
 
 COMMON_WARN=(-Wall -Wno-deprecated-declarations -Wno-write-strings -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-function)
+PROFILE_KIND="$BUILD_PROFILE"
 case "$BUILD_PROFILE" in
+    runtime-modern) PROFILE_KIND=bench-modern ;;
+    runtime-modern-fixed-ds) PROFILE_KIND=bench-modern-fixed-ds ;;
+    runtime-improved|runtime-improved-irq-control) PROFILE_KIND=bench-improved ;;
+esac
+case "$PROFILE_KIND" in
     repro)
         ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
         PROFILE_DEFS=()
@@ -93,6 +99,16 @@ case "$BUILD_PROFILE" in
         PROFILE_DEFS=(-DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-modern"')
         PROFILE_OPT=(-O3)
         BOX2D_MODE="float/thumb modern-dependency benchmark"
+        ;;
+    repro-fixed-ds|bench-modern-fixed-ds)
+        ARCH9=(-mthumb -mcpu=arm946e-s+nofp)
+        BOX2D_COMPAT=(-include "$ROOT/tools/repro/compat/pp_box2d_nds_compat.h")
+        PROFILE_DEFS=(-DPP_BOX2D_FIXED -DTARGET_FLOAT32_IS_FIXED -DTARGET_IS_NDS)
+        PROFILE_OPT=(-O3)
+        BOX2D_MODE="fixed-point DS hardware math/Thumb/O3 modernization control"
+        if [[ "$PROFILE_KIND" == bench-modern-fixed-ds ]]; then
+            PROFILE_DEFS+=(-DPP_BENCHMARK '-DPP_BENCHMARK_LABEL="bench-modern-fixed-ds"')
+        fi
         ;;
     bench-perf)
         ARCH9=(-marm -mcpu=arm946e-s+nofp)
@@ -454,6 +470,22 @@ case "$BUILD_PROFILE" in
         ;;
 esac
 
+case "$BUILD_PROFILE" in
+    runtime-*)
+        runtime_defs=()
+        for flag in "${PROFILE_DEFS[@]}"; do
+            case "$flag" in
+                -DPP_BENCHMARK|-DPP_BENCHMARK_LABEL=*) ;;
+                *) runtime_defs+=("$flag") ;;
+            esac
+        done
+        PROFILE_DEFS=("${runtime_defs[@]}" -DPP_RUNTIME_REPLAY "-DPP_RUNTIME_LABEL=\"$BUILD_PROFILE\"")
+        if [[ "$BUILD_PROFILE" == runtime-improved-irq-control ]]; then
+            PROFILE_DEFS+=(-DPP_RUNTIME_IRQ_NEGATIVE_CONTROL)
+        fi
+        ;;
+esac
+
 COMMON_DEFS=(-D__NDS__ -D__BLOCKSDS__ -DARM9 -DNDEBUG "${PROFILE_DEFS[@]}")
 REPRO_MAPS=(
     -ffile-prefix-map="$OUT=/pocketphysics-build"
@@ -562,6 +594,9 @@ done
 
 if [ -f "$SRC/arm9/source/pp_benchmark.cpp" ]; then
     compile_cpp "$SRC/arm9/source/pp_benchmark.cpp"
+fi
+if [ -f "$SRC/arm9/source/pp_runtime_replay.cpp" ]; then
+    compile_cpp "$SRC/arm9/source/pp_runtime_replay.cpp"
 fi
 
 while read -r src; do

@@ -18,17 +18,19 @@ insufficient. This target is separate from the accepted linked-ROM identity.
 - **Matching modernization control:** the current modern role compiles Box2D
   in floating-point mode, while the historical and selected improved roles use
   fixed-point DS hardware math. Their comparisons do not isolate dependency
-  updates. Add a minimally changed fixed-point/hardware-math modern port with
-  matched behavioral contracts, then attribute compiler, dependency, and
+  updates. The [normal-loop study](runtime-loop-study.md) now implements a
+  minimal fixed-point/hardware-math control with Thumb/O3 and compatibility
+  behavior retained. Use it to attribute compiler, dependency, and
   optimization changes separately without overwriting the existing specimens.
 - **Normal application scheduling:** the current integration harness enters
   before final initialization and directly sequences touch, physics, and canvas
-  drawing. It does not execute the normal VBlank-driven full renderer with
-  foreground physics/input/audio processing. A separate runtime-loop replay
-  must account for IRQ/foreground overlap, skipped or delayed input samples,
+  drawing. The separate modern-port runtime-loop replay now accounts for
+  IRQ/foreground overlap, skipped or delayed input samples,
   full GUI/background and dual-screen drawing, frame output, and hardware
-  divider/square-root interruption. Existing harness cadence is not full-app
-  hardware readiness. The simulation's approximately 20 Hz integration step
+  divider/square-root interruption. Historical normal-loop instrumentation,
+  raw ARM7 touch acquisition, broader workloads, and hardware collection remain
+  open. Existing harness cadence is not full-app hardware readiness. The 1/20
+  second integration timestep
   and nominal 60 Hz display target must remain separately documented.
 - **Fast stylus dragging and collisions:** the standard sketch never enters
   the newly eligible domain of the wider velocity gate. A further workload
