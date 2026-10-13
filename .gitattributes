@@ -10,3 +10,9 @@ research/results/polygon-validation/host-*/*.log whitespace=-blank-at-eol,-blank
 research/results/emulator-run-integrity/** -text
 research/results/emulator-run-integrity/*/runs/*/melonDS.final.toml whitespace=-blank-at-eof
 tools/repro/emulators/melonds/melonDS.toml text eol=lf
+research/results/runtime-loop-baseline/** -text -whitespace
+research/results/runtime-loop-baseline/**/melonDS.final.toml whitespace=-blank-at-eof
+research/results/matched-numeric-control/** -text -whitespace
+research/results/matched-numeric-control/**/melonDS.final.toml whitespace=-blank-at-eof
+research/results/runtime-loop-baseline/README.md text whitespace
+research/results/matched-numeric-control/README.md text whitespace

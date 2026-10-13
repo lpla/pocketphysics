@@ -21,6 +21,7 @@ profiles are unchanged by this instrumentation.
 | `runtime-modern-fixed-ds` | Fixed 16.16, DS hardware math | Normal-loop instrumentation of the minimal fixed-point control |
 | `runtime-improved` | Fixed 16.16, DS hardware math | Normal-loop instrumentation of the selected improved profile |
 | `runtime-improved-irq-control` | Fixed 16.16, DS hardware math | Deliberately omits VBlank DIV/SQRT restoration; a negative control, never a release candidate |
+| `runtime-improved-length-control` | Fixed 16.16, DS hardware math | Retains the faulty fixed-estimate length threshold; a negative control, never a release candidate |
 
 The fixed-point control removes one major numerical confound. Comparing it
 with the improved profile still combines compiler options, CPU mode, code
@@ -103,6 +104,14 @@ the remaining replay gates. A passing ordinary run alone is insufficient.
 This bounded matrix does not audit all fixed-point overflow, shift, division-
 by-zero, or physical-console behavior.
 
+Protocol schema 2 also executes the [length-boundary matrix](length-threshold-study.md)
+after timing. Fixed-point specimens must match the original Length/Normalize
+reference over 19,662 component pairs, with checksum `7805b4b1` and zero
+failures. Floating-point controls report zero cases and zero matrix checksums.
+The deliberate legacy-threshold control must fail exactly 6,544 cases while
+passing the other replay gates. Schema-1 baselines retain their own analyzer
+revision and must not be silently interpreted as schema-2 records.
+
 ## Reproduce
 
 ```sh
@@ -113,7 +122,8 @@ REPEATS=3 tools/repro/test_runtime_loop.sh
 
 The runtime driver builds each ordinary specimen twice and compares complete
 ROMs and ELFs, executes three isolated melonDS runs per specimen, validates
-configuration and complete traces, and executes the broken arithmetic control.
+configuration and complete traces, and executes both arithmetic and length
+negative controls.
 Outputs are under `research-artifacts/benchmarks/runtime-loop`: raw logs,
 configuration pairs, identities, `results.csv`, `summary.csv`, `frames.csv`,
 `bodies.csv`, `irqs.csv`, capture PNGs, and assertions. The emulator timeout is

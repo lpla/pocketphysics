@@ -68,6 +68,7 @@ instrumentation, and physical DS validation remain
 - [Historical reconstruction and recovery reports](docs/reverse-engineering.md)
 - [In-ROM workload and measurement boundary](docs/benchmarking.md)
 - [Normal-loop replay and arithmetic ownership](docs/runtime-loop-study.md)
+- [Remaining research and acceptance work](docs/research-worklist.md)
 - [melonDS configuration and run integrity](docs/emulator-run-integrity.md)
 - [Optimization attribution and candidate decisions](docs/optimization-study.md)
 - [Physical Nintendo DS collection procedure](docs/real-hardware.md)

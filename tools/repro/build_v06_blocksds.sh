@@ -45,6 +45,7 @@ case "$PROFILE" in
         cp "$ROOT/tools/repro/runtime_source/pp_runtime_replay."* "$SRC/arm9/source/"
         cp "$ROOT/tools/repro/runtime_source/pp_runtime_script.h" "$SRC/arm9/source/"
         cp "$ROOT/tools/repro/runtime_source/pp_runtime_math_cases.h" "$SRC/arm9/source/"
+        cp "$ROOT/tools/repro/benchmark_source/pp_length_validation.h" "$SRC/arm9/source/"
         ;;
 esac
 
@@ -86,7 +87,7 @@ done < "$PACKAGE_LOCK"
 
 CONVEX_TRANSFORM_FLAGS=()
 case "$PROFILE" in
-    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation|bench-improved-query-itcm|runtime-improved|runtime-improved-irq-control)
+    perf|bench-improved|bench-improved-polygon-guard|bench-improved-polygon-validation|bench-improved-query-itcm|runtime-improved|runtime-improved-irq-control|runtime-improved-length-control)
         CONVEX_TRANSFORM_FLAGS+=(--polygon-guard)
         ;;
 esac
@@ -106,10 +107,13 @@ docker run --rm \
     --platform linux/amd64 \
     -e BUILD_PROFILE="$PROFILE" \
     -e LOCKED_PACKAGES_DIR=/locked-packages \
+    -e PP_BUILD_UID="$(id -u)" \
+    -e PP_BUILD_GID="$(id -g)" \
     -v "$ROOT":/workspace \
     -v "$PACKAGE_CACHE":/locked-packages:ro \
     -w /workspace \
     "$IMAGE" \
+    bash tools/repro/container_output_build.sh "/workspace/$OUT_REL" \
     bash tools/repro/container_build_v06.sh "/workspace/$OUT_REL"
 
 echo

@@ -4,6 +4,8 @@ The linked 2008 ROM reconstruction is complete: ordinary source compilation
 and linking reproduce the complete ARM7, ARM9, and ROM identities. This does
 not establish original expression choices, correctness of historical behavior,
 or exhaustive validation of the modern and improved ports.
+The [research worklist](research-worklist.md) tracks each outstanding workstream
+and its evidence separately.
 
 ## Remaining Source Recovery
 
@@ -43,13 +45,19 @@ insufficient. This target is separate from the accepted linked-ROM identity.
   duplicate samples, intersecting paths, zero area, and narrow shapes need
   independent touch-to-physics regression cases.
 - **Per-frame physics equivalence:** current aggregate checksums and integer
-  position bounds do not establish complete cross-role trajectories. Record
-  body transforms, velocities, shapes, contacts, and joint topology with a
-  defined numeric-mode tolerance and explicit divergence localization.
+  position bounds did not establish complete cross-role trajectories. The
+  normal-loop protocol now records raw body transforms/velocities and contact/
+  joint counts; it exposed the [length-threshold regression](length-threshold-study.md).
+  Aligned trajectory equivalence, complete manifolds/joint parameters, and
+  declared tolerances remain necessary.
 - **Lifecycle and storage:** repeated creation/deletion, pin removal, reset,
   save/load, missing or damaged files, and allocation failures require dedicated
   correctness and heap-lifetime tests. These must include the application's
   actual workflows, not only dependency microtests.
+  A host expression-level ASan control reproduces a read before the typewriter
+  buffer for one- or two-character save names in the extension check. A complete
+  save-dialog fix and storage workflow regression are still required. Thumbnail
+  capture mapping and file-handle ownership also need explicit validation.
 - **Fixed-point arithmetic:** memory sanitizer coverage does not audit all
   signed shifts, overflows, division boundaries, or hardware arithmetic unit
   ownership. A complete arithmetic contract and boundary matrix remain open.

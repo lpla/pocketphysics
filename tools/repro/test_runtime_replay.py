@@ -18,7 +18,10 @@ def fixture():
                    samples_consumed=10, samples_unconsumed=2, top_frames=6, bottom_frames=6,
                    maximum_things=14, creation_things=14, after_delete_things=13,
                    things_final=14, overflow=0, log_write_error=0, math_preemption_cases=8,
-                   math_preemption_irqs=8, math_preemption_failures=0, simulation_transitions=4)
+                   math_preemption_irqs=8, math_preemption_failures=0, simulation_transitions=4,
+                   length_boundary_cases=19662, length_boundary_failures=0,
+                   length_boundary_actual_checksum=0x7805b4b1,
+                   length_boundary_reference_checksum=0x7805b4b1)
     counts = {name: 3 for name in analysis.TIMED}
     counts.update(vblank_handler=12, vblank_interval=11, foreground_input=10, sample_age=10)
     rows = []
@@ -47,7 +50,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(len(analysis.validate_run(rows, data)), 64)
 
     def test_negative_gates(self):
-        for mutation in ("truncated", "body", "irq", "duplicate", "mouse", "overflow", "timing", "status", "creation", "pass", "blank", "pixels", "preemption"):
+        for mutation in ("truncated", "body", "irq", "duplicate", "mouse", "overflow", "timing", "status", "creation", "pass", "blank", "pixels", "preemption", "length_count", "length_failure", "length_actual", "length_reference", "length_both", "numeric_mode"):
             with self.subTest(mutation=mutation):
                 rows, data = fixture()
                 metrics = {r["metric"]: r for r in rows}
@@ -64,7 +67,25 @@ class RuntimeTests(unittest.TestCase):
                 elif mutation == "blank": data["PPPIXEL"] = [[str(i), "0000"*128] for i in range(96)]
                 elif mutation == "pixels": data["PPPIXEL"].pop()
                 elif mutation == "preemption": metrics["math_preemption_irqs"].update(total_ticks="7", mean_ticks="7", min_ticks="7", max_ticks="7")
+                elif mutation.startswith("length_") or mutation == "numeric_mode":
+                    changes = {
+                        "length_count": {"length_boundary_cases": 19661},
+                        "length_failure": {"length_boundary_failures": 1},
+                        "length_actual": {"length_boundary_actual_checksum": 0},
+                        "length_reference": {"length_boundary_reference_checksum": 0},
+                        "length_both": {"length_boundary_actual_checksum": 0, "length_boundary_reference_checksum": 0},
+                        "numeric_mode": {"scalar_fixed_16_16": 2},
+                    }[mutation]
+                    for name, value in changes.items():
+                        metrics[name].update(total_ticks=str(value), mean_ticks=str(value), min_ticks=str(value), max_ticks=str(value))
                 with self.assertRaises(AssertionError): analysis.validate_run(rows, data)
+
+    def test_floating_control_has_no_fixed_matrix(self):
+        rows, data = fixture()
+        metrics = {r["metric"]: r for r in rows}
+        for name in ("scalar_fixed_16_16", "length_boundary_cases", "length_boundary_actual_checksum", "length_boundary_reference_checksum"):
+            metrics[name].update(total_ticks="0", mean_ticks="0", min_ticks="0", max_ticks="0")
+        self.assertEqual(len(analysis.validate_run(rows, data)), 64)
 
     def test_wrapped_protocol(self):
         data = analysis.records("PPBO\nDY,runtime-improved,0,0,0,0,1,00000000,00000000,00000000,00000000,00000000,00000000,1;", "runtime-improved")

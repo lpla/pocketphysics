@@ -3,6 +3,9 @@
 #include "pp_runtime_math_cases.h"
 #include "world.h"
 #include "thing.h"
+#ifdef TARGET_FLOAT32_IS_FIXED
+#include "pp_length_validation.h"
+#endif
 #include "state.h"
 #include <nds/debug.h>
 #include <stdio.h>
@@ -257,6 +260,12 @@ void ppRuntimePoll()
         line[length++]=';'; line[length]=0; write(line);
     }
     VRAM_C_CR=captureMapping;
+    unsigned lengthCases=0, lengthFailures=0, lengthActual=0, lengthReference=0;
+#ifdef TARGET_FLOAT32_IS_FIXED
+    PPLengthValidation lengthValidation=ppValidateLengthBoundaries();
+    lengthCases=lengthValidation.cases; lengthFailures=lengthValidation.failures;
+    lengthActual=lengthValidation.actual_checksum; lengthReference=lengthValidation.reference_checksum;
+#endif
     unsigned mathFailures=validateArithmetic();
     metric("vblank_handler",irqStat,kFrameTicks); metric("vblank_interval",intervalStat,kFrameTicks);
     metric("physics_elapsed",physicsElapsed,kFrameTicks); metric("physics_foreground",physicsCPU,kFrameTicks);
@@ -279,9 +288,13 @@ void ppRuntimePoll()
     scalar("simulation_transitions",simulationTransitions);
     scalar("math_preemption_cases",8); scalar("math_preemption_irqs",validationIRQs);
     scalar("math_preemption_failures",mathFailures,mathFailures==0);
+    scalar("length_boundary_cases",lengthCases);
+    scalar("length_boundary_failures",lengthFailures,lengthFailures==0);
+    scalar("length_boundary_actual_checksum",lengthActual);
+    scalar("length_boundary_reference_checksum",lengthReference);
     if(output && fflush(output)!=0) writeFailed=true;
     scalar("log_write_error",writeFailed,!writeFailed);
-    scalar("runtime_complete",1,script.valid && !overflow && !writeFailed && !mathFailures);
+    scalar("runtime_complete",1,script.valid && !overflow && !writeFailed && !mathFailures && !lengthFailures);
     if(output) { fclose(output); output=0; }
     for(;;) swiWaitForVBlank();
 }

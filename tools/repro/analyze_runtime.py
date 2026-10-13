@@ -15,7 +15,8 @@ SCALARS = {"script_events", "script_frames", "vblanks", "physics_steps", "input_
            "samples_consumed", "samples_unconsumed", "physics_irq_overlaps", "mouse_joint_steps",
            "top_frames", "bottom_frames", "maximum_things", "creation_things", "after_delete_things",
            "things_final", "overflow", "script_valid", "scalar_fixed_16_16", "runtime_complete",
-           "fat_available", "log_write_error", "math_preemption_cases", "math_preemption_irqs", "math_preemption_failures", "simulation_transitions"}
+           "fat_available", "log_write_error", "math_preemption_cases", "math_preemption_irqs", "math_preemption_failures", "simulation_transitions",
+           "length_boundary_cases", "length_boundary_failures", "length_boundary_actual_checksum", "length_boundary_reference_checksum"}
 TRACE = re.compile(r"(PPSTATE|PPBODY|PPIRQ|PPPIXEL|PPFINAL),([A-Za-z0-9._-]+),([0-9a-f,-]+);")
 FIELD_COUNTS = {"PPSTATE": 6, "PPBODY": 12, "PPIRQ": 3, "PPPIXEL": 2, "PPFINAL": 6}
 
@@ -62,6 +63,15 @@ def validate_run(rows: list[dict[str, str]], data: dict[str, list[list[str]]]) -
         raise AssertionError("Replay incomplete or capacity exceeded")
     if value("math_preemption_cases") != 8 or value("math_preemption_irqs") < 8 or value("math_preemption_failures"):
         raise AssertionError("Hardware arithmetic preemption matrix failed")
+    fixed = value("scalar_fixed_16_16")
+    if fixed not in {0, 1}:
+        raise AssertionError("Invalid numerical mode")
+    if value("length_boundary_cases") != (19662 if fixed else 0) or value("length_boundary_failures"):
+        raise AssertionError("Fixed-point length boundary regression")
+    expected_checksum = 0x7805b4b1 if fixed else 0
+    if (value("length_boundary_actual_checksum") != expected_checksum
+            or value("length_boundary_reference_checksum") != expected_checksum):
+        raise AssertionError("Length/normalization reference checksum differs")
     if value("vblanks") != value("script_frames") + 6:
         raise AssertionError("Wrong replay duration")
     if value("maximum_things") != 14 or value("creation_things") != 14 or value("things_final") != 14:

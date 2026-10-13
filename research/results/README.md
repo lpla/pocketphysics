@@ -16,12 +16,17 @@ historical/modern/improved comparison.
 `frame_total` covers the benchmark's directly sequenced touch/physics/canvas
 pipeline. It does not cover the normal full-GUI VBlank handler and foreground
 audio/input loop. The [runtime boundary](../../docs/benchmarking.md#runtime-boundary)
-limits cadence and responsiveness conclusions for every dataset below.
+limits cadence and responsiveness conclusions for the direct-protocol datasets.
+The separate [normal-loop baseline](runtime-loop-baseline/) records full
+modern-port scheduling, body state, input consumption, display captures, and
+arithmetic preemption. It predates the fixed-length threshold correction.
 
 ## Primary melonDS Comparison
 
+- [Matching fixed-point modernization control](matched-numeric-control/)
+- [First normal-loop replay and arithmetic ownership baseline](runtime-loop-baseline/)
 - [Current run-integrity revalidation: identical three-role records and API regressions](emulator-run-integrity/)
-- [Current guarded improved build and fresh three-role comparison](polygon-promotion/)
+- [Guarded improved checkpoint and three-role comparison](polygon-promotion/)
 - [Complete linked-source reconstruction validation](linked-source-complete/)
 - [melonDS 1.1 final dataset](melonds-final/)
 - [Fresh C-source recovery validation and stricter screening reanalysis](c-source-recovery/)
@@ -50,7 +55,8 @@ already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
 
-This table uses the current polygon-guarded role. Its
+This table preserves the polygon-guarded checkpoint before the later
+[length-threshold correction](../../docs/length-threshold-study.md). Its
 [promotion record](polygon-promotion/) discloses the guard's small hit-test
 cost, strict versus tolerant frame deadlines, and cross-role numeric-mode
 limits. The earlier datasets preserve their preceding specimen identities.

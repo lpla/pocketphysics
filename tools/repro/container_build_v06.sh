@@ -46,7 +46,7 @@ PROFILE_KIND="$BUILD_PROFILE"
 case "$BUILD_PROFILE" in
     runtime-modern) PROFILE_KIND=bench-modern ;;
     runtime-modern-fixed-ds) PROFILE_KIND=bench-modern-fixed-ds ;;
-    runtime-improved|runtime-improved-irq-control) PROFILE_KIND=bench-improved ;;
+    runtime-improved|runtime-improved-irq-control|runtime-improved-length-control) PROFILE_KIND=bench-improved ;;
 esac
 case "$PROFILE_KIND" in
     repro)
@@ -482,6 +482,9 @@ case "$BUILD_PROFILE" in
         PROFILE_DEFS=("${runtime_defs[@]}" -DPP_RUNTIME_REPLAY "-DPP_RUNTIME_LABEL=\"$BUILD_PROFILE\"")
         if [[ "$BUILD_PROFILE" == runtime-improved-irq-control ]]; then
             PROFILE_DEFS+=(-DPP_RUNTIME_IRQ_NEGATIVE_CONTROL)
+        fi
+        if [[ "$BUILD_PROFILE" == runtime-improved-length-control ]]; then
+            PROFILE_DEFS+=(-DPP_BOX2D_LENGTH_LEGACY_THRESHOLD)
         fi
         ;;
 esac

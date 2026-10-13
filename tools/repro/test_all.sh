@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
 
 python3 "$ROOT/tools/repro/audit_reconstruction_source.py"
+"$ROOT/tools/repro/test_build_ownership.sh"
 "$ROOT/tools/repro/test_source_patches.sh"
 "$ROOT/tools/repro/test_v06_exact.sh"
 "$ROOT/tools/repro/test_v06_repack_control.sh"

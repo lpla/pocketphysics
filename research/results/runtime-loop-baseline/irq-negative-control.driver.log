@@ -1,0 +1,11 @@
+Building pinned melonds runtime
+Verified 1 isolated melonDS input/final configuration pairs.
+Traceback (most recent call last):
+  File "/Users/leopoldo.pla/pocketphysics/tools/repro/analyze_runtime.py", line 191, in <module>
+    args = p.parse_args(); analyze(args.out, args.expected_repeats)
+                           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/leopoldo.pla/pocketphysics/tools/repro/analyze_runtime.py", line 154, in analyze
+    signature = validate_run(run, data)
+  File "/Users/leopoldo.pla/pocketphysics/tools/repro/analyze_runtime.py", line 49, in validate_run
+    raise AssertionError("Unsuccessful or inconsistent runtime record")
+AssertionError: Unsuccessful or inconsistent runtime record

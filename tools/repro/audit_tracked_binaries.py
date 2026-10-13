@@ -39,6 +39,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def category(path: str) -> tuple[str, str, str]:
+    if path.startswith("research/results/") and path.endswith(".capture.png"):
+        return ("emulated-display-capture", "no",
+                "Generated from instrumented ROM display-capture records; validation output, not build input.")
     if path.startswith("build/") and path.endswith(".o"):
         return (
             "historical-compiled-object",

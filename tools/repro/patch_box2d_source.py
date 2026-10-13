@@ -58,6 +58,19 @@ def main() -> int:
 """,
     )
 
+    replace_exact(
+        math,
+        "\t\t} else if(est < 0.1) {\n",
+        "\t\t}\n"
+        "#if defined(PP_BOX2D_LENGTH_FIXED_ESTIMATE) && !defined(PP_BOX2D_LENGTH_LEGACY_THRESHOLD)\n"
+        "\t\t// 0.1 truncates to raw 6553. The original floating estimate also\n"
+        "\t\t// scales raw 6553, so the integer comparison must be inclusive.\n"
+        "\t\telse if(est <= 0.1) {\n"
+        "#else\n"
+        "\t\telse if(est < 0.1) {\n"
+        "#endif\n",
+    )
+
     fixed = Path(sys.argv[1]) / "Source/Common/Fixed.h"
     replace_exact(fixed, "COS_bin[idx]", "pp_cos_bin(idx)")
     replace_exact(fixed, "SIN_bin[idx]", "pp_sin_bin(idx)")

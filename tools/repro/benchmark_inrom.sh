@@ -135,7 +135,7 @@ import subprocess
 
 root = pathlib.Path(${ROOT@Q})
 metadata = {
-    "schema": 1,
+    "schema": 2 if ${INROM_PROTOCOL@Q} == "runtime" else 1,
     "protocol": ${INROM_PROTOCOL@Q},
     "emulator": ${EMULATOR@Q},
     "emulator_version": ${EMULATOR_VERSION@Q},

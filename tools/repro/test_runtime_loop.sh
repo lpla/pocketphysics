@@ -25,20 +25,23 @@ INROM_PROTOCOL=runtime EMULATOR=melonds REPEATS="$REPEATS" DURATION="$DURATION" 
     "$ROOT/tools/repro/benchmark_inrom.sh" "${specs[@]}"
 cp "$manifest" "$OUT/independent-builds.csv"
 
-profile=runtime-improved-irq-control
+for control in irq length; do
+if [[ "$control" == irq ]]; then kind=arithmetic; else kind=length; fi
+profile="runtime-improved-$control-control"
 BUILD_PROFILE="$profile" OUT="$ROOT/research-artifacts/build/$profile" \
     "$ROOT/tools/repro/build_v06_blocksds.sh"
 set +e
-INROM_PROTOCOL=runtime EMULATOR=melonds REPEATS=1 DURATION="$DURATION" OUT="$OUT/irq-negative-control" \
+INROM_PROTOCOL=runtime EMULATOR=melonds REPEATS=1 DURATION="$DURATION" OUT="$OUT/$control-negative-control" \
     "$ROOT/tools/repro/benchmark_inrom.sh" \
     "$profile=$ROOT/research-artifacts/build/$profile/pocketphysics-v0.6-blocksds.nds" \
-    > "$OUT/irq-negative-control.driver.log" 2>&1
+    > "$OUT/$control-negative-control.driver.log" 2>&1
 status="$?"
 set -e
 if [[ "$status" != 1 ]]; then
-    echo "Expected arithmetic-control rejection, got status $status" >&2
+    echo "Expected $control-control rejection, got status $status" >&2
     exit 1
 fi
 PYTHONPYCACHEPREFIX="$ROOT/research-artifacts/test/runtime-pycache" \
-    python3 "$ROOT/tools/repro/check_runtime_negative_control.py" "$OUT/irq-negative-control"
-echo "Normal-loop replay and hardware-arithmetic negative control passed."
+    python3 "$ROOT/tools/repro/check_runtime_negative_control.py" "$OUT/$control-negative-control" --kind "$kind"
+done
+echo "Normal-loop replay and arithmetic/length negative controls passed."

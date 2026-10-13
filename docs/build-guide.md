@@ -87,11 +87,12 @@ tools/repro/test_v06_perf.sh
 Single-build output:
 `research-artifacts/build/v06-blocksds-perf/pocketphysics-v0.6-blocksds.nds`.
 It is 814,080 bytes, with SHA-256
-`bdb7f37880b89e158230c070fef13ed58c53c55563c0710d1484d4bdd44b478d`.
+`f1961904a1a69501419ccb6330c804882fa1257627de3135ae1def99b7f1147f`.
 
 The `perf` profile uses the same modern stack, ARM/O3/LTO, fixed-point DS
 hardware math, runtime fixes, polygon validation, the fixed-length estimate
-and half-limit velocity gate, batched rendering, physics ITCM, and
+with its [corrected scale-up threshold](length-threshold-study.md),
+half-limit velocity gate, batched rendering, physics ITCM, and
 `Canvas::drawLine` ITCM. The wider velocity gate and `World::getThingsAt` ITCM
 candidate remain experimental and are not enabled. See the
 [optimization study](optimization-study.md) for attribution, decisions, and
