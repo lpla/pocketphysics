@@ -50,6 +50,13 @@ unsuccessful exit. The 284 cases comprise:
   hidden files, directory entries, empty directories, and missing directories.
 - Eight failing controls for the corresponding defects.
 
+The ownership fixture reports its failure before releasing objects left behind
+by the deliberately broken control. This fixture cleanup preserves the explicit
+failure status on Linux, where LeakSanitizer otherwise replaces it at process
+exit. Guarded application paths must still release every tracked resource
+themselves; AddressSanitizer, UndefinedBehaviorSanitizer, and Linux leak checking
+remain enabled.
+
 Save probes use actual temporary POSIX files. GUI/audio drawing, world XML
 serialization, and thumbnail decoding are stubs. Directory enumeration uses a
 controlled backend with tracked ownership. These are method-body and lifetime

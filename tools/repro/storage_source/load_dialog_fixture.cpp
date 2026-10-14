@@ -98,6 +98,12 @@ int main(int argc, char **argv) {
     }
     if (!directories.empty() || !allocations.empty()) {
         fputs("DIRECTORY_OWNERSHIP\n", stderr);
+        // Ownership has already failed. Release the fixture's tracked objects
+        // so Linux LeakSanitizer preserves this deliberate control's exit code.
+        for (void *pointer : allocations) std::free(pointer);
+        allocations.clear();
+        for (DIR_ITER *directory : directories) delete directory;
+        directories.clear();
         return 54;
     }
     puts("load-dialog enumeration and ownership passed");
