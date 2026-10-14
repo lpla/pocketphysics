@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import sys
+from patch_storage_source import patch as patch_storage
 
 
 def replace_exact(path: Path, old: str, new: str) -> None:
@@ -581,6 +582,7 @@ void handleInput(void)
         "\t\t\t\t\tvecx = ( (radius<<6) * pp_cos_bin((angle + 512 * i / n_segments) % 512) ) >> 6;\n\t\t\t\t\tvecy = ( (radius<<6) * pp_sin_bin((angle + 512 * i / n_segments) % 512) ) >> 6;\n",
     )
 
+    patch_storage(src)
     return 0
 
 

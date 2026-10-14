@@ -54,10 +54,12 @@ insufficient. This target is separate from the accepted linked-ROM identity.
   save/load, missing or damaged files, and allocation failures require dedicated
   correctness and heap-lifetime tests. These must include the application's
   actual workflows, not only dependency microtests.
-  A host expression-level ASan control reproduces a read before the typewriter
-  buffer for one- or two-character save names in the extension check. A complete
-  save-dialog fix and storage workflow regression are still required. Thumbnail
-  capture mapping and file-handle ownership also need explicit validation.
+  The [dialog study](storage-dialog-study.md) now fixes short-name comparisons,
+  overwrite probing/ownership, full-buffer backspace, and directory lifetime,
+  with 284 host cases using actual method bodies. Real FAT and complete GUI
+  storage workflows remain unvalidated. Thumbnail capture mapping, damaged XML,
+  I/O failure feedback, and preserving the current scene on failed loads still
+  need explicit acceptance tests.
 - **Fixed-point arithmetic:** memory sanitizer coverage does not audit all
   signed shifts, overflows, division boundaries, or hardware arithmetic unit
   ownership. A complete arithmetic contract and boundary matrix remain open.

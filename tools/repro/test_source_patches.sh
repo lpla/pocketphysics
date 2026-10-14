@@ -31,6 +31,7 @@ tar -xzf "$BOX2D_ARCHIVE" -C "$OUT/deps"
 mv "$OUT/deps/Box2D" "$OUT/deps/box2d-2.0.1"
 
 python3 "$ROOT/tools/repro/patch_v06_source.py" "$OUT"
+PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_storage_dialogs.py" "$OUT" "$OUT/storage-dialogs"
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$OUT/deps/box2d-2.0.1"
 python3 "$ROOT/tools/repro/test_length_threshold.py" "$OUT/deps/box2d-2.0.1" "$OUT/length-threshold"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_velocity_gate.py" "$OUT/deps/box2d-2.0.1"

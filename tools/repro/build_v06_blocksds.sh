@@ -20,6 +20,7 @@ source "$ROOT/tools/repro/fetch_locked.sh"
 
 rm -rf "$OUT"
 mkdir -p "$OUT" "$DOWNLOADS" "$DEPS_CACHE" "$CONVEX_CACHE" "$PACKAGE_CACHE"
+export PYTHONPYCACHEPREFIX="$OUT/pycache"
 
 SRC="$OUT/src"
 DEPS="$OUT/deps"
