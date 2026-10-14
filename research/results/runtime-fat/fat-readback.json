@@ -1,0 +1,23 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "file_bytes": 428459,
+      "file_sha256": "b84634ff6e010de2461208be8d5facee543f591b532fc7e99b104c28834ab157",
+      "card_sha256": "e8b5f660d88bc51d132a270642efdb733b46a888e50bd94a2613231fc0094d15"
+    },
+    {
+      "run": 2,
+      "file_bytes": 428459,
+      "file_sha256": "b84634ff6e010de2461208be8d5facee543f591b532fc7e99b104c28834ab157",
+      "card_sha256": "4a02df796ef6405f0b1eb4cb99bba5266ed92b178147d1a8236855817aa1fe99"
+    },
+    {
+      "run": 3,
+      "file_bytes": 428459,
+      "file_sha256": "b84634ff6e010de2461208be8d5facee543f591b532fc7e99b104c28834ab157",
+      "card_sha256": "f3314bae82dd54fc815901b5a95b0457d77e4e418808a204512808899c7a6140"
+    }
+  ],
+  "scope": "Complete runtime log write/readback through melonDS DLDI/FAT; not GUI sketch save/load or physical storage."
+}

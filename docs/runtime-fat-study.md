@@ -5,6 +5,12 @@ This is a separate storage configuration; the ordinary timing baseline keeps
 DLDI disabled. Each repetition creates an independent FAT image, with folder
 synchronization disabled and a fully seeded configuration.
 
+The [published three-run dataset](../research/results/runtime-fat/) binds this
+protocol to clean source checkpoint `14c2569`. All three native files contain
+428,459 bytes with identical SHA-256, all 36 metrics and every trace record match
+debug output, and the normal runtime gates pass. Raw disk images are retained
+for independent readback.
+
 ```sh
 REPEATS=3 tools/repro/test_runtime_fat.sh
 ```

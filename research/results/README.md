@@ -23,6 +23,8 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 
 ## Primary melonDS Comparison
 
+- [Native runtime logger: three complete, independently read FAT images](runtime-fat/)
+- [Dialog host controls: Linux and macOS sanitizer validation](storage-portability/)
 - [Current dialog-corrected port: 284 host cases, independent identities, and 15 repeated emulator runs](storage-dialogs/)
 - [Corrected length API: independent builds, 21 comparison runs, repeated matrices, and negative controls](length-correction/)
 - [Matching fixed-point modernization control](matched-numeric-control/)

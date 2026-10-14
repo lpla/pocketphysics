@@ -1,0 +1,3176 @@
+{
+  "control_source_revision": "b9cede1b54b044c703187fa4a8ba3ad3dba8a42e",
+  "selected_source": "research-artifacts/test/source-patches",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: x86_64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "platform": "macOS-26.7.1-x86_64-i386-64bit-Mach-O",
+  "cases": [
+    {
+      "role": "control",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "none",
+        "new"
+      ],
+      "expected": "asan",
+      "exit_status": -6,
+      "fixture_sha256": "eba7eec0eedac141f01c8164c1743ab1d1ee60623be787beeeede5363718b32c"
+    },
+    {
+      "role": "control",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "none",
+        "new"
+      ],
+      "expected": "asan",
+      "exit_status": -6,
+      "fixture_sha256": "eba7eec0eedac141f01c8164c1743ab1d1ee60623be787beeeede5363718b32c"
+    },
+    {
+      "role": "control",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "legacy",
+        "exists"
+      ],
+      "expected": "file",
+      "exit_status": 51,
+      "fixture_sha256": "eba7eec0eedac141f01c8164c1743ab1d1ee60623be787beeeede5363718b32c"
+    },
+    {
+      "role": "control",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "data",
+        "exists"
+      ],
+      "expected": "workflow",
+      "exit_status": 52,
+      "fixture_sha256": "eba7eec0eedac141f01c8164c1743ab1d1ee60623be787beeeede5363718b32c"
+    },
+    {
+      "role": "control",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "20"
+      ],
+      "expected": "asan",
+      "exit_status": -6,
+      "fixture_sha256": "b77d3466b810721ee65bcef5ce1306742b193d75f5a73ca5cc4c84d8905e8daa"
+    },
+    {
+      "role": "control",
+      "kind": "load",
+      "arguments": [
+        "entries",
+        "data"
+      ],
+      "expected": "asan",
+      "exit_status": -6,
+      "fixture_sha256": "05a5f66e5428e728bbf31865ed9a4f946b7d1dda756200a308fa59edc1d46c12"
+    },
+    {
+      "role": "control",
+      "kind": "load",
+      "arguments": [
+        "empty",
+        "data"
+      ],
+      "expected": "directory",
+      "exit_status": 54,
+      "fixture_sha256": "05a5f66e5428e728bbf31865ed9a4f946b7d1dda756200a308fa59edc1d46c12"
+    },
+    {
+      "role": "control",
+      "kind": "load",
+      "arguments": [
+        "missing",
+        "data"
+      ],
+      "expected": "directory",
+      "exit_status": 54,
+      "fixture_sha256": "05a5f66e5428e728bbf31865ed9a4f946b7d1dda756200a308fa59edc1d46c12"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "legacy",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "data",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "a",
+        "both",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "legacy",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "data",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "ab",
+        "both",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "legacy",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "data",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abc",
+        "both",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "legacy",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "data",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "x.pp",
+        "both",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "none",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "legacy",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "legacy",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "data",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "data",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "both",
+        "new"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "save",
+      "arguments": [
+        "abcdefghijklmnopqrst",
+        "both",
+        "exists"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "65e3e182e0deda59fc0a164bbe512112220d367e8ee134283ff0c7b173ef0005"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "0",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "1",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "1",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "2",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "2",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "2",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "3",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "3",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "3",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "3",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "4",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "4",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "4",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "4",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "4",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "5",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "6",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "7",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "8",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "9",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "10",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "11",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "12",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "13",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "14",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "15",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "16",
+        "16"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "16"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "17",
+        "17"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "16"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "17"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "18",
+        "18"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "16"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "17"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "18"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "19",
+        "19"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "0"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "1"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "2"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "3"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "4"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "5"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "6"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "7"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "8"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "9"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "10"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "11"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "12"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "13"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "14"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "15"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "16"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "17"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "18"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "19"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "typewriter",
+      "arguments": [
+        "20",
+        "20"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "94fe9cd1803055d1f1666663c15cee8cd40dc57ce6ed4138a95f2284e293bb8a"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "entries",
+        "data"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "entries",
+        "legacy"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "empty",
+        "data"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "empty",
+        "legacy"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "missing",
+        "data"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    },
+    {
+      "role": "guarded",
+      "kind": "load",
+      "arguments": [
+        "missing",
+        "legacy"
+      ],
+      "expected": "pass",
+      "exit_status": 0,
+      "fixture_sha256": "ac19688756db4361b8a4754dbb8e5396a534b75d32797101e81bcf0e59d02cd3"
+    }
+  ],
+  "scope": "Actual callback, keyboard, and directory-lifetime bodies; GUI/audio rendering, XML serialization, thumbnails, and FAT hardware are stubbed or outside this test."
+}

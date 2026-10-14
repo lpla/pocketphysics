@@ -56,8 +56,10 @@ insufficient. This target is separate from the accepted linked-ROM identity.
   actual workflows, not only dependency microtests.
   The [dialog study](storage-dialog-study.md) now fixes short-name comparisons,
   overwrite probing/ownership, full-buffer backspace, and directory lifetime,
-  with 284 host cases using actual method bodies. Real FAT and complete GUI
-  storage workflows remain unvalidated. Thumbnail capture mapping, damaged XML,
+  with 284 host cases using actual method bodies on Linux and macOS. The
+  [native runtime logger](runtime-fat-study.md) also completes three emulated
+  DLDI/FAT runs with independent readback. Complete GUI sketch storage workflows
+  remain unvalidated. Thumbnail capture mapping, damaged XML,
   I/O failure feedback, and preserving the current scene on failed loads still
   need explicit acceptance tests.
 - **Fixed-point arithmetic:** memory sanitizer coverage does not audit all

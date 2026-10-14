@@ -20,3 +20,7 @@ research/results/length-correction/** -text -whitespace
 research/results/length-correction/README.md text whitespace
 research/results/storage-dialogs/** -text -whitespace
 research/results/storage-dialogs/README.md text whitespace
+research/results/runtime-fat/** -text -whitespace
+research/results/runtime-fat/README.md text whitespace
+research/results/storage-portability/** -text -whitespace
+research/results/storage-portability/README.md text whitespace

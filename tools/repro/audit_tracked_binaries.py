@@ -39,6 +39,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def category(path: str) -> tuple[str, str, str]:
+    if path.startswith("research/results/runtime-fat/") and path.endswith("/card.bin"):
+        return (
+            "emulated-fat-disk", "no",
+            "Generated DLDI/FAT validation output; includes emulator-injected source-built ROM, never an application build input.",
+        )
     if path.startswith("research/results/") and path.endswith(".capture.png"):
         return ("emulated-display-capture", "no",
                 "Generated from instrumented ROM display-capture records; validation output, not build input.")

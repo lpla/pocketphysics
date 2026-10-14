@@ -1,0 +1,4 @@
+runtime-improved 1: complete GUI/lifecycle/dragging replay, raw-state SHA256 d3e02a193d989fa666a05b6c95a7d43608f3edb7a7b4a78a13f3ead96758e9c4
+runtime-improved 2: complete GUI/lifecycle/dragging replay, raw-state SHA256 d3e02a193d989fa666a05b6c95a7d43608f3edb7a7b4a78a13f3ead96758e9c4
+runtime-improved 3: complete GUI/lifecycle/dragging replay, raw-state SHA256 d3e02a193d989fa666a05b6c95a7d43608f3edb7a7b4a78a13f3ead96758e9c4
+All repeated timing records and raw traces match within each binary.

@@ -1,0 +1,49 @@
+=================================================================
+==64520==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x61100000017e at pc 0x000107754323 bp 0x7ff7b8c9f570 sp 0x7ff7b8c9ed18
+READ of size 1 at 0x61100000017e thread T0
+    #0 0x000107754322 in strcmp+0x1092 (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x1b322)
+    #1 0x000107261635 in PPLoadDialog::loadThumbnails() control-load.cpp:136
+    #2 0x00010726253c in main control-load.cpp:188
+    #3 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+0x61100000017e is located 2 bytes before 256-byte region [0x611000000180,0x611000000280)
+allocated by thread T0 here:
+    #0 0x0001077dfa97 in calloc+0x87 (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0xa6a97)
+    #1 0x00010725f9c9 in probeCalloc(unsigned long, unsigned long) control-load.cpp:18
+    #2 0x000107261442 in PPLoadDialog::loadThumbnails() control-load.cpp:110
+    #3 0x00010726253c in main control-load.cpp:188
+    #4 0x7ff81b9d01c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow control-load.cpp:136 in PPLoadDialog::loadThumbnails()
+Shadow bytes around the buggy address:
+  0x610ffffffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x610fffffff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x610fffffff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x611000000000: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x611000000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x611000000100: 00 00 00 00 fa fa fa fa fa fa fa fa fa fa fa[fa]
+  0x611000000180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x611000000200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x611000000280: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x611000000300: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x611000000380: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==64520==ABORTING

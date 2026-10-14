@@ -1,0 +1,55 @@
+=================================================================
+==36==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x51100000003e at pc 0x7ff2b22c5f8f bp 0x7ffd9cc383f0 sp 0x7ffd9cc37b98
+READ of size 1 at 0x51100000003e thread T0
+    #0 0x7ff2b22c5f8e in strcmp ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:470
+    #1 0x55f44575126c in PPLoadDialog::loadThumbnails() research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:136
+    #2 0x55f445751c43 in PPLoadDialog::PPLoadDialog(unsigned short**) research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:96
+    #3 0x55f445752df2 in main research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:188
+    #4 0x7ff2b166a1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #5 0x7ff2b166a28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #6 0x55f44574f804 in _start (/workspace/research-artifacts/test/storage-dialogs-portable-linux/control-load+0x25804) (BuildId: 1bb872f5b1a3973bdf87d649d165ef8af9c4ed5f)
+
+0x51100000003e is located 2 bytes before 256-byte region [0x511000000040,0x511000000140)
+allocated by thread T0 here:
+    #0 0x7ff2b22fc340 in calloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:77
+    #1 0x55f44574ff62 in probeCalloc(unsigned long, unsigned long) research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:18
+    #2 0x55f445751071 in PPLoadDialog::loadThumbnails() research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:110
+    #3 0x55f445751c43 in PPLoadDialog::PPLoadDialog(unsigned short**) research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:96
+    #4 0x55f445752df2 in main research-artifacts/test/storage-dialogs-portable-linux/control-load.cpp:188
+    #5 0x7ff2b166a1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #6 0x7ff2b166a28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 8e9fd827446c24067541ac5390e6f527fb5947bb)
+    #7 0x55f44574f804 in _start (/workspace/research-artifacts/test/storage-dialogs-portable-linux/control-load+0x25804) (BuildId: 1bb872f5b1a3973bdf87d649d165ef8af9c4ed5f)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:470 in strcmp
+Shadow bytes around the buggy address:
+  0x510ffffffd80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x510ffffffe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x510ffffffe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x510fffffff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x510fffffff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x511000000000: fa fa fa fa fa fa fa[fa]00 00 00 00 00 00 00 00
+  0x511000000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x511000000100: 00 00 00 00 00 00 00 00 fa fa fa fa fa fa fa fa
+  0x511000000180: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x511000000200: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x511000000280: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==36==ABORTING

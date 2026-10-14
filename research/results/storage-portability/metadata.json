@@ -1,0 +1,6 @@
+{
+  "application_source_revision": "f9bbb70b8583d00f1fd8a48505d7148bd66a2f41",
+  "fixture_revision": "29411f6d1a45be960dfbee98e641e037c0f8cc91",
+  "validation": "Cases executed before the unchanged fixture was committed; generated fixture hashes identify the executed method bodies and harness.",
+  "linux_image_id": "sha256:0a07aed6c80fa30d18f9aebb6aa95fc58404cc8bfc7c4e9f5b5ec026c749264c"
+}

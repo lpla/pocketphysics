@@ -1,0 +1,14 @@
+{
+  "schema": 2,
+  "protocol": "runtime-fat",
+  "git_commit": "14c2569ce75c21223b68bf9a8969a388f5a1e0a1",
+  "working_tree_dirty": false,
+  "emulator": "melonds",
+  "repeats": 3,
+  "duration_limit_seconds": 45,
+  "docker_image": "pocketphysics-melonds:1.1",
+  "docker_image_id": "sha256:2b16336b7c4c1c2099dde2a9e760c359c45b8fc4a47aec99943f8dc19eb2fccf",
+  "rom_sha256": "933d0b399b3dbca208742ce9ddec0bb3738ca63fd4eacfebf160700f54566a8c",
+  "rom_size_bytes": 785408,
+  "configuration": "Independent FAT image and fully seeded DLDI configuration per repetition; no folder synchronization."
+}

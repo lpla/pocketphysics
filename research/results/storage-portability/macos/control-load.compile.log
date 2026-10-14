@@ -1,0 +1,11 @@
+research-artifacts/test/storage-dialogs-portable-macos/control-load.cpp:115:31: warning: equality comparison with extraneous parentheses [-Wparentheses-equality]
+  115 |         if(((dir = diropen(datadir)) == NULL))
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+research-artifacts/test/storage-dialogs-portable-macos/control-load.cpp:115:31: note: remove extraneous parentheses around the comparison to silence this warning
+  115 |         if(((dir = diropen(datadir)) == NULL))
+      |            ~                         ^      ~
+research-artifacts/test/storage-dialogs-portable-macos/control-load.cpp:115:31: note: use '=' to turn this equality comparison into an assignment
+  115 |         if(((dir = diropen(datadir)) == NULL))
+      |                                      ^~
+      |                                      =
+1 warning generated.
