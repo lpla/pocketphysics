@@ -62,6 +62,10 @@ tools/repro/test_source_patches.sh
 The workflow preserves case results, compiler output, generated fixture source,
 and sanitizer diagnostics under
 `research-artifacts/test/source-patches/storage-dialogs`.
+The [published validation](../research/results/storage-dialogs/) also includes
+independent release/runtime ROM and ELF identities and 15 repeated emulator runs.
+The frozen modern ROM/ELF identity is unchanged. Recorded improved body states
+match the preceding checkpoint; the ordinary replay does not open storage dialogs.
 
 ## Remaining Storage Acceptance
 

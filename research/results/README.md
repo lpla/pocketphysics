@@ -23,6 +23,7 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 
 ## Primary melonDS Comparison
 
+- [Current dialog-corrected port: 284 host cases, independent identities, and 15 repeated emulator runs](storage-dialogs/)
 - [Corrected length API: independent builds, 21 comparison runs, repeated matrices, and negative controls](length-correction/)
 - [Matching fixed-point modernization control](matched-numeric-control/)
 - [First normal-loop replay and arithmetic ownership baseline](runtime-loop-baseline/)
@@ -47,7 +48,7 @@ uses floating point, so the table does not isolate dependency-update effects.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Historical release | 5,471 | 2,805 | 278,893 | 554,829 | 0 | 0 | 14,400 |
 | Modern source port | 12,286 | 3,015 | 584,579 | 904,349 | 102 | 87 | 14,400 |
-| Improved source port | 6,223 | 1,629 | 110,987 | 556,655 | 0 | 0 | 0 |
+| Improved source port | 6,244 | 1,640 | 111,140 | 556,721 | 0 | 0 | 0 |
 
 Relative to the modern source port, the improved profile reduces physics time
 by 81.0% and complete-frame time by 38.4%. It removes the reproduced hit-test
@@ -56,14 +57,14 @@ already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
 
-The [corrected comparison](length-correction/) reproduces all 276 direct records
-below after excluding only changed ROM hash/size fields. Its schema-2 normal
-loop, exhaustive length matrix, and negative controls are separate evidence.
-This table preserves the polygon-guarded checkpoint before the later
-[length-threshold correction](../../docs/length-threshold-study.md). Its
-[promotion record](polygon-promotion/) discloses the guard's small hit-test
-cost, strict versus tolerant frame deadlines, and cross-role numeric-mode
-limits. The earlier datasets preserve their preceding specimen identities.
+The improved row uses the [current dialog-corrected comparison](storage-dialogs/).
+Earlier [length-corrected](length-correction/) and [polygon-guarded](polygon-promotion/)
+checkpoints retain their own source and ROM identities. The length correction
+reproduced its preceding 276 direct records after excluding ROM hash/size fields;
+the subsequent dialog correction has small timing changes in a different binary
+layout. The direct workload does not execute storage dialogs, so those changes
+are not attributed to storage-call execution. The promotion record retains
+strict versus tolerant deadline and numeric-mode limits.
 
 The historical specimen in this dataset was instrumented from the
 byte-identical source build, not from an extracted release payload.

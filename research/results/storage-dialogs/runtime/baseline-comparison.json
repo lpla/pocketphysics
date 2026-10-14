@@ -1,0 +1,7 @@
+{
+  "previous": "research/results/length-correction/runtime/bodies.csv",
+  "alignment": "physics step and thing index, first repetition",
+  "body_records": 3528,
+  "different_records": 0,
+  "scope": "Recorded body scalars only; timing and complete hidden physics state are not asserted equal."
+}

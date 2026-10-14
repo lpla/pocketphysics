@@ -18,3 +18,5 @@ research/results/runtime-loop-baseline/README.md text whitespace
 research/results/matched-numeric-control/README.md text whitespace
 research/results/length-correction/** -text -whitespace
 research/results/length-correction/README.md text whitespace
+research/results/storage-dialogs/** -text -whitespace
+research/results/storage-dialogs/README.md text whitespace
