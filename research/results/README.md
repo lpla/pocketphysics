@@ -27,7 +27,7 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 - [Corrected length API: independent builds, 21 comparison runs, repeated matrices, and negative controls](length-correction/)
 - [Matching fixed-point modernization control](matched-numeric-control/)
 - [First normal-loop replay and arithmetic ownership baseline](runtime-loop-baseline/)
-- [Current run-integrity revalidation: identical three-role records and API regressions](emulator-run-integrity/)
+- [Run-integrity checkpoint: identical three-role records and API regressions](emulator-run-integrity/)
 - [Guarded improved checkpoint and three-role comparison](polygon-promotion/)
 - [Complete linked-source reconstruction validation](linked-source-complete/)
 - [melonDS 1.1 final dataset](melonds-final/)
