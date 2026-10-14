@@ -87,6 +87,10 @@ After timing ends, the actual VRAM-C display-capture buffer is box-filtered to
 128x96 RGB555 and retained losslessly in the log. The analyzer reconstructs a
 PNG and rejects blank, uniform, truncated, duplicated, or reordered records.
 This final captured screen is not a video or proof of every displayed frame.
+It is the top-screen world overview. A content gate additionally requires
+the red floor and blue dynamic outlines in the scripted scene's projected
+regions; the paper texture alone cannot satisfy it. This is a presence check,
+not a full per-object or cross-role pixel-equivalence assertion.
 
 ## Arithmetic Ownership Control
 

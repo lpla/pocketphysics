@@ -1,0 +1,4 @@
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
+The X11 connection broke: I/O error (code 1)
+XIO:  fatal IO error 4 (Interrupted system call) on X server ":99"
+      after 42707 requests (369 known processed) with 0 events remaining.

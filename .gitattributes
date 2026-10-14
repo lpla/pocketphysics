@@ -16,3 +16,5 @@ research/results/matched-numeric-control/** -text -whitespace
 research/results/matched-numeric-control/**/melonDS.final.toml whitespace=-blank-at-eof
 research/results/runtime-loop-baseline/README.md text whitespace
 research/results/matched-numeric-control/README.md text whitespace
+research/results/length-correction/** -text -whitespace
+research/results/length-correction/README.md text whitespace

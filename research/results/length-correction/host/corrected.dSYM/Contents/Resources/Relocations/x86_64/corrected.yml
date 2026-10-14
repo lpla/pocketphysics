@@ -1,0 +1,5 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     'research-artifacts/test/resumed-length-host/corrected'
+relocations:     []
+...

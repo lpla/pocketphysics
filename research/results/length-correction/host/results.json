@@ -1,0 +1,20 @@
+{
+  "corrected": {
+    "actual_checksum": "7805b4b1",
+    "cases": 19662,
+    "failures": 0,
+    "reference_checksum": "7805b4b1"
+  },
+  "legacy": {
+    "actual_checksum": "b2c63575",
+    "cases": 19662,
+    "failures": 6544,
+    "reference_checksum": "7805b4b1"
+  },
+  "reference": {
+    "actual_checksum": "7805b4b1",
+    "cases": 19662,
+    "failures": 0,
+    "reference_checksum": "7805b4b1"
+  }
+}

@@ -103,10 +103,13 @@ docker run --rm --platform linux/amd64 --entrypoint bash \
     -e BENCH_REPEATS="$REPEATS" \
     -e BENCH_DURATION="$DURATION" \
     -e BENCH_EMULATOR="$EMULATOR" \
+    -e PP_BUILD_UID="$(id -u)" \
+    -e PP_BUILD_GID="$(id -g)" \
     -v "$ROOT":/workspace \
     -w /workspace \
     "$IMAGE" \
-    tools/repro/run_inrom_container.sh "${container_specs[@]}"
+    tools/repro/container_output_build.sh "$container_out" \
+    bash tools/repro/run_inrom_container.sh "${container_specs[@]}"
 
 if [ "$EMULATOR" = melonds ]; then
     configuration_args=()

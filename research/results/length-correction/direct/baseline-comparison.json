@@ -1,0 +1,11 @@
+{
+  "previous_dataset": "research/results/matched-numeric-control/results.csv",
+  "previous_sha256": "a548d6f331053489468c7b81958bbd8eee686520721ac90ce4302801745ca82b",
+  "current_sha256": "18f98717cfa8b0c5e61e3d88f4b93c9e8fb979730f1e252e3914c54c08e17bb2",
+  "records": 276,
+  "excluded_fields": [
+    "rom_sha256",
+    "rom_size_bytes"
+  ],
+  "different_records": []
+}

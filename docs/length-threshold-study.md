@@ -56,6 +56,9 @@ The [first normal-loop baseline](../research/results/runtime-loop-baseline/)
 and [matched numeric comparison](../research/results/matched-numeric-control/)
 retain the pre-correction source and binary identities. They are not current
 corrected results. The corrected selected ROM is separately source-built and
-must pass independent ROM/ELF, in-ROM matrix, repeated interaction, and timing
-gates before a current comparison is published. Physical validation remains
+passes independent ROM/ELF, in-ROM matrix, repeated interaction, polygon API,
+and timing gates in the [corrected comparison](../research/results/length-correction/).
+The recorded scene's body states remain unchanged and its fixed-point roles
+still first diverge at step 26. The length defect is confirmed independently;
+it does not explain that cross-role trajectory difference. Physical validation remains
 pending; no hardware result or universal performance benefit is inferred.

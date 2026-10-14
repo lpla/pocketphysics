@@ -41,6 +41,21 @@ def records(log: str, label: str) -> dict[str, list[list[str]]]:
     return result
 
 
+def capture_content(pixels: list[list[str]]) -> tuple[int, int]:
+    """Count floor/outline colors in the scripted scene's top-overview regions."""
+    floor, outlines = 0, 0
+    for row, payload in pixels:
+        y = int(row)
+        for x in range(128):
+            value = int(payload[4*x:4*x+4], 16)
+            red, green, blue = value & 31, (value >> 5) & 31, (value >> 10) & 31
+            floor += int(2 <= x < 42 and 22 <= y < 28 and green < 12
+                         and red > green + 8 and red > blue + 8)
+            outlines += int(2 <= x < 38 and 3 <= y < 22
+                            and blue > red + 6 and blue > green + 6)
+    return floor, outlines
+
+
 def validate_run(rows: list[dict[str, str]], data: dict[str, list[list[str]]]) -> str:
     metrics = {r["metric"]: r for r in rows}
     if len(metrics) != len(rows) or set(metrics) != TIMED | SCALARS:
@@ -124,6 +139,9 @@ def validate_run(rows: list[dict[str, str]], data: dict[str, list[list[str]]]) -
         raise AssertionError("Truncated display-capture trace")
     if len({r[1][i:i+4] for r in pixels for i in range(0,512,4)}) < 8:
         raise AssertionError("Blank or uniform display capture")
+    floor, outlines = capture_content(pixels)
+    if floor < 48 or outlines < 16:
+        raise AssertionError("Scripted floor or dynamic outlines absent from overview capture")
     canonical = "\n".join(tag + "," + ",".join(row) for tag in FIELD_COUNTS for row in data[tag])
     return hashlib.sha256(canonical.encode()).hexdigest()
 

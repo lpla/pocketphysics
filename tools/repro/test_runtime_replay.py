@@ -41,6 +41,14 @@ def fixture():
             "PPPIXEL": [[str(i), "".join(f"{j%16:04x}" for j in range(128))] for i in range(96)]}
     for b in data["PPBODY"]:
         b[2]="1" if int(b[1])<8 else "0"; b[3]="1" if b[1]=="0" else "0"
+    for row in data["PPPIXEL"]:
+        y = int(row[0])
+        pixels = [row[1][i:i+4] for i in range(0, 512, 4)]
+        if 22 <= y < 28:
+            pixels[2:42] = ["001b"] * 40
+        if 3 <= y < 22:
+            pixels[2:38] = ["6c00"] * 36
+        row[1] = "".join(pixels)
     return rows, data
 
 
@@ -102,6 +110,15 @@ class RuntimeTests(unittest.TestCase):
         png = analysis.capture_png(data["PPPIXEL"])
         self.assertEqual(png[:8], b"\x89PNG\r\n\x1a\n")
         self.assertEqual(png[16:24], b"\0\0\0\x80\0\0\0\x60")
+
+    def test_capture_content_rejects_background_without_scene(self):
+        for absent in ("floor", "outlines"):
+            rows, data = fixture()
+            marker = "001b" if absent == "floor" else "6c00"
+            for row in data["PPPIXEL"]:
+                row[1] = row[1].replace(marker, "7fff")
+            with self.assertRaisesRegex(AssertionError, "floor or dynamic outlines"):
+                analysis.validate_run(rows, data)
 
     def test_script_bounds(self):
         with tempfile.TemporaryDirectory() as tmp:

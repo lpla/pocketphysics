@@ -1,0 +1,6 @@
+{
+  "platform": "macOS-26.7.1-x86_64-i386-64bit-Mach-O",
+  "machine": "x86_64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: x86_64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "source_revision": "c8fb3bd021c0be54e1749ce523377f128a62047d"
+}

@@ -23,6 +23,7 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 
 ## Primary melonDS Comparison
 
+- [Corrected length API: independent builds, 21 comparison runs, repeated matrices, and negative controls](length-correction/)
 - [Matching fixed-point modernization control](matched-numeric-control/)
 - [First normal-loop replay and arithmetic ownership baseline](runtime-loop-baseline/)
 - [Current run-integrity revalidation: identical three-role records and API regressions](emulator-run-integrity/)
@@ -55,6 +56,9 @@ already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
 
+The [corrected comparison](length-correction/) reproduces all 276 direct records
+below after excluding only changed ROM hash/size fields. Its schema-2 normal
+loop, exhaustive length matrix, and negative controls are separate evidence.
 This table preserves the polygon-guarded checkpoint before the later
 [length-threshold correction](../../docs/length-threshold-study.md). Its
 [promotion record](polygon-promotion/) discloses the guard's small hit-test

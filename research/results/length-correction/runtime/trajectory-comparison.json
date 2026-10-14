@@ -1,0 +1,140 @@
+{
+  "alignment": "physics-step and thing index, first repetition",
+  "controls": [
+    "runtime-modern-fixed-ds",
+    "runtime-improved"
+  ],
+  "shared_records": 3528,
+  "only_control": 0,
+  "only_improved": 0,
+  "differing_records": 2374,
+  "first_differences": [
+    {
+      "step": "26",
+      "thing": "1",
+      "fields": {
+        "y_bits": [
+          "00028e29",
+          "00028e28"
+        ],
+        "y": [
+          "2.5553131103515625",
+          "2.5552978515625"
+        ]
+      }
+    },
+    {
+      "step": "26",
+      "thing": "13",
+      "fields": {
+        "y_bits": [
+          "0002b9d5",
+          "0002b9d6"
+        ],
+        "y": [
+          "2.7259063720703125",
+          "2.725921630859375"
+        ]
+      }
+    },
+    {
+      "step": "27",
+      "thing": "1",
+      "fields": {
+        "x_bits": [
+          "0000a6fc",
+          "0000a6ff"
+        ],
+        "y_bits": [
+          "00028989",
+          "00028988"
+        ],
+        "vx_bits": [
+          "ffffb71c",
+          "ffffb762"
+        ],
+        "vy_bits": [
+          "fffff7dd",
+          "fffff7ca"
+        ],
+        "x": [
+          "0.65228271484375",
+          "0.6523284912109375"
+        ],
+        "y": [
+          "2.5372467041015625",
+          "2.5372314453125"
+        ],
+        "vx": [
+          "-0.28472900390625",
+          "-0.283660888671875"
+        ],
+        "vy": [
+          "-0.0317840576171875",
+          "-0.032073974609375"
+        ]
+      }
+    },
+    {
+      "step": "27",
+      "thing": "2",
+      "fields": {
+        "y_bits": [
+          "0002a42a",
+          "0002a428"
+        ],
+        "vy_bits": [
+          "00012a5b",
+          "00012a52"
+        ],
+        "angle_bits": [
+          "fffecbcb",
+          "fffecbad"
+        ],
+        "angular_velocity_bits": [
+          "fff34ac9",
+          "fff34d0d"
+        ],
+        "y": [
+          "2.641265869140625",
+          "2.6412353515625"
+        ],
+        "vy": [
+          "1.1654510498046875",
+          "1.165313720703125"
+        ],
+        "angle": [
+          "-1.2039337158203125",
+          "-1.2043914794921875"
+        ],
+        "angular_velocity": [
+          "-12.707870483398438",
+          "-12.699020385742188"
+        ]
+      }
+    },
+    {
+      "step": "27",
+      "thing": "3",
+      "fields": {
+        "y_bits": [
+          "0002b43e",
+          "0002b43d"
+        ],
+        "vy_bits": [
+          "000213b9",
+          "000213af"
+        ],
+        "y": [
+          "2.704071044921875",
+          "2.7040557861328125"
+        ],
+        "vy": [
+          "2.0770416259765625",
+          "2.0768890380859375"
+        ]
+      }
+    }
+  ],
+  "scope": "Recorded body scalar state only; manifolds and complete joint parameters are not captured."
+}

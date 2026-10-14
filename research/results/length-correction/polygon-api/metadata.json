@@ -1,0 +1,23 @@
+{
+  "configuration": {
+    "portable_state": "isolated per run",
+    "seed_path": "tools/repro/emulators/melonds/melonDS.toml",
+    "seed_sha256": "262bd969d66f7e3deb085b61c67642133eed5d4f2f6c30d746ef4dce4e05ed23",
+    "snapshots": "runs/<label>.<iteration>/melonDS.{input,final}.toml"
+  },
+  "different_state_labels": [],
+  "docker_image": "pocketphysics-melonds:1.1",
+  "docker_image_id": "sha256:212904d22531d0f8897cc51e2725debba861c416fbae09a1aa8f11520f8bb368",
+  "docker_platform": "linux/amd64",
+  "duration_limit_seconds": 12,
+  "emulator": "melonds",
+  "emulator_version": "1.1 (official AppImage x86_64)",
+  "equivalent_to": "selected",
+  "git_commit": "c8fb3bd021c0be54e1749ce523377f128a62047d",
+  "max_timing_spread_percent": 0.0,
+  "protocol": "integration",
+  "repeats": 3,
+  "require_correctness": true,
+  "schema": 1,
+  "working_tree_dirty": false
+}

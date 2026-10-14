@@ -1,0 +1,50 @@
+{
+  "scope": "Top-overview floor and outline presence in expected projected regions; not complete object or pixel equivalence.",
+  "runs": [
+    {
+      "run": "runtime-improved.1",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 36
+    },
+    {
+      "run": "runtime-improved.2",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 36
+    },
+    {
+      "run": "runtime-improved.3",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 36
+    },
+    {
+      "run": "runtime-modern-fixed-ds.1",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 43
+    },
+    {
+      "run": "runtime-modern-fixed-ds.2",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 43
+    },
+    {
+      "run": "runtime-modern-fixed-ds.3",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 43
+    },
+    {
+      "run": "runtime-modern.1",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 48
+    },
+    {
+      "run": "runtime-modern.2",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 48
+    },
+    {
+      "run": "runtime-modern.3",
+      "red_floor_pixels": 68,
+      "blue_outline_pixels": 48
+    }
+  ]
+}
