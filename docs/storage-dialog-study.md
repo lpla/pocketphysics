@@ -76,6 +76,10 @@ match the preceding checkpoint; the ordinary replay does not open storage dialog
 
 ## Remaining Storage Acceptance
 
+The separate [world-save study](world-save-study.md) covers author termination,
+save-side pin IDs, unresolved endpoints, and one allocation-failure boundary
+using real TinyXML and files.
+
 Real FAT save/load and overwrite/cancel interaction, thumbnails and capture
 mapping, damaged XML and absent attributes, failed I/O feedback, allocation
 failures, pin serialization/removal, and preserving the current scene when

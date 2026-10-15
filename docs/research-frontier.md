@@ -61,7 +61,10 @@ insufficient. This target is separate from the accepted linked-ROM identity.
   DLDI/FAT runs with independent readback. Complete GUI sketch storage workflows
   remain unvalidated. Thumbnail capture mapping, damaged XML,
   I/O failure feedback, and preserving the current scene on failed loads still
-  need explicit acceptance tests.
+  need explicit acceptance tests. The [world-save study](world-save-study.md)
+  adds real TinyXML/file tests for full-length authors, bounded save-side pin
+  lookup, and preserving files on two early failures. Load-side full-capacity
+  IDs, forward references, and full pin round trips remain open.
 - **Fixed-point arithmetic:** memory sanitizer coverage does not audit all
   signed shifts, overflows, division boundaries, or hardware arithmetic unit
   ownership. A complete arithmetic contract and boundary matrix remain open.

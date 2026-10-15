@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
 OUT_A="$ROOT/research-artifacts/build/perf-check-a"
 OUT_B="$ROOT/research-artifacts/build/perf-check-b"
-EXPECTED_SHA="fca4d679d66d19476e7f22e005f5834282f8b054ad5d94771277d5e1e9b9b73e"
+EXPECTED_SHA="6403a17f8c789759a6b571556e5c21285401fe03b097e425a7a0faa7f1120e38"
 
 sha256_file() {
     shasum -a 256 "$1" | awk '{print $1}'

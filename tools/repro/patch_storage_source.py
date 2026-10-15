@@ -78,6 +78,51 @@ void World::save(char *filename, char *thumbnail)""",
 #endif
 		use_data_dir = false;""",
     )
+    replace(
+        world,
+        "\tThing **idtable = (Thing**)malloc(sizeof(Thing*) * (n_things+1));",
+        r"""	Thing **idtable = (Thing**)malloc(sizeof(Thing*) * (n_things+1));
+#ifdef PP_RUNTIME_FIXES
+	if(!idtable) return;
+	idtable[0] = 0;
+	for(int i=0; i<n_things; ++i)
+		idtable[i+1] = things[i];
+#endif""",
+    )
+    replace(
+        world,
+        "\tchar authorname[10] = {0};",
+        r"""#ifdef PP_RUNTIME_FIXES
+	char authorname[11] = {0};
+#else
+	char authorname[10] = {0};
+#endif""",
+    )
+    replace(
+        world,
+        "\t\t\t\t\twhile( (idtable[pinned_id] != pinned_thing) && (pinned_id < n_things+1) )",
+        r"""#ifdef PP_RUNTIME_FIXES
+					while( (pinned_id < n_things+1) && (idtable[pinned_id] != pinned_thing) )
+#else
+					while( (idtable[pinned_id] != pinned_thing) && (pinned_id < n_things+1) )
+#endif""",
+    )
+    replace(
+        world,
+        r"""					if(pinned_id == n_things+1)
+						printf("Weird: Pinned thing not found!\n");""",
+        r"""					if(pinned_id == n_things+1)
+					{
+						printf("Weird: Pinned thing not found!\n");
+#ifdef PP_RUNTIME_FIXES
+						// Reject an unresolved endpoint before replacing an existing file.
+						delete thingelement;
+						delete worldelement;
+						free(idtable);
+						return;
+#endif
+					}""",
+    )
     tw = src / "arm9/source/tobkit/typewriter.cpp"
     replace(
         tw,

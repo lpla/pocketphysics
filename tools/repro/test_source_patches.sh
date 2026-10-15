@@ -14,6 +14,7 @@ sha256_file() {
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
+export PYTHONPYCACHEPREFIX="$OUT/pycache"
 git -C "$ROOT" archive e9b621e | tar -x -C "$OUT"
 git -C "$ROOT" show 3e538e0:arm9/source/PPBoundaryListener.h > "$OUT/arm9/source/PPBoundaryListener.h"
 git -C "$ROOT" show 3e538e0:arm9/source/PPBoundaryListener.cpp > "$OUT/arm9/source/PPBoundaryListener.cpp"
@@ -32,6 +33,13 @@ mv "$OUT/deps/Box2D" "$OUT/deps/box2d-2.0.1"
 
 python3 "$ROOT/tools/repro/patch_v06_source.py" "$OUT"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_storage_dialogs.py" "$OUT" "$OUT/storage-dialogs"
+source "$ROOT/tools/repro/fetch_locked.sh"
+fetch \
+    "https://snapshot.debian.org/file/cba3f50dd657cb1434674a03b21394df9913d764" \
+    "$DEPS_CACHE/tinyxml_2.6.2.orig.tar.gz" \
+    "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593"
+python3 "$ROOT/tools/repro/test_world_save.py" "$OUT" "$OUT/world-save" \
+    --tinyxml-archive "$DEPS_CACHE/tinyxml_2.6.2.orig.tar.gz"
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$OUT/deps/box2d-2.0.1"
 python3 "$ROOT/tools/repro/test_length_threshold.py" "$OUT/deps/box2d-2.0.1" "$OUT/length-threshold"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_velocity_gate.py" "$OUT/deps/box2d-2.0.1"
