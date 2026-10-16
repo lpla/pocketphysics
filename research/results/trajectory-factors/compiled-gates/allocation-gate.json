@@ -1,0 +1,25 @@
+{
+  "symbol": "_ZN5World11getThingsAtEiiPP5Thingib",
+  "operator_new_symbol": "_Znwj",
+  "specimens": [
+    {
+      "profile": "runtime-modern-fixed-ds",
+      "allocation_relocations": 1,
+      "object_sha256": "b48de7ea8646172b313b491eb48f4cdae9cd94912bcb3b1a3ebc5c2bb4ac66a8",
+      "disassembly_sha256": "a85176a128deb4e2097cf402c6e3d24bc4c6d115e5201c155834bfefd3ae9e80"
+    },
+    {
+      "profile": "trajectory-arm-a",
+      "allocation_relocations": 1,
+      "object_sha256": "b469d7df316a1395cd9b6b3b0aaa535e445558d4c6cedc6778a20c6d277a88cb",
+      "disassembly_sha256": "51fd56375e35821c5fb6f0932103a3e64bda9cf3c54aa0e42cd358e351a96e71"
+    },
+    {
+      "profile": "trajectory-picking-a",
+      "allocation_relocations": 0,
+      "object_sha256": "b71dec3bf22724c5dde7c0837f766a0764ea09d6571310c93f9abca5d4fed8d6",
+      "disassembly_sha256": "b0d548a12d1d693d9462713fd9c73fe62529629732a5a04396b30b5437e11bf0"
+    }
+  ],
+  "scope": "Allocation call relocation in the compiled picking function; not a proof of contact-order causality."
+}

@@ -1,0 +1,23 @@
+{
+  "reused_inputs": {
+    "runtime-modern-fixed-ds": {
+      "published_input_dataset": "research/results/length-correction/runtime",
+      "source_revision": "c8fb3bd021c0be54e1749ce523377f128a62047d",
+      "rom_sha256": "eee591698136acaa0f051e238ca1bc5100f8d6346c565dbf0660745f8f77674a"
+    },
+    "runtime-improved": {
+      "published_input_dataset": "research/results/world-save/runtime",
+      "source_revision": "e04656ace94017d97ad591bffdebb9cfebf391dc",
+      "rom_sha256": "ce7c2ed0a38d61d3b9c288f9a9ae1d5fb80894eec308da742610b5796531ecdd"
+    }
+  },
+  "release_identity_checks": {
+    "selected": {
+      "nds_sha256": "6403a17f8c789759a6b571556e5c21285401fe03b097e425a7a0faa7f1120e38",
+      "elf_sha256": "b9096c3dcb112a65d7437bdd98e23ec9536747b01f6581525c979978b97d3caa"
+    },
+    "frozen_modern": {
+      "nds_sha256": "93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06"
+    }
+  }
+}

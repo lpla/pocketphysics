@@ -36,6 +36,10 @@ positive components, so this is not a claim to audit negative signed shifts or
 all fixed-point overflows. The mathematical threshold argument and the bounded
 exhaustive matrix have distinct scopes.
 
+The separate [signed extension](signed-length-study.md) adds 78,648 host cases
+in the modern target's C++20 language mode, with numerical and language-mode
+negative controls. Native signed-vector execution remains a separate gate.
+
 Schema-2 fixed-point runtime ROMs also execute the shared matrix after timing,
 with actual ARM9 hardware division and square root. Floating-point runtime
 controls report zero fixed-point cases. Runtime gates require the correct case

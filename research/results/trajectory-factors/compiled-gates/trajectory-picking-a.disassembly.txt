@@ -1,0 +1,393 @@
+
+/workspace/research-artifacts/build/trajectory-picking-a/obj/src__arm9__source__world.cpp.o:     file format elf32-littlearm
+
+
+Disassembly of section .text._ZN12b2PolygonDefD2Ev:
+
+Disassembly of section .text._ZN11b2CircleDefD2Ev:
+
+Disassembly of section .text._ZN12b2PolygonDefD0Ev:
+
+Disassembly of section .text._ZN11b2CircleDefD0Ev:
+
+Disassembly of section .text._ZN5WorldD2Ev:
+
+Disassembly of section .text._ZN5World3addEP5Thing:
+
+Disassembly of section .text._ZN5World3pinEP3PinP5ThingS3_:
+
+Disassembly of section .text._ZN5World4grabEP5Thingii:
+
+Disassembly of section .text._ZN5World4dragEii:
+
+Disassembly of section .text._ZN5World5letGoEv:
+
+Disassembly of section .text._ZN5World11getThingsAtEiiPP5Thingib:
+
+00000000 <_ZN5World11getThingsAtEiiPP5Thingib>:
+   0:	b5f0      	push	{r4, r5, r6, r7, lr}
+   2:	464e      	mov	r6, r9
+   4:	4657      	mov	r7, sl
+   6:	46de      	mov	lr, fp
+   8:	4645      	mov	r5, r8
+   a:	468a      	mov	sl, r1
+   c:	b5e0      	push	{r5, r6, r7, lr}
+   e:	b09b      	sub	sp, #108	@ 0x6c
+  10:	001c      	movs	r4, r3
+  12:	ab24      	add	r3, sp, #144	@ 0x90
+  14:	4691      	mov	r9, r2
+  16:	cb04      	ldmia	r3!, {r2}
+  18:	0006      	movs	r6, r0
+  1a:	7819      	ldrb	r1, [r3, #0]
+  1c:	4653      	mov	r3, sl
+  1e:	9200      	str	r2, [sp, #0]
+  20:	2200      	movs	r2, #0
+  22:	1e98      	subs	r0, r3, #2
+  24:	0400      	lsls	r0, r0, #16
+  26:	1403      	asrs	r3, r0, #16
+  28:	4896      	ldr	r0, [pc, #600]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+  2a:	c00c      	stmia	r0!, {r2, r3}
+  2c:	22c8      	movs	r2, #200	@ 0xc8
+  2e:	4b96      	ldr	r3, [pc, #600]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+  30:	0392      	lsls	r2, r2, #14
+  32:	601a      	str	r2, [r3, #0]
+  34:	2303      	movs	r3, #3
+  36:	4a95      	ldr	r2, [pc, #596]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+  38:	8810      	ldrh	r0, [r2, #0]
+  3a:	4003      	ands	r3, r0
+  3c:	2b01      	cmp	r3, #1
+  3e:	d001      	beq.n	44 <_ZN5World11getThingsAtEiiPP5Thingib+0x44>
+  40:	2301      	movs	r3, #1
+  42:	8013      	strh	r3, [r2, #0]
+  44:	4891      	ldr	r0, [pc, #580]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+  46:	2200      	movs	r2, #0
+  48:	5e83      	ldrsh	r3, [r0, r2]
+  4a:	2b00      	cmp	r3, #0
+  4c:	dbfb      	blt.n	46 <_ZN5World11getThingsAtEiiPP5Thingib+0x46>
+  4e:	4b90      	ldr	r3, [pc, #576]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+  50:	2200      	movs	r2, #0
+  52:	681d      	ldr	r5, [r3, #0]
+  54:	464b      	mov	r3, r9
+  56:	1e9f      	subs	r7, r3, #2
+  58:	043f      	lsls	r7, r7, #16
+  5a:	143b      	asrs	r3, r7, #16
+  5c:	4f89      	ldr	r7, [pc, #548]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+  5e:	c70c      	stmia	r7!, {r2, r3}
+  60:	22c8      	movs	r2, #200	@ 0xc8
+  62:	4b89      	ldr	r3, [pc, #548]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+  64:	0392      	lsls	r2, r2, #14
+  66:	601a      	str	r2, [r3, #0]
+  68:	2303      	movs	r3, #3
+  6a:	8802      	ldrh	r2, [r0, #0]
+  6c:	4013      	ands	r3, r2
+  6e:	2b01      	cmp	r3, #1
+  70:	d001      	beq.n	76 <_ZN5World11getThingsAtEiiPP5Thingib+0x76>
+  72:	2301      	movs	r3, #1
+  74:	8003      	strh	r3, [r0, #0]
+  76:	4885      	ldr	r0, [pc, #532]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+  78:	2200      	movs	r2, #0
+  7a:	5e83      	ldrsh	r3, [r0, r2]
+  7c:	2b00      	cmp	r3, #0
+  7e:	dbfb      	blt.n	78 <_ZN5World11getThingsAtEiiPP5Thingib+0x78>
+  80:	4b83      	ldr	r3, [pc, #524]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+  82:	2200      	movs	r2, #0
+  84:	681b      	ldr	r3, [r3, #0]
+  86:	9506      	str	r5, [sp, #24]
+  88:	9307      	str	r3, [sp, #28]
+  8a:	4653      	mov	r3, sl
+  8c:	1c9d      	adds	r5, r3, #2
+  8e:	042d      	lsls	r5, r5, #16
+  90:	142b      	asrs	r3, r5, #16
+  92:	4d7c      	ldr	r5, [pc, #496]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+  94:	c50c      	stmia	r5!, {r2, r3}
+  96:	22c8      	movs	r2, #200	@ 0xc8
+  98:	4b7b      	ldr	r3, [pc, #492]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+  9a:	0392      	lsls	r2, r2, #14
+  9c:	601a      	str	r2, [r3, #0]
+  9e:	2303      	movs	r3, #3
+  a0:	8802      	ldrh	r2, [r0, #0]
+  a2:	4013      	ands	r3, r2
+  a4:	2b01      	cmp	r3, #1
+  a6:	d001      	beq.n	ac <_ZN5World11getThingsAtEiiPP5Thingib+0xac>
+  a8:	2301      	movs	r3, #1
+  aa:	8003      	strh	r3, [r0, #0]
+  ac:	4877      	ldr	r0, [pc, #476]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+  ae:	2200      	movs	r2, #0
+  b0:	5e83      	ldrsh	r3, [r0, r2]
+  b2:	2b00      	cmp	r3, #0
+  b4:	dbfb      	blt.n	ae <_ZN5World11getThingsAtEiiPP5Thingib+0xae>
+  b6:	4b76      	ldr	r3, [pc, #472]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+  b8:	2200      	movs	r2, #0
+  ba:	681f      	ldr	r7, [r3, #0]
+  bc:	464b      	mov	r3, r9
+  be:	1c9d      	adds	r5, r3, #2
+  c0:	042d      	lsls	r5, r5, #16
+  c2:	142b      	asrs	r3, r5, #16
+  c4:	4d6f      	ldr	r5, [pc, #444]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+  c6:	c50c      	stmia	r5!, {r2, r3}
+  c8:	22c8      	movs	r2, #200	@ 0xc8
+  ca:	4b6f      	ldr	r3, [pc, #444]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+  cc:	0392      	lsls	r2, r2, #14
+  ce:	601a      	str	r2, [r3, #0]
+  d0:	2303      	movs	r3, #3
+  d2:	8802      	ldrh	r2, [r0, #0]
+  d4:	4013      	ands	r3, r2
+  d6:	2b01      	cmp	r3, #1
+  d8:	d001      	beq.n	de <_ZN5World11getThingsAtEiiPP5Thingib+0xde>
+  da:	2301      	movs	r3, #1
+  dc:	8003      	strh	r3, [r0, #0]
+  de:	4d6b      	ldr	r5, [pc, #428]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+  e0:	2200      	movs	r2, #0
+  e2:	5eab      	ldrsh	r3, [r5, r2]
+  e4:	2b00      	cmp	r3, #0
+  e6:	dbfb      	blt.n	e0 <_ZN5World11getThingsAtEiiPP5Thingib+0xe0>
+  e8:	4b69      	ldr	r3, [pc, #420]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+  ea:	2200      	movs	r2, #0
+  ec:	681b      	ldr	r3, [r3, #0]
+  ee:	9708      	str	r7, [sp, #32]
+  f0:	9309      	str	r3, [sp, #36]	@ 0x24
+  f2:	4653      	mov	r3, sl
+  f4:	0418      	lsls	r0, r3, #16
+  f6:	1403      	asrs	r3, r0, #16
+  f8:	4862      	ldr	r0, [pc, #392]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+  fa:	c00c      	stmia	r0!, {r2, r3}
+  fc:	22c8      	movs	r2, #200	@ 0xc8
+  fe:	4b62      	ldr	r3, [pc, #392]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+ 100:	0392      	lsls	r2, r2, #14
+ 102:	601a      	str	r2, [r3, #0]
+ 104:	2303      	movs	r3, #3
+ 106:	882a      	ldrh	r2, [r5, #0]
+ 108:	4013      	ands	r3, r2
+ 10a:	2b01      	cmp	r3, #1
+ 10c:	d001      	beq.n	112 <_ZN5World11getThingsAtEiiPP5Thingib+0x112>
+ 10e:	2301      	movs	r3, #1
+ 110:	802b      	strh	r3, [r5, #0]
+ 112:	4f5e      	ldr	r7, [pc, #376]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+ 114:	2200      	movs	r2, #0
+ 116:	5ebb      	ldrsh	r3, [r7, r2]
+ 118:	2b00      	cmp	r3, #0
+ 11a:	dbfb      	blt.n	114 <_ZN5World11getThingsAtEiiPP5Thingib+0x114>
+ 11c:	4b5c      	ldr	r3, [pc, #368]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+ 11e:	2200      	movs	r2, #0
+ 120:	681d      	ldr	r5, [r3, #0]
+ 122:	464b      	mov	r3, r9
+ 124:	0418      	lsls	r0, r3, #16
+ 126:	1403      	asrs	r3, r0, #16
+ 128:	4856      	ldr	r0, [pc, #344]	@ (284 <_ZN5World11getThingsAtEiiPP5Thingib+0x284>)
+ 12a:	c00c      	stmia	r0!, {r2, r3}
+ 12c:	22c8      	movs	r2, #200	@ 0xc8
+ 12e:	4b56      	ldr	r3, [pc, #344]	@ (288 <_ZN5World11getThingsAtEiiPP5Thingib+0x288>)
+ 130:	0392      	lsls	r2, r2, #14
+ 132:	601a      	str	r2, [r3, #0]
+ 134:	2303      	movs	r3, #3
+ 136:	883a      	ldrh	r2, [r7, #0]
+ 138:	4013      	ands	r3, r2
+ 13a:	2b01      	cmp	r3, #1
+ 13c:	d001      	beq.n	142 <_ZN5World11getThingsAtEiiPP5Thingib+0x142>
+ 13e:	2301      	movs	r3, #1
+ 140:	803b      	strh	r3, [r7, #0]
+ 142:	4a52      	ldr	r2, [pc, #328]	@ (28c <_ZN5World11getThingsAtEiiPP5Thingib+0x28c>)
+ 144:	2000      	movs	r0, #0
+ 146:	5e13      	ldrsh	r3, [r2, r0]
+ 148:	2b00      	cmp	r3, #0
+ 14a:	dbfb      	blt.n	144 <_ZN5World11getThingsAtEiiPP5Thingib+0x144>
+ 14c:	4b50      	ldr	r3, [pc, #320]	@ (290 <_ZN5World11getThingsAtEiiPP5Thingib+0x290>)
+ 14e:	681b      	ldr	r3, [r3, #0]
+ 150:	9504      	str	r5, [sp, #16]
+ 152:	9305      	str	r3, [sp, #20]
+ 154:	2900      	cmp	r1, #0
+ 156:	d034      	beq.n	1c2 <_ZN5World11getThingsAtEiiPP5Thingib+0x1c2>
+ 158:	23c8      	movs	r3, #200	@ 0xc8
+ 15a:	58f3      	ldr	r3, [r6, r3]
+ 15c:	2b00      	cmp	r3, #0
+ 15e:	dd30      	ble.n	1c2 <_ZN5World11getThingsAtEiiPP5Thingib+0x1c2>
+ 160:	ab0a      	add	r3, sp, #40	@ 0x28
+ 162:	9301      	str	r3, [sp, #4]
+ 164:	23c8      	movs	r3, #200	@ 0xc8
+ 166:	2700      	movs	r7, #0
+ 168:	2500      	movs	r5, #0
+ 16a:	4698      	mov	r8, r3
+ 16c:	46a3      	mov	fp, r4
+ 16e:	e005      	b.n	17c <_ZN5World11getThingsAtEiiPP5Thingib+0x17c>
+ 170:	4643      	mov	r3, r8
+ 172:	58f3      	ldr	r3, [r6, r3]
+ 174:	3701      	adds	r7, #1
+ 176:	42bb      	cmp	r3, r7
+ 178:	dc00      	bgt.n	17c <_ZN5World11getThingsAtEiiPP5Thingib+0x17c>
+ 17a:	e081      	b.n	280 <_ZN5World11getThingsAtEiiPP5Thingib+0x280>
+ 17c:	9b00      	ldr	r3, [sp, #0]
+ 17e:	429d      	cmp	r5, r3
+ 180:	da6d      	bge.n	25e <_ZN5World11getThingsAtEiiPP5Thingib+0x25e>
+ 182:	00bb      	lsls	r3, r7, #2
+ 184:	58f4      	ldr	r4, [r6, r3]
+ 186:	0020      	movs	r0, r4
+ 188:	f7ff fffe 	bl	0 <_ZN5Thing8getShapeEv>
+			188: R_ARM_THM_CALL	_ZN5Thing8getShapeEv
+ 18c:	2802      	cmp	r0, #2
+ 18e:	d1ef      	bne.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 190:	6823      	ldr	r3, [r4, #0]
+ 192:	9a01      	ldr	r2, [sp, #4]
+ 194:	689b      	ldr	r3, [r3, #8]
+ 196:	0020      	movs	r0, r4
+ 198:	a903      	add	r1, sp, #12
+ 19a:	4798      	blx	r3
+ 19c:	9b03      	ldr	r3, [sp, #12]
+ 19e:	1eda      	subs	r2, r3, #3
+ 1a0:	4552      	cmp	r2, sl
+ 1a2:	dce5      	bgt.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 1a4:	3303      	adds	r3, #3
+ 1a6:	4553      	cmp	r3, sl
+ 1a8:	dbe2      	blt.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 1aa:	9b0a      	ldr	r3, [sp, #40]	@ 0x28
+ 1ac:	1eda      	subs	r2, r3, #3
+ 1ae:	454a      	cmp	r2, r9
+ 1b0:	dcde      	bgt.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 1b2:	3303      	adds	r3, #3
+ 1b4:	454b      	cmp	r3, r9
+ 1b6:	dbdb      	blt.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 1b8:	465a      	mov	r2, fp
+ 1ba:	00ab      	lsls	r3, r5, #2
+ 1bc:	50d4      	str	r4, [r2, r3]
+ 1be:	3501      	adds	r5, #1
+ 1c0:	e7d6      	b.n	170 <_ZN5World11getThingsAtEiiPP5Thingib+0x170>
+ 1c2:	2500      	movs	r5, #0
+ 1c4:	ab0a      	add	r3, sp, #40	@ 0x28
+ 1c6:	9301      	str	r3, [sp, #4]
+ 1c8:	23e0      	movs	r3, #224	@ 0xe0
+ 1ca:	9a01      	ldr	r2, [sp, #4]
+ 1cc:	58f0      	ldr	r0, [r6, r3]
+ 1ce:	a906      	add	r1, sp, #24
+ 1d0:	3bd0      	subs	r3, #208	@ 0xd0
+ 1d2:	f7ff fffe 	bl	0 <_ZN7b2World5QueryERK6b2AABBPP7b2Shapel>
+			1d2: R_ARM_THM_CALL	_ZN7b2World5QueryERK6b2AABBPP7b2Shapel
+ 1d6:	9a00      	ldr	r2, [sp, #0]
+ 1d8:	4680      	mov	r8, r0
+ 1da:	2301      	movs	r3, #1
+ 1dc:	4295      	cmp	r5, r2
+ 1de:	da4d      	bge.n	27c <_ZN5World11getThingsAtEiiPP5Thingib+0x27c>
+ 1e0:	061b      	lsls	r3, r3, #24
+ 1e2:	d043      	beq.n	26c <_ZN5World11getThingsAtEiiPP5Thingib+0x26c>
+ 1e4:	4643      	mov	r3, r8
+ 1e6:	2b00      	cmp	r3, #0
+ 1e8:	dd40      	ble.n	26c <_ZN5World11getThingsAtEiiPP5Thingib+0x26c>
+ 1ea:	9b01      	ldr	r3, [sp, #4]
+ 1ec:	46a1      	mov	r9, r4
+ 1ee:	469b      	mov	fp, r3
+ 1f0:	2300      	movs	r3, #0
+ 1f2:	469a      	mov	sl, r3
+ 1f4:	e010      	b.n	218 <_ZN5World11getThingsAtEiiPP5Thingib+0x218>
+ 1f6:	2301      	movs	r3, #1
+ 1f8:	449a      	add	sl, r3
+ 1fa:	3303      	adds	r3, #3
+ 1fc:	449b      	add	fp, r3
+ 1fe:	2301      	movs	r3, #1
+ 200:	45d0      	cmp	r8, sl
+ 202:	dc00      	bgt.n	206 <_ZN5World11getThingsAtEiiPP5Thingib+0x206>
+ 204:	2300      	movs	r3, #0
+ 206:	061b      	lsls	r3, r3, #24
+ 208:	d030      	beq.n	26c <_ZN5World11getThingsAtEiiPP5Thingib+0x26c>
+ 20a:	9a00      	ldr	r2, [sp, #0]
+ 20c:	2301      	movs	r3, #1
+ 20e:	4295      	cmp	r5, r2
+ 210:	db00      	blt.n	214 <_ZN5World11getThingsAtEiiPP5Thingib+0x214>
+ 212:	2300      	movs	r3, #0
+ 214:	061b      	lsls	r3, r3, #24
+ 216:	d029      	beq.n	26c <_ZN5World11getThingsAtEiiPP5Thingib+0x26c>
+ 218:	465b      	mov	r3, fp
+ 21a:	6818      	ldr	r0, [r3, #0]
+ 21c:	aa04      	add	r2, sp, #16
+ 21e:	68c4      	ldr	r4, [r0, #12]
+ 220:	6803      	ldr	r3, [r0, #0]
+ 222:	1d21      	adds	r1, r4, #4
+ 224:	681b      	ldr	r3, [r3, #0]
+ 226:	4798      	blx	r3
+ 228:	2800      	cmp	r0, #0
+ 22a:	d0e4      	beq.n	1f6 <_ZN5World11getThingsAtEiiPP5Thingib+0x1f6>
+ 22c:	2600      	movs	r6, #0
+ 22e:	2700      	movs	r7, #0
+ 230:	2d00      	cmp	r5, #0
+ 232:	dd0d      	ble.n	250 <_ZN5World11getThingsAtEiiPP5Thingib+0x250>
+ 234:	464a      	mov	r2, r9
+ 236:	00b3      	lsls	r3, r6, #2
+ 238:	58d0      	ldr	r0, [r2, r3]
+ 23a:	f7ff fffe 	bl	0 <_ZN5Thing9getb2BodyEv>
+			23a: R_ARM_THM_CALL	_ZN5Thing9getb2BodyEv
+ 23e:	1b00      	subs	r0, r0, r4
+ 240:	4243      	negs	r3, r0
+ 242:	4158      	adcs	r0, r3
+ 244:	3601      	adds	r6, #1
+ 246:	4307      	orrs	r7, r0
+ 248:	42b5      	cmp	r5, r6
+ 24a:	d1f3      	bne.n	234 <_ZN5World11getThingsAtEiiPP5Thingib+0x234>
+ 24c:	2f00      	cmp	r7, #0
+ 24e:	d1d2      	bne.n	1f6 <_ZN5World11getThingsAtEiiPP5Thingib+0x1f6>
+ 250:	2390      	movs	r3, #144	@ 0x90
+ 252:	4649      	mov	r1, r9
+ 254:	58e2      	ldr	r2, [r4, r3]
+ 256:	00ab      	lsls	r3, r5, #2
+ 258:	50ca      	str	r2, [r1, r3]
+ 25a:	3501      	adds	r5, #1
+ 25c:	e7cb      	b.n	1f6 <_ZN5World11getThingsAtEiiPP5Thingib+0x1f6>
+ 25e:	23e0      	movs	r3, #224	@ 0xe0
+ 260:	9a01      	ldr	r2, [sp, #4]
+ 262:	58f0      	ldr	r0, [r6, r3]
+ 264:	a906      	add	r1, sp, #24
+ 266:	3bd0      	subs	r3, #208	@ 0xd0
+ 268:	f7ff fffe 	bl	0 <_ZN7b2World5QueryERK6b2AABBPP7b2Shapel>
+			268: R_ARM_THM_CALL	_ZN7b2World5QueryERK6b2AABBPP7b2Shapel
+ 26c:	0028      	movs	r0, r5
+ 26e:	b01b      	add	sp, #108	@ 0x6c
+ 270:	bcf0      	pop	{r4, r5, r6, r7}
+ 272:	46bb      	mov	fp, r7
+ 274:	46b2      	mov	sl, r6
+ 276:	46a9      	mov	r9, r5
+ 278:	46a0      	mov	r8, r4
+ 27a:	bdf0      	pop	{r4, r5, r6, r7, pc}
+ 27c:	2300      	movs	r3, #0
+ 27e:	e7af      	b.n	1e0 <_ZN5World11getThingsAtEiiPP5Thingib+0x1e0>
+ 280:	465c      	mov	r4, fp
+ 282:	e7a1      	b.n	1c8 <_ZN5World11getThingsAtEiiPP5Thingib+0x1c8>
+ 284:	04000290 	.word	0x04000290
+ 288:	04000298 	.word	0x04000298
+ 28c:	04000280 	.word	0x04000280
+ 290:	040002a0 	.word	0x040002a0
+
+Disassembly of section .text._ZN5World18getConnectedThingsEP5ThingPi:
+
+Disassembly of section .text._ZN5World12makePhysicalEP5Thing:
+
+Disassembly of section .text._ZN5World14makeUnphysicalEP5Thing:
+
+Disassembly of section .text._ZN5World6removeEP5Thing:
+
+Disassembly of section .text._ZN5World10getNThingsEv:
+
+Disassembly of section .text._ZN5World8getThingEi:
+
+Disassembly of section .text._ZN5World13getDimensionsEPiS0_:
+
+Disassembly of section .text._ZN5World10getGravityEP5FixedS1_:
+
+Disassembly of section .text._ZN5World10setGravityE5FixedS0_:
+
+Disassembly of section .text._ZN5World4stepE5Fixed:
+
+Disassembly of section .text._ZN5World4saveEPcS0_:
+
+Disassembly of section .text._ZN5World23markForMakingUnphysicalEP5Thing:
+
+Disassembly of section .text._ZN5World26makeMarkedThingsUnphysicalEv:
+
+Disassembly of section .text._ZN5World11initPhysicsEb:
+
+Disassembly of section .text._ZN5World14makeJointDummyEv:
+
+Disassembly of section .text._ZN5WorldC2Eiib:
+
+Disassembly of section .text._ZN5World5resetEb:
+
+Disassembly of section .text._ZN5World4loadEPc:
+
+Disassembly of section .text._ZN5World17destroyJointDummyEv:
+
+Disassembly of section .text.startup._GLOBAL__sub_I__ZN5WorldC2Eiib:

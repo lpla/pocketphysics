@@ -53,3 +53,10 @@ selected-release rebuild retains ROM SHA-256
 and its complete preceding ELF. The frozen modern release retains
 `93776d717fa58da9b5d70aee8240b0a0a569e8411817e26d580d28d6a408ff06`.
 Repeated trajectory evidence is required separately.
+
+The [clean twelve-run comparison](../research/results/trajectory-factors/)
+now retains the complete acceptance records. Both isolated controls preserve
+all 3,528 recorded baseline body states; the selected port still differs in
+2,374 records beginning at step 26. Thus neither factor individually reproduces
+the selected trajectory in this workload. Broader fix/optimization combinations,
+compiler/link options, full manifolds, and joint parameters remain to isolate.

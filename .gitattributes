@@ -30,3 +30,5 @@ research/results/world-save-constants/** -text -whitespace
 research/results/world-save-constants/README.md text whitespace
 research/results/world-load-pin-control/** -text -whitespace
 research/results/world-load-pin-control/README.md text whitespace
+research/results/trajectory-factors/** -text -whitespace
+research/results/trajectory-factors/README.md text whitespace

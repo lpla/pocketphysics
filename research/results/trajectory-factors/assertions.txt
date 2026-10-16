@@ -1,0 +1,13 @@
+runtime-improved 1: complete GUI/lifecycle/dragging replay, raw-state SHA256 306e71a48f07f4505d1718875e2dbef01b6c0920d4b01b1e721acb1cccfbb15a
+runtime-improved 2: complete GUI/lifecycle/dragging replay, raw-state SHA256 306e71a48f07f4505d1718875e2dbef01b6c0920d4b01b1e721acb1cccfbb15a
+runtime-improved 3: complete GUI/lifecycle/dragging replay, raw-state SHA256 306e71a48f07f4505d1718875e2dbef01b6c0920d4b01b1e721acb1cccfbb15a
+runtime-modern-fixed-ds 1: complete GUI/lifecycle/dragging replay, raw-state SHA256 7b2957ccfe3701bcbdf6764f73cff179cd418913a54a4e95683b71926fbbcf0d
+runtime-modern-fixed-ds 2: complete GUI/lifecycle/dragging replay, raw-state SHA256 7b2957ccfe3701bcbdf6764f73cff179cd418913a54a4e95683b71926fbbcf0d
+runtime-modern-fixed-ds 3: complete GUI/lifecycle/dragging replay, raw-state SHA256 7b2957ccfe3701bcbdf6764f73cff179cd418913a54a4e95683b71926fbbcf0d
+runtime-modern-fixed-ds-arm 1: complete GUI/lifecycle/dragging replay, raw-state SHA256 93383641a47d80912db9ecd5bd486ef3c6056811af9ca526107ed7fa31dbd1da
+runtime-modern-fixed-ds-arm 2: complete GUI/lifecycle/dragging replay, raw-state SHA256 93383641a47d80912db9ecd5bd486ef3c6056811af9ca526107ed7fa31dbd1da
+runtime-modern-fixed-ds-arm 3: complete GUI/lifecycle/dragging replay, raw-state SHA256 93383641a47d80912db9ecd5bd486ef3c6056811af9ca526107ed7fa31dbd1da
+runtime-modern-fixed-ds-picking 1: complete GUI/lifecycle/dragging replay, raw-state SHA256 e071174afdca1981b860456f1467b7ba0d38ef282a7b7ddcba28dcd39a0431b3
+runtime-modern-fixed-ds-picking 2: complete GUI/lifecycle/dragging replay, raw-state SHA256 e071174afdca1981b860456f1467b7ba0d38ef282a7b7ddcba28dcd39a0431b3
+runtime-modern-fixed-ds-picking 3: complete GUI/lifecycle/dragging replay, raw-state SHA256 e071174afdca1981b860456f1467b7ba0d38ef282a7b7ddcba28dcd39a0431b3
+All repeated timing records and raw traces match within each binary.

@@ -42,6 +42,7 @@ python3 "$ROOT/tools/repro/test_world_save.py" "$OUT" "$OUT/world-save" \
     --tinyxml-archive "$DEPS_CACHE/tinyxml_2.6.2.orig.tar.gz"
 python3 "$ROOT/tools/repro/patch_box2d_source.py" "$OUT/deps/box2d-2.0.1"
 python3 "$ROOT/tools/repro/test_length_threshold.py" "$OUT/deps/box2d-2.0.1" "$OUT/length-threshold"
+python3 "$ROOT/tools/repro/test_signed_length.py" "$OUT/deps/box2d-2.0.1" "$OUT/signed-length"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_velocity_gate.py" "$OUT/deps/box2d-2.0.1"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_polygon_guard.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_benchmark_paths.py"

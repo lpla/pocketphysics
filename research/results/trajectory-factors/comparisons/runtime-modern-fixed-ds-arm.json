@@ -1,0 +1,13 @@
+{
+  "reference_label": "runtime-modern-fixed-ds",
+  "candidate_label": "runtime-modern-fixed-ds-arm",
+  "reference_csv_sha256": "2eb6fdba57b2f0bc2cf3825860339a5702350ea9e7b9323a1dfe16e08e193e8c",
+  "candidate_csv_sha256": "2eb6fdba57b2f0bc2cf3825860339a5702350ea9e7b9323a1dfe16e08e193e8c",
+  "alignment": "physics step and thing index, first repetition; run validators establish within-specimen repetition",
+  "shared_records": 3528,
+  "only_reference": 0,
+  "only_candidate": 0,
+  "differing_records": 0,
+  "first_differences": [],
+  "scope": "Recorded raw transforms, velocities, shape/type/body flags, and awake state. Hidden manifolds and joint parameters are not captured; timing and event alignment are separate."
+}
