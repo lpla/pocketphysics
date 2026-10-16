@@ -65,6 +65,7 @@ PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_fetch_locked.
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_analyze_inrom.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_runtime_replay.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 "$ROOT/tools/repro/test_emulated_fat.py"
+python3 "$ROOT/tools/repro/test_compare_runtime_bodies.py"
 PYTHONPYCACHEPREFIX="$OUT/pycache" python3 -m py_compile "$ROOT"/tools/repro/*.py
 python3 "$ROOT/tools/repro/check_markdown_links.py"
 bash -n "$ROOT"/tools/repro/*.sh

@@ -45,7 +45,7 @@ COMMON_WARN=(-Wall -Wno-deprecated-declarations -Wno-write-strings -Wno-unused-v
 PROFILE_KIND="$BUILD_PROFILE"
 case "$BUILD_PROFILE" in
     runtime-modern) PROFILE_KIND=bench-modern ;;
-    runtime-modern-fixed-ds) PROFILE_KIND=bench-modern-fixed-ds ;;
+    runtime-modern-fixed-ds|runtime-modern-fixed-ds-arm|runtime-modern-fixed-ds-picking) PROFILE_KIND=bench-modern-fixed-ds ;;
     runtime-improved|runtime-improved-irq-control|runtime-improved-length-control) PROFILE_KIND=bench-improved ;;
 esac
 case "$PROFILE_KIND" in
@@ -467,6 +467,18 @@ case "$PROFILE_KIND" in
     *)
         echo "Unknown BUILD_PROFILE: $BUILD_PROFILE" >&2
         exit 1
+        ;;
+esac
+
+# Single-factor trajectory controls retain the fixed-point modernization stack.
+case "$BUILD_PROFILE" in
+    runtime-modern-fixed-ds-arm)
+        ARCH9=(-marm -mcpu=arm946e-s+nofp)
+        BOX2D_MODE="fixed-point DS hardware math/ARM/O3 modernization control"
+        ;;
+    runtime-modern-fixed-ds-picking)
+        PROFILE_DEFS+=(-DPP_PICKING_STACK_CONTROL)
+        BOX2D_MODE="fixed-point DS hardware math/Thumb/O3 with stack-only picking control"
         ;;
 esac
 

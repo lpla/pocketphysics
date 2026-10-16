@@ -148,12 +148,12 @@ extern const u32 linear_freq_table[LINEAR_FREQ_TABLE_SIZE];
     replace_exact(
         world,
         "\tb2AABB *touchAABB = new b2AABB();\n\ttouchAABB->lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB->upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n\tb2Vec2 point = b2Vec2(x/PIXELS_PER_UNIT, y/PIXELS_PER_UNIT);\n",
-        "#ifdef PP_RUNTIME_FIXES\n\tb2AABB touchAABB;\n\ttouchAABB.lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB.upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#else\n\tb2AABB *touchAABB = new b2AABB();\n\ttouchAABB->lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB->upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#endif\n\tb2Vec2 point = b2Vec2(x/PIXELS_PER_UNIT, y/PIXELS_PER_UNIT);\n",
+        "#if defined(PP_RUNTIME_FIXES) || defined(PP_PICKING_STACK_CONTROL)\n\tb2AABB touchAABB;\n\ttouchAABB.lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB.upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#else\n\tb2AABB *touchAABB = new b2AABB();\n\ttouchAABB->lowerBound.Set((float32)(x-2)/PIXELS_PER_UNIT, (float32)(y-2)/PIXELS_PER_UNIT);\n\ttouchAABB->upperBound.Set((float32)(x+2)/PIXELS_PER_UNIT, (float32)(y+2)/PIXELS_PER_UNIT);\n#endif\n\tb2Vec2 point = b2Vec2(x/PIXELS_PER_UNIT, y/PIXELS_PER_UNIT);\n",
     )
     replace_exact(
         world,
         "\tint count = b2world->Query(*touchAABB, shape, 16);\n",
-        "#ifdef PP_RUNTIME_FIXES\n\tint count = b2world->Query(touchAABB, shape, 16);\n#else\n\tint count = b2world->Query(*touchAABB, shape, 16);\n#endif\n",
+        "#if defined(PP_RUNTIME_FIXES) || defined(PP_PICKING_STACK_CONTROL)\n\tint count = b2world->Query(touchAABB, shape, 16);\n#else\n\tint count = b2world->Query(*touchAABB, shape, 16);\n#endif\n",
     )
     replace_exact(
         world,
