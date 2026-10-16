@@ -53,6 +53,11 @@ diagnostic does not satisfy a negative control.
 tools/repro/test_source_patches.sh
 ```
 
+The [published dataset](../research/results/world-save/) includes both host
+matrices, with Linux executed on a native case-sensitive filesystem,
+independent ROM/ELF pairs for three profiles, and 15 clean-source emulator runs.
+All 3,528 recorded normal-loop body states match the preceding improved port.
+
 These are bounded serialization and ownership checks. They do not establish a
 complete sketch round trip: the existing loader resolves pin endpoints in one
 pass, and forward-reference loading remains unvalidated. Malformed XML,

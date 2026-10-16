@@ -24,3 +24,5 @@ research/results/runtime-fat/** -text -whitespace
 research/results/runtime-fat/README.md text whitespace
 research/results/storage-portability/** -text -whitespace
 research/results/storage-portability/README.md text whitespace
+research/results/world-save/** -text -whitespace
+research/results/world-save/README.md text whitespace

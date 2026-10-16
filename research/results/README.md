@@ -23,6 +23,7 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 
 ## Primary melonDS Comparison
 
+- [Current world-save correction: 534 cases per host, independent identities, and 15 replay runs](world-save/)
 - [Native runtime logger: three complete, independently read FAT images](runtime-fat/)
 - [Dialog host controls: Linux and macOS sanitizer validation](storage-portability/)
 - [Current dialog-corrected port: 284 host cases, independent identities, and 15 repeated emulator runs](storage-dialogs/)
@@ -50,7 +51,7 @@ uses floating point, so the table does not isolate dependency-update effects.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Historical release | 5,471 | 2,805 | 278,893 | 554,829 | 0 | 0 | 14,400 |
 | Modern source port | 12,286 | 3,015 | 584,579 | 904,349 | 102 | 87 | 14,400 |
-| Improved source port | 6,244 | 1,640 | 111,140 | 556,721 | 0 | 0 | 0 |
+| Improved source port | 6,242 | 1,621 | 111,011 | 556,771 | 0 | 0 | 0 |
 
 Relative to the modern source port, the improved profile reduces physics time
 by 81.0% and complete-frame time by 38.4%. It removes the reproduced hit-test
@@ -59,12 +60,13 @@ already synchronized at the 60 Hz floor, so its 0.4% lower frame total is not
 interpreted as greater CPU headroom; the improved profile is substantially
 faster in physics and hit testing.
 
-The improved row uses the [current dialog-corrected comparison](storage-dialogs/).
+The improved row uses the [current world-save comparison](world-save/).
 Earlier [length-corrected](length-correction/) and [polygon-guarded](polygon-promotion/)
 checkpoints retain their own source and ROM identities. The length correction
 reproduced its preceding 276 direct records after excluding ROM hash/size fields;
-the subsequent dialog correction has small timing changes in a different binary
-layout. The direct workload does not execute storage dialogs, so those changes
+the subsequent dialog and world-save corrections have small timing changes in
+different binary layouts. The direct workload does not execute storage dialogs
+or serialize XML, so those changes
 are not attributed to storage-call execution. The promotion record retains
 strict versus tolerant deadline and numeric-mode limits.
 

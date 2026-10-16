@@ -1,0 +1,9 @@
+{
+  "reference_dataset": "research/results/storage-dialogs/runtime",
+  "reference_source_revision": "f9bbb70b8583d00f1fd8a48505d7148bd66a2f41",
+  "current_source_revision": "e04656ace94017d97ad591bffdebb9cfebf391dc",
+  "alignment": "physics step and thing index, first repetition; remaining repetitions must match within specimen",
+  "shared_records": 3528,
+  "differing_records": 0,
+  "scope": "Recorded transforms, velocities, types, body presence and awake flags; not every hidden physics structure."
+}

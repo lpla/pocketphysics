@@ -1,0 +1,7 @@
+{
+  "application_source_revision": "e04656ace94017d97ad591bffdebb9cfebf391dc",
+  "runner_sha256": "4af644f61a6ec39d6d300ef63943999bcc70e63db8b6177a0c506ba5723020ae",
+  "host_fixture_executions": "macOS and native Linux case-sensitive container filesystem; generated fixture hashes agree.",
+  "linux_image_id": "sha256:0a07aed6c80fa30d18f9aebb6aa95fc58404cc8bfc7c4e9f5b5ec026c749264c",
+  "frozen_direct_control_records_matched": 207
+}

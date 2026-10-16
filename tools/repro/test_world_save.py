@@ -51,8 +51,8 @@ def methods(source):
     directory = source / "arm9/source"
     world = (directory / "world.cpp").read_text()
     thing = (directory / "thing.cpp").read_text()
-    circle = (directory / "circle.cpp").read_text()
-    pin = (directory / "pin.cpp").read_text()
+    circle = (directory / "Circle.cpp").read_text()
+    pin = (directory / "Pin.cpp").read_text()
     return (
         section(world, "const char *World::getSketchSaveDirectory", "\n#endif")
         + section(world, "void World::save", "\nbool World::load")
