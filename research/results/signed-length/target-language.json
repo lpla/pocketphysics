@@ -1,0 +1,20 @@
+{
+  "compiler_image": "skylyrac/blocksds@sha256:67f6bf754734018e2f6e97b35f6a83f818a4690aa1c2abe86a07042ce9c36ce8",
+  "compiler": "/opt/wonderful/toolchain/gcc-arm-none-eabi/bin/arm-none-eabi-g++",
+  "arguments": [
+    "-dM",
+    "-E",
+    "-x",
+    "c++",
+    "/dev/null"
+  ],
+  "predefined_values": {
+    "__cplusplus": "202002L",
+    "__VERSION__": "\"16.0.1 20260424 (prerelease)\"",
+    "__GNUC__": "16",
+    "__GNUC_MINOR__": "0",
+    "__GNUC_PATCHLEVEL__": "1"
+  },
+  "builder_overrides_cpp_standard": false,
+  "builder_source_revision": "130ec2b327ab42363ad279118a30df474415e6f2"
+}

@@ -30,6 +30,10 @@ are retained by the runner.
 tools/repro/test_source_patches.sh
 ```
 
+The [published clean-source results](../research/results/signed-length/) retain
+matching macOS and Linux numerical outcomes and input hashes, all four role
+streams, and the pinned target compiler's language macro probe.
+
 This is host software-math API coverage. The existing native ARM9 protocol
 still runs the positive 19,662-case matrix. Native signed-vector execution,
 full fixed-point ranges, extreme values, division boundaries, force/impulse

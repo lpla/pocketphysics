@@ -1,0 +1,113 @@
+{
+  "source_revision": "130ec2b327ab42363ad279118a30df474415e6f2",
+  "working_tree_dirty": false,
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: x86_64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "platform": "macOS-26.7.1-x86_64-i386-64bit-Mach-O",
+  "roles": {
+    "reference": {
+      "standard": "c++20",
+      "command": [
+        "c++",
+        "-std=c++20",
+        "-O2",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-sanitize-recover=undefined",
+        "-fno-omit-frame-pointer",
+        "-DTARGET_FLOAT32_IS_FIXED",
+        "-Iresearch-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common",
+        "-I/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source",
+        "/Users/leopoldo.pla/pocketphysics/tools/repro/signed_length_host.cpp",
+        "-o",
+        "research-artifacts/test/signed-length-clean-macos/reference"
+      ],
+      "exit_status": 0,
+      "result": {
+        "cases": 78648,
+        "failures": 0,
+        "actual_checksum": "86e2a12f",
+        "reference_checksum": "86e2a12f"
+      }
+    },
+    "corrected": {
+      "standard": "c++20",
+      "command": [
+        "c++",
+        "-std=c++20",
+        "-O2",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-sanitize-recover=undefined",
+        "-fno-omit-frame-pointer",
+        "-DTARGET_FLOAT32_IS_FIXED",
+        "-DPP_BOX2D_LENGTH_FIXED_ESTIMATE",
+        "-Iresearch-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common",
+        "-I/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source",
+        "/Users/leopoldo.pla/pocketphysics/tools/repro/signed_length_host.cpp",
+        "-o",
+        "research-artifacts/test/signed-length-clean-macos/corrected"
+      ],
+      "exit_status": 0,
+      "result": {
+        "cases": 78648,
+        "failures": 0,
+        "actual_checksum": "86e2a12f",
+        "reference_checksum": "86e2a12f"
+      }
+    },
+    "legacy": {
+      "standard": "c++20",
+      "command": [
+        "c++",
+        "-std=c++20",
+        "-O2",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-sanitize-recover=undefined",
+        "-fno-omit-frame-pointer",
+        "-DTARGET_FLOAT32_IS_FIXED",
+        "-DPP_BOX2D_LENGTH_FIXED_ESTIMATE",
+        "-DPP_BOX2D_LENGTH_LEGACY_THRESHOLD",
+        "-Iresearch-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common",
+        "-I/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source",
+        "/Users/leopoldo.pla/pocketphysics/tools/repro/signed_length_host.cpp",
+        "-o",
+        "research-artifacts/test/signed-length-clean-macos/legacy"
+      ],
+      "exit_status": 1,
+      "result": {
+        "cases": 78648,
+        "failures": 26176,
+        "actual_checksum": "a41ac8af",
+        "reference_checksum": "86e2a12f"
+      }
+    },
+    "cxx17-language-control": {
+      "standard": "c++17",
+      "command": [
+        "c++",
+        "-std=c++17",
+        "-O2",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-sanitize-recover=undefined",
+        "-fno-omit-frame-pointer",
+        "-DTARGET_FLOAT32_IS_FIXED",
+        "-Iresearch-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common",
+        "-I/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source",
+        "/Users/leopoldo.pla/pocketphysics/tools/repro/signed_length_host.cpp",
+        "-o",
+        "research-artifacts/test/signed-length-clean-macos/cxx17-language-control"
+      ],
+      "exit_status": -6
+    }
+  },
+  "input_sha256": {
+    "/Users/leopoldo.pla/pocketphysics/tools/repro/signed_length_host.cpp": "2bdeab7499e36a9062eb424f984ca7d138f22b9af7c2db9bd84671d7bcb51b4f",
+    "/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_signed_length_validation.h": "b7eb8093af893a116e224c9aa8323fd5c3dfb4268935e406966e51539254c2ce",
+    "/Users/leopoldo.pla/pocketphysics/tools/repro/benchmark_source/pp_length_validation.h": "e923335d80f29452caca8c85da93f6051246aa87b789b523ea070afdb0309e64",
+    "research-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common/Fixed.h": "92b004e8032aa1140708d3d6ed7bf161a40eb58dcca9738259b1babc7ff982b1",
+    "research-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common/b2Math.h": "f8c92827eb8a9edd64fc102398c5d4d1b3facab7c6c26e1da4c3fec05c6e03b1"
+  },
+  "scope": "Host software-math API matrix in C++20, 78648 cases including repeated axes; not native ARM9 signed-vector execution or all fixed-point arithmetic."
+}

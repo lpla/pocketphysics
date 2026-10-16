@@ -32,3 +32,5 @@ research/results/world-load-pin-control/** -text -whitespace
 research/results/world-load-pin-control/README.md text whitespace
 research/results/trajectory-factors/** -text -whitespace
 research/results/trajectory-factors/README.md text whitespace
+research/results/signed-length/** -text -whitespace
+research/results/signed-length/README.md text whitespace

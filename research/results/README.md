@@ -76,6 +76,7 @@ byte-identical source build, not from an extracted release payload.
 
 ## Optimization Attribution
 
+- [Signed vector boundary: C++20 host matrix, legacy regression, and language-mode control](signed-length/)
 - [Runtime trajectory factors: ARM mode and picking allocation isolated in twelve runs](trajectory-factors/)
 - [Wider velocity gate: timing and operation-domain coverage](velocity-gate/)
 - [Polygon validation: host negative controls and ARM9 API regression cases](polygon-validation/)

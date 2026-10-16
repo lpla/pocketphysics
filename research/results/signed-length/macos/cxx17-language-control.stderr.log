@@ -1,0 +1,2 @@
+research-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common/Fixed.h:272:68: runtime error: left shift of negative value -6552
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior research-artifacts/test/trajectory-source-tests/deps/box2d-2.0.1/Source/Common/Fixed.h:272:68 
