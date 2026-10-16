@@ -1,0 +1,25 @@
+{
+  "application_source_revision": "e04656ace94017d97ad591bffdebb9cfebf391dc",
+  "input_dataset": "research/results/world-save-constants/host/macos/cases.jsonl",
+  "input_arguments": [
+    "5",
+    "2",
+    "last",
+    "data",
+    "normal"
+  ],
+  "input_sha256": "964370f999ad1042c0d139a591b28a9c26ac2e54803ef025e3b2365807a808e3",
+  "fixture_sha256": "397b85be1aee01d11f7c72757b5886265feeffdf822a98a120a3464d616c7997",
+  "tinyxml_archive_sha256": "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: x86_64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "platform": "macOS-26.7.1-x86_64-i386-64bit-Mach-O",
+  "flags": [
+    "-std=c++17",
+    "-O1",
+    "-g",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer"
+  ],
+  "exit_status": -6,
+  "scope": "Actual Thing and Pin XML constructor bodies, real TinyXML, minimal class/physics stubs; not complete World::load, GUI, ARM9, FAT or physical execution."
+}

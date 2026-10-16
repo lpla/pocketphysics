@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import platform
+import re
 import subprocess
 import sys
 import tempfile
@@ -63,6 +64,26 @@ def methods(source):
     )
 
 
+def constants(source):
+    headers = "\n".join(
+        (source / "arm9/source" / name).read_text() for name in ("world.h", "thing.h")
+    )
+    definitions = []
+    for name in (
+        "DEFAULT_GRAVITY",
+        "DEFAULT_DENSITY",
+        "DEFAULT_FRICTION",
+        "DEFAULT_RESTITUTION",
+    ):
+        matches = re.findall(
+            r"^#define\s+" + name + r"\s+[^\n]+", headers, re.MULTILINE
+        )
+        if len(matches) != 1:
+            raise AssertionError(f"Expected one application constant: {name}")
+        definitions.append(matches[0])
+    return "\n".join(definitions)
+
+
 def test(source, out, archive):
     if hashlib.sha256(archive.read_bytes()).hexdigest() != TINYXML_SHA:
         raise AssertionError("TinyXML archive does not match locked source")
@@ -75,6 +96,7 @@ def test(source, out, archive):
             (ROOT / "tools/repro/storage_source/world_save_fixture.cpp")
             .read_text()
             .replace("// PP_METHODS", methods(tree))
+            .replace("// PP_CONSTANTS", constants(tree))
         )
         fixture, binary = out / (role + ".cpp"), out / role
         fixture.write_text(rendered)

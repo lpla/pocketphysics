@@ -1,0 +1,18 @@
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==16701==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x0001011802c0 bp 0x7ff7bf2926f0 sp 0x7ff7bf291e90 T0)
+==16701==The signal is caused by a READ memory access.
+==16701==Hint: address points to the zero page.
+    #0 0x0001011802c0 in strcmp+0x30 (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x1a2c0)
+    #1 0x000100c6ca00 in Thing::Thing(TiXmlElement*) probe.cpp:13
+    #2 0x000100c6cfea in main probe.cpp:36
+    #3 0x7ff8036711c7 in start+0xca7 (dyld:x86_64+0x131c7)
+
+==16701==Register values:
+rax = 0x0000000000000001  rbx = 0x00007ff7bf292740  rcx = 0x0000000000000001  rdx = 0x0000000100c8e440  
+rdi = 0x0000000000000000  rsi = 0x0000000100c8e460  rbp = 0x00007ff7bf2926f0  rsp = 0x00007ff7bf291e90  
+ r8 = 0x0000000000000000   r9 = 0x0000000100c8e401  r10 = 0x000000010249dca0  r11 = 0x000010000000003f  
+r12 = 0x0000000100c8e460  r13 = 0x000060d000000520  r14 = 0x0000000000000000  r15 = 0x0000000000000000  
+AddressSanitizer can not provide additional info.
+SUMMARY: AddressSanitizer: SEGV probe.cpp:13 in Thing::Thing(TiXmlElement*)
+==16701==ABORTING

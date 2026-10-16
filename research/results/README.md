@@ -24,6 +24,7 @@ arithmetic preemption. It predates the fixed-length threshold correction.
 ## Primary melonDS Comparison
 
 - [Current world-save correction: 534 cases per host, independent identities, and 15 replay runs](world-save/)
+- [World-save host refinement: application header constants and identical XML on both hosts](world-save-constants/)
 - [Native runtime logger: three complete, independently read FAT images](runtime-fat/)
 - [Dialog host controls: Linux and macOS sanitizer validation](storage-portability/)
 - [Current dialog-corrected port: 284 host cases, independent identities, and 15 repeated emulator runs](storage-dialogs/)
@@ -85,6 +86,10 @@ The screen measures 17 source profiles twice with the same 225-touch,
 27-object, 600-hit-test, 240-frame workload. Every profile has stable workload
 checksums and zero timing spread. Candidate classification uses melonDS
 correctness, touch, hit-test, physics, complete-frame, and cadence results.
+
+## Unresolved Application Controls
+
+- [Saved-pin XML constructor: actual serialized input and a specific host failure](world-load-pin-control/)
 
 ## Supplemental DeSmuME Record
 

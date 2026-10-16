@@ -57,10 +57,17 @@ The [published dataset](../research/results/world-save/) includes both host
 matrices, with Linux executed on a native case-sensitive filesystem,
 independent ROM/ELF pairs for three profiles, and 15 clean-source emulator runs.
 All 3,528 recorded normal-loop body states match the preceding improved port.
+The [header-constant validation](../research/results/world-save-constants/)
+strengthens its host fixture: defaults are extracted from application headers,
+both serialized gravity fields are checked, and all 531 guarded files agree
+byte for byte across hosts. The first host dataset hardcoded gravity 10 instead
+of the app's default 2; its author/ID/lifetime tests and ROM measurements have
+their original scope and values.
 
 These are bounded serialization and ownership checks. They do not establish a
 complete sketch round trip: the existing loader resolves pin endpoints in one
-pass, and forward-reference loading remains unvalidated. Malformed XML,
+pass, and the [saved-pin constructor control](../research/results/world-load-pin-control/)
+reproduces an absent-type failure. Forward-reference loading remains unvalidated. Malformed XML,
 load-side maximum IDs, scene preservation on failed loads, every allocation
 site, GUI interaction, thumbnails, native FAT saves, and physical flashcart
 behavior remain on the [worklist](research-worklist.md).

@@ -9,8 +9,7 @@
 #include <sys/stat.h>
 #include <vector>
 #include "tinyxml.h"
-const float DEFAULT_GRAVITY = 10.0f;
-const float DEFAULT_DENSITY = 1.0f, DEFAULT_FRICTION = 0.3f, DEFAULT_RESTITUTION = 0.2f;
+// PP_CONSTANTS
 struct FirmwareData { unsigned short name[10] = {}; } firmware;
 FirmwareData *PersonalData = &firmware;
 bool failAllocation = false;
@@ -115,7 +114,12 @@ int main(int argc, char **argv) {
         std::string expected;
         for (int i = 0; i < nameLength; ++i) expected += char('A' + i);
         assert(std::string(author ? author : "") == expected);
-        TiXmlElement *element = sketch->FirstChildElement("world")->FirstChildElement();
+        TiXmlElement *worldElement = sketch->FirstChildElement("world");
+        double gravityX = -1.0, gravityY = -1.0;
+        assert(worldElement->QueryDoubleAttribute("gravity_x", &gravityX) == TIXML_SUCCESS);
+        assert(worldElement->QueryDoubleAttribute("gravity_y", &gravityY) == TIXML_SUCCESS);
+        assert(gravityX == DEFAULT_GRAVITY && gravityY == 0.0);
+        TiXmlElement *element = worldElement->FirstChildElement();
         for (int i = 0; i < world.n_things; ++i, element = element->NextSiblingElement()) {
             assert(element);
             if (world.things[i] == &pin) {

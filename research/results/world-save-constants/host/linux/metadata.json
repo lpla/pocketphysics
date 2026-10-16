@@ -1,0 +1,9 @@
+{
+  "control_source_revision": "3bd6a14260ec31f4c55e8ac29d7f8af9e166f59e",
+  "tinyxml_archive_sha256": "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "platform": "Linux-7.0.14-linuxkit-x86_64-with-glibc2.39",
+  "scope": "Actual World::save and XML serialization bodies; real pinned TinyXML and POSIX files. Firmware, GUI, physics and DLDI are outside this host test.",
+  "case_count": 534,
+  "format": "Complete UTF-8 case streams and output files in cases.jsonl"
+}

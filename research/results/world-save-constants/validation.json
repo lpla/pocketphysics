@@ -1,0 +1,10 @@
+{
+  "application_source_revision": "e04656ace94017d97ad591bffdebb9cfebf391dc",
+  "application_changed": false,
+  "constants": "#define DEFAULT_GRAVITY\t\t2.0f//8.0f //60.0f\n#define DEFAULT_DENSITY\t\t1.0f//5.0f\n#define DEFAULT_FRICTION\t0.3f\n#define DEFAULT_RESTITUTION\t0.2f",
+  "linux_filesystem": "Native Linux container filesystem, independent of macOS bind mount",
+  "runner_sha256": "626af91237d5fdb32441c130dc77adc5d4bd2e4084ad3951871eeee291d1867d",
+  "linux_image_id": "sha256:0a07aed6c80fa30d18f9aebb6aa95fc58404cc8bfc7c4e9f5b5ec026c749264c",
+  "case_definitions_and_fixture_hashes_match": true,
+  "all_guarded_output_files_identical_between_hosts": true
+}

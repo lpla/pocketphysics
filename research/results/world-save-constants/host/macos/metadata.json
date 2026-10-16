@@ -1,0 +1,9 @@
+{
+  "control_source_revision": "3bd6a14260ec31f4c55e8ac29d7f8af9e166f59e",
+  "tinyxml_archive_sha256": "15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: x86_64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "platform": "macOS-26.7.1-x86_64-i386-64bit-Mach-O",
+  "scope": "Actual World::save and XML serialization bodies; real pinned TinyXML and POSIX files. Firmware, GUI, physics and DLDI are outside this host test.",
+  "case_count": 534,
+  "format": "Complete UTF-8 case streams and output files in cases.jsonl"
+}
